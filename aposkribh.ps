@@ -8,6 +8,7 @@ github.com.gnewton.aposkribh begin
 /TestStopOnFail true def
 
 
+
 /assertStackEmpty{
     count 0 ne{
         (Error: stack is not empty) =
@@ -19,6 +20,8 @@ github.com.gnewton.aposkribh begin
 /err{
     TestSuppressErrorMessages not{
         =
+    }{
+        pop
     }if
 }def
 
@@ -47,40 +50,65 @@ github.com.gnewton.aposkribh begin
 }def
 
 /isIntegerRealStringBool{
-    count 0 eq{
-        (ERROR:/isIntegerRealStringBool: needs one argument. None provided") err
-        stop
-    }if
+    /isIntegerRealStringBool 1 assertMinStackSize
 
     10 dict begin
     /v exch def
-    v isInteger? =
-    v isInteger?
-    v isReal?
-    v isString?
-    v isBoolean?
-    or
-    or
-    or
+     v isInt?
+     v isReal?
+     v isString?
+     v isBoolean?
+     or
+     or
+     or
     end
 }def
 
-/isInteger?{
+
+% Type tests
+/isInt?{
+    /isInt? 1 assertMinStackSize
     type /integertype eq
 }bind def
 
 /isReal?{
+    /isReal? 1 assertMinStackSize
     type /realtype eq
 }bind def
 
 /isString?{
+    /isString? 1 assertMinStackSize
     type /stringtype eq
 }bind def
 
 /isBoolean?{
-    type /booleantype eq m
+    /isBoolean? 1 assertMinStackSize
+    type /booleantype eq 
 }bind def
 
+/isArray?{
+    /isArray? 1 assertMinStackSize
+    type /arraytype eq
+} def
+
+/isNameType?{
+    /isNameType? 1 assertMinStackSize
+    type /nametype eq
+}bind def
+
+/isNull?{
+    type /nulltype eq
+}bind def
+
+/isDict?{
+    type /dicttype eq
+}bind def
+
+/isNumber?{ % real or int
+    dup
+    isInt? exch isReal? or
+}bind def
+%%%%%%%%%%%%%%
 
 
 /errorMsg{ % proc msg

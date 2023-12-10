@@ -1,0 +1,59 @@
+
+aposkribh_examples_test.ps,56
+/addX{/addX5,45
+/addX2{/addX213,175
+/addX 160,4065
+
+aposkribh.ps,596
+/github.com.gnewton.aposkribh 2,1
+/Test 6,81
+/TestDebug 7,96
+/TestStopOnFail 8,117
+/assertStackEmpty{/assertStackEmpty11,144
+/err{/err19,259
+/stackk{/stackk27,343
+/str{/str33,424
+/isIntegerRealStringBool{/isIntegerRealStringBool51,801
+/isInt?{/isInt?68,1018
+/isReal?{/isReal?73,1096
+/isString?{/isString?78,1173
+/isBoolean?{/isBoolean?83,1256
+/isArray?{/isArray?88,1343
+/isNameType?{/isNameType?93,1419
+/isNull?{/isNull?98,1504
+/isDict?{/isDict?102,1547
+/isNumber?{/isNumber?106,1590
+/errorMsg{/errorMsg113,1678
+/run{/run121,1778
+/runTests{/runTests144,2174
+
+aposkribh_test.ps,113
+/isIntegerRealStringBool 19,281
+/isIntegerRealStringBool 22,347
+/isIntegerRealStringBool 33,670
+/add 54,1118
+
+simple.ps,595
+/github.com.gnewton.aposkribh.simpletest 1,0
+/TestSuppressErrorMessages 5,102
+/TestSuppressTestMessages 7,140
+/TestSuppressTestErrorMessages 8,176
+/initTesting{/initTesting10,218
+/AssertPass{/AssertPass17,290
+/AssertFail{/AssertFail65,1294
+/isString{/isString101,2098
+/AssertInteger{/AssertInteger109,2188
+/AssertProc{/AssertProc117,2285
+/cat{/cat133,2564
+/assertStackSize{/assertStackSize138,2614
+/testErrOut{/testErrOut147,2795
+/testMsgOut{/testMsgOut156,2899
+/assertMinStackSize{/assertMinStackSize166,2999
+/github.com.gnewton.aposkribh.simpletest.private 179,3196
+
+trace.ps,167
+/github.com.gnewton.aposkribh.trace 2,1
+/traceOn{/traceOn9,98
+/traceOff{/traceOff13,115
+/trace{/trace17,135
+/github.com.gnewton.aposkribh.trace.private 24,156

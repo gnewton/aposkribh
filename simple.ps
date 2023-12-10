@@ -7,37 +7,27 @@ github.com.gnewton.aposkribh.simpletest begin
 /TestSuppressTestMessages false def
 /TestSuppressTestErrorMessages false def
 
-/testErrOut{
-    TestSuppressTestErrorMessages not{
-        =
-    }if
+/initTesting{
+    /TestSuppressErrorMessages true def
+    clear
 }def
 
-/testMsgOut{
-    TestSuppressTestMessages not{
-        =
-    }if
-}def
 
 
 /AssertPass{ % proc testName
-    (Begin AssertPass) =
     10 dict begin
-     % --- args ----------------------
     /testName exch def  % Name of test being run
-    testName =
     testName isString not{
         (/AssertPass: internal error: testName must be a string) testErrOut
         quit
     }if
     
-    AssertProc not{
-
+    isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
         quit
     }if
-    (middle AssertPass) =
+
     load /proc exch def % Procedure to test
 
     % ---body -----------------------
@@ -46,7 +36,6 @@ github.com.gnewton.aposkribh.simpletest begin
     }
     stopped 
     { % Errors: not expected
-        (Stopped) =
         (FAIL /AssertPass) testMsgOut
         $error begin
         newerror =
@@ -71,31 +60,31 @@ github.com.gnewton.aposkribh.simpletest begin
     testName testMsgOut
     clear
     end
-    (End AssertPass) =
 }def
 
 /AssertFail{
     10 dict begin
     /testName exch def  % Name of test being run
     testName isString not{
-        (/AssertPass: internal error: testName must be a string) testErrOut
+        (/AssertFail: internal error: testName must be a string) testErrOut
         quit
     }if
     
-    AssertProc not{
+    isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
         quit
     }if
+
     load /proc exch def % Procedure to test
     
     {
         proc exec
-    }stopped not{ % Wrong: Run with no errors: not expected
+    }
+    stopped not{ % Wrong: Run with no errors: not expected
         (FAIL /AssertFail) testMsgOut
         TestStopOnFail{
             testName testMsgOut
-            testMsgOut
             quit
         }
     }if
@@ -116,15 +105,7 @@ github.com.gnewton.aposkribh.simpletest begin
     }ifelse
 }def
 
-/AssertInteger{
-    type /integertype eq{
-         true
-    }{
-         false
-    }ifelse
- }def
-
-/AssertProc{
+/isProc?{
     dup
     10 dict begin
     {
@@ -140,19 +121,34 @@ github.com.gnewton.aposkribh.simpletest begin
     }if
 }def
 
-/cat{
-    1 assertStackSize
-    /a exch def
+
+/testErrOut{
+    TestSuppressTestErrorMessages not{
+        =
+    }
+    {
+        pop
+    }ifelse
 }def
 
-/assertStackSize{
-    count 0 eq{
-        (Error: /assertStackSize needs at least one /integertype to run) testErrOut
-        stop
-    }if
-    /n exch def
-    n AssertInteger
+/testMsgOut{
+    TestSuppressTestMessages not{
+        =
+    }
+    {
+        pop
+    }ifelse
 }def
+
+/assertMinStackSize{ % proc num
+     1 add count ge{
+         (assertMinStackSize: Stack arguments missing) =
+         =
+         clear
+         stop
+     }if
+     pop % proc
+}bind def
 
 end % github.com.gnewton.aposkribh.simpletest
 
@@ -161,3 +157,8 @@ end % github.com.gnewton.aposkribh.simpletest
 /github.com.gnewton.aposkribh.simpletest.private 100 dict def
 
 github.com.gnewton.aposkribh.simpletest.private begin
+
+
+
+
+end % github.com.gnewton.aposkribh.simpletest.private 

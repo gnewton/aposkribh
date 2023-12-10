@@ -6,26 +6,53 @@ github.com.gnewton.aposkribh begin
 github.com.gnewton.aposkribh.simpletest begin
 
 
-clear
+initTesting
+
+
+% 454 /isIntegerRealStringBool 1
+% /assertMinStackSize (assertMinStackSize: 1 arg) AssertPass
+
+% 324 (765) /isIntegerRealStringBool 2
+% /assertMinStackSize (assertMinStackSize: 2 args) AssertPass
+
+% /isIntegerRealStringBool 0
+% /assertMinStackSize (assertMinStackSize: 0 args) AssertPass
+
+% /isIntegerRealStringBool 2
+% /assertMinStackSize  (assertMinStackSize: 0 args: need 2) AssertFail
+
+% 565 /isIntegerRealStringBool 2 /assertMinStackSize  (assertMinStackSize: 1 arg: need 2) AssertFail
 
 
 
+
+(***********)=
 % Should passes
-(foo) /isIntegerRealStringBool (/isIntegerRealStringBool: Single string) AssertPass
-(DONE) =
+clear
+(foo) isIntegerRealStringBool
+
+(foo) /isIntegerRealStringBool (isIntegerRealStringBool: Single string) AssertPass
 
 
-22.0 /isIntegerRealStringBool (/isIntegerRealStringBool: Single real) AssertPass
-true /isIntegerRealStringBool (/isIntegerRealStringBool: Single bool) AssertPass
+22.0 /isIntegerRealStringBool (isIntegerRealStringBool: Single real) AssertPass
+true /isIntegerRealStringBool (isIntegerRealStringBool: Single bool) AssertPass
 
-/isIntegerRealStringBool (/isIntegerRealStringBool: No argument) AssertFail
+/isIntegerRealStringBool (isIntegerRealStringBool: No argument) AssertFail
 
-% Bad test setup: error
-10 10 (/isIntegerRealStringBool: Single integer) AssertFail % bad proc
-10 /isIntegerRealStringBool (/isIntegerRealStringBool: Single string) AssertPass
+(======================================================) =
 
-
-
+% These are tests that are broken (bad setup)
+{
+    10 10 (isIntegerRealStringBool: Single integer) AssertFail  % bad proc
+}
+stopped 
+{
+    % This should happen
+}
+{
+    % This should not happen
+    (Should have been a test setup error) =
+}ifelse
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,9 +67,6 @@ clear
 
 
 
-(888999) =
-/add AssertProc =
-10 AssertProc =
 
 end % github.com.gnewton.aposkribh.simpletest
 end % github.com.gnewton.aposkribh
