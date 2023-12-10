@@ -1,0 +1,163 @@
+/github.com.gnewton.aposkribh.simpletest 100 dict def
+
+github.com.gnewton.aposkribh.simpletest begin
+
+/TestSuppressErrorMessages false def
+
+/TestSuppressTestMessages false def
+/TestSuppressTestErrorMessages false def
+
+/testErrOut{
+    TestSuppressTestErrorMessages not{
+        =
+    }if
+}def
+
+/testMsgOut{
+    TestSuppressTestMessages not{
+        =
+    }if
+}def
+
+
+/AssertPass{ % proc testName
+    (Begin AssertPass) =
+    10 dict begin
+     % --- args ----------------------
+    /testName exch def  % Name of test being run
+    testName =
+    testName isString not{
+        (/AssertPass: internal error: testName must be a string) testErrOut
+        quit
+    }if
+    
+    AssertProc not{
+
+        (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
+        testName testErrOut
+        quit
+    }if
+    (middle AssertPass) =
+    load /proc exch def % Procedure to test
+
+    % ---body -----------------------
+    {
+        proc exec
+    }
+    stopped 
+    { % Errors: not expected
+        (Stopped) =
+        (FAIL /AssertPass) testMsgOut
+        $error begin
+        newerror =
+        errorname =
+        %command =
+        errorinfo ==
+        ostack ==
+        estack ===
+        
+        dstack ==
+        (End $error) =
+        end
+        TestStopOnFail
+        {
+            quit
+        }if
+    }if % stopped
+    
+    % No errors: expected
+    (PASS /AssertPass) testMsgOut
+    
+    testName testMsgOut
+    clear
+    end
+    (End AssertPass) =
+}def
+
+/AssertFail{
+    10 dict begin
+    /testName exch def  % Name of test being run
+    testName isString not{
+        (/AssertPass: internal error: testName must be a string) testErrOut
+        quit
+    }if
+    
+    AssertProc not{
+        (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix your test.) testErrOut
+        testName testErrOut
+        quit
+    }if
+    load /proc exch def % Procedure to test
+    
+    {
+        proc exec
+    }stopped not{ % Wrong: Run with no errors: not expected
+        (FAIL /AssertFail) testMsgOut
+        TestStopOnFail{
+            testName testMsgOut
+            testMsgOut
+            quit
+        }
+    }if
+
+    % Failed: what is expected
+    (PASS /AssertFail) testMsgOut
+    testName testMsgOut
+    clear
+    end
+ }def
+
+
+/isString{
+    type /stringtype eq{
+         true
+    }{
+         false
+    }ifelse
+}def
+
+/AssertInteger{
+    type /integertype eq{
+         true
+    }{
+         false
+    }ifelse
+ }def
+
+/AssertProc{
+    dup
+    10 dict begin
+    {
+        load /p exch def
+        /p load xcheck{
+            true
+        }{
+            false % Never get here...
+            (Surprise) =
+        }ifelse
+    }stopped{ % if not executable, load will fail
+        false
+    }if
+}def
+
+/cat{
+    1 assertStackSize
+    /a exch def
+}def
+
+/assertStackSize{
+    count 0 eq{
+        (Error: /assertStackSize needs at least one /integertype to run) testErrOut
+        stop
+    }if
+    /n exch def
+    n AssertInteger
+}def
+
+end % github.com.gnewton.aposkribh.simpletest
+
+
+
+/github.com.gnewton.aposkribh.simpletest.private 100 dict def
+
+github.com.gnewton.aposkribh.simpletest.private begin

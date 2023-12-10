@@ -1,2 +1,2 @@
 # aposkribh
-Postscript language test framework
+A Postscript language test framework

@@ -1,0 +1,49 @@
+(aposkribh.ps) run
+(simple.ps) run
+
+github.com.gnewton.aposkribh begin
+
+github.com.gnewton.aposkribh.simpletest begin
+
+
+clear
+
+
+
+% Should passes
+(foo) /isIntegerRealStringBool (/isIntegerRealStringBool: Single string) AssertPass
+(DONE) =
+
+
+22.0 /isIntegerRealStringBool (/isIntegerRealStringBool: Single real) AssertPass
+true /isIntegerRealStringBool (/isIntegerRealStringBool: Single bool) AssertPass
+
+/isIntegerRealStringBool (/isIntegerRealStringBool: No argument) AssertFail
+
+% Bad test setup: error
+10 10 (/isIntegerRealStringBool: Single integer) AssertFail % bad proc
+10 /isIntegerRealStringBool (/isIntegerRealStringBool: Single string) AssertPass
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Postscript /add tests
+(----------------------------_) =
+clear
+/add (/add: No args) AssertFail
+10 /add (/add: Missing one arg) AssertFail
+10 10 /add (/add: Two ints) AssertPass
+(foo) 10 /add (/add: one string) AssertFail
+10.0 10 /add (/add: one real) AssertPass
+
+
+
+(888999) =
+/add AssertProc =
+10 AssertProc =
+
+end % github.com.gnewton.aposkribh.simpletest
+end % github.com.gnewton.aposkribh
+

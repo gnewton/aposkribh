@@ -1,0 +1,173 @@
+(aposkribh.ps) run
+
+
+% Example procs to test
+/addX{
+    /addX
+    {
+        add
+    }run
+}def
+
+% Like addX, but leaves additional 5 on the stack; to test multiple (2) results
+/addX2{
+    /addX2
+    {
+        add 5
+    }run
+}def
+
+ /addX_ArgsAndTests
+ <<
+     /Signatures[ % List all possible args & their types and their returns and types
+         [ [/integertype /integertype] [/integertype]] % In this case only one
+     ] 
+
+     /Tests
+     <<
+         /Fail
+         [
+             [ [ (a)   34         ] [ 44 ] ]
+             [ [ false 11 (4rh4)  ] [ 13 ] ]
+             [ [ false 11 (qwerty)] [ 18 ] ]
+             [ [ 2     3          ] [    ] ]
+         ]def % /Fail
+
+         /Fail2
+         [
+             [
+                 <<
+                     /Args [2 3]
+                     /Results []
+                     /Reason (Empty return)
+                 >>
+             ]
+
+             [
+                 <<
+                     /Args [2 3]
+                     /Results [(foo)]
+                     /Reason (Result not integertype)
+                 >>
+             ]
+
+             [
+                 <<
+                     /Args [2 3]
+                     /Results [5.0]
+                     /Reason (Result not integertype)
+                 >>
+             ]
+
+             [
+                 <<
+                     /Args [2 3.0]
+                     /Results [5]
+                     /Reason (Second arg not not integertype)
+                 >>
+             ]
+
+                          [
+                 <<
+                     /Args [2.0 3]
+                     /Results [5]
+                     /Reason (First arg not not integertype)
+                 >>
+             ]
+
+             [
+                 <<
+                     /Args [2 3]
+                     /Results [5 6]
+                     /Reason (Too many results)
+                 >>
+             ]
+             
+             [
+                 <<
+                     /Args [100 9846 12]
+                     /Results [9966]
+                     /Reason (Too many args)
+                 >>
+             ]
+         ]def
+         
+         /Succeed
+         [
+             [
+                 <<
+                     %%%%%%%%% In stack order; so push to stack reverse
+                     /Args [2 3]
+                     %/inTypes [/integertype /integertype]
+                     /Results [5]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             
+             [
+                 <<
+                     /Args [100 -10]
+                     %/inTypes [/integertype /integertype]
+                     /Results [90]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             [
+                 <<
+                     /Args [-100 -10]
+                     %/inTypes [/integertype /integertype]
+                     /Results [-110]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             [
+                 <<
+                     /Args [0 0 ]
+                     %/inTypes [/integertype /integertype]
+                     /Results [0]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             [
+                 <<
+                     /Args [1 0]
+                     %/inTypes [/integertype /integertype]
+                     /Results [1]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             [
+                 <<
+                     /Args [0 -1 ]
+                     %/inTypes [/integertype /integertype]
+                     /Results [-1]
+                     %/outTypes [/integertype]
+                 >>
+             ]
+             % [
+             %     <<
+             %         /Args [(foo) (bar) ]
+             %         %/inTypes [/integertype /integertype]
+             %         /Results [-1]
+             %         %/outTypes [/integertype]
+             %     >>
+             % ]
+         ]def
+     >>def % /Tests
+ >>def %  /addX_ArgsAndTests
+
+github.com.gnewton.aposkribh begin
+/addX addX_ArgsAndTests  register
+assertStackEmpty
+addX
+
+stackk
+
+
+
+end % github.com.gnewton.aposkribh
+
+
+
+
+

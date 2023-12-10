@@ -1,0 +1,252 @@
+
+/github.com.gnewton.aposkribh 100 dict def
+
+github.com.gnewton.aposkribh begin
+
+/Test true def
+/TestDebug false def
+/TestStopOnFail true def
+
+
+/assertStackEmpty{
+    count 0 ne{
+        (Error: stack is not empty) =
+        stackk
+        quit
+    }if
+}def
+
+/err{
+    TestSuppressErrorMessages not{
+        =
+    }if
+}def
+
+/stackk{
+    (  ----STACK start---) =
+    stack
+    (  ----STACK end---) =
+}def
+
+/str{ % Array of strings,ints, floats to be appended
+    (/str START) =
+    count 0 eq{
+        (ERROR:/str: needs one argument, array. Nothing on stack") err
+        quit
+    }if
+    /a exch def
+
+    a type /arraytype ne{
+        (ERROR:/str: argument must be an array) err
+        quit
+    }if
+
+    % Check if all array elements are int, float, string
+    
+(END STR) =
+}def
+
+/isIntegerRealStringBool{
+    count 0 eq{
+        (ERROR:/isIntegerRealStringBool: needs one argument. None provided") err
+        stop
+    }if
+
+    10 dict begin
+    /v exch def
+    v isInteger? =
+    v isInteger?
+    v isReal?
+    v isString?
+    v isBoolean?
+    or
+    or
+    or
+    end
+}def
+
+/isInteger?{
+    type /integertype eq
+}bind def
+
+/isReal?{
+    type /realtype eq
+}bind def
+
+/isString?{
+    type /stringtype eq
+}bind def
+
+/isBoolean?{
+    type /booleantype eq m
+}bind def
+
+
+
+/errorMsg{ % proc msg
+    10 dict begin
+    /procName exch def
+    /msg exch def
+    
+    end
+}def
+
+/run{ % Expects the procedure to be tested and a key into the test registry
+    (RUN start) =
+    10 dict begin
+    /proc exch def
+    /key exch def
+
+    /proc load xcheck not{
+        (ERROR: /run: Must supply a procedure)=
+        stop
+    }if
+    %%%%%%%%%% end pre
+    
+
+    (Run.Test) =
+    Test{
+        key /proc runTests
+    }{
+        proc exec
+    }ifelse
+    end
+    (RUN end) =
+}def
+
+/runTests{
+    (RUN-TESTS start) =
+    40 dict begin
+    load /proc exch def
+    /key exch def
+    key  ==
+    /proc load ==
+
+    /proc load xcheck not{
+        (ERROR: /runTests: Must supply a procedure)=
+        stop
+    }if
+
+    testRegistry# key known not{
+        (ERROR: /runTests: Key unknown - not found in testRegistry) =
+        (Key:) =
+        key =
+        (Procedure:) =
+        /proc load ==
+        quit
+    }if
+
+    % Get the ArgAndTests dict
+    testRegistry# key get begin
+
+    Tests begin
+    (    Succeed length) =
+    Succeed length =
+    (    Fail length) =
+    Fail length =
+
+    (Succeed tests) =
+    Succeed{
+        % Get the dict for the each succeed test
+        0 get
+        begin
+        clear % Nothing on the stack
+        Args ===
+        %inTypes ===
+        Results ===
+        %outTypes ===
+  
+        % Push Args onto stack
+        (Args)=
+        Args length 1 sub -1 0{
+            /i exch def
+            Args i get =
+            Args i get % push arg to stack
+        }for
+
+        (Args END)=
+        (Run) =
+        {
+            proc exec
+        }
+        stopped{
+            % Test fails due to postscript error
+              (FAIL) =
+              quit
+          }if
+        (Run END) =
+        (end results) =
+
+        % If stack is not same length as results array
+        count Results length ne{
+            (FAIL) =
+            (ERROR: length stack != length results array) =
+            count =
+            Results length =
+            quit
+        }if
+
+        % TODO: walk through results and see if they match ProcResults in stack
+        Results length 1 sub -1 0{
+            /i exch def
+            i index   Results i get ne{
+                (FAIL) =
+                (ERROR: results do not match) =
+                i =
+                i index =
+                Results i get =
+                quit
+            }if
+            (PASS) =
+        }for
+
+        % 2 - exec proc
+        % 3 - If outProcs, pop each off stack and compare to Results
+        % 4 - Stack length should be zero
+        end
+        clear
+    }forall
+    (Succeed tests END)=
+
+    
+    (FAIL tests START) =
+    ( TODO) =
+    (FAIL tests END) =
+
+    end % Tests
+
+    end % ArgAndTests
+    %3 4 /proc load exec
+    end
+    (RUN-TESTS end) =
+}def
+
+
+ /testRegistry# 100 dict def
+
+ /register{ % string dict
+     % Registers
+     /value exch def
+     /key exch def
+     (> register) =
+     key =
+     value =
+     testRegistry# key value put
+ }bind def
+
+ /printTestRegistry{
+     (TESTREGISTRY) =
+     testRegistry#{
+         /v exch def
+         /k exch def
+         k ==
+         v ==
+         (------)=
+     }forall
+     (TESTREGISTRY END) =
+ }def
+
+
+
+
+end
