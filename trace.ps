@@ -1,7 +1,10 @@
 
 /github.com.gnewton.aposkribh.trace 100 dict def
 
-github.com.gnewton.aposkribh begin
+github.com.gnewton.aposkribh.util begin
+github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.trace begin
+
 
 
 
@@ -13,15 +16,38 @@ github.com.gnewton.aposkribh begin
 /traceOff{
 
 }def
-xb
-/trace{
+
+/trace{ %procname proc
+    /trace 2 assertMinStackSize
+    (trance START) =
+    10 dict begin
+    /procName exch def  % Name of proc being traced
+    procName isString? not{
+        (/trace: internal error: procName must be a string) testErrOut
+        quit
+    }if
+
+    /proc exch def % Procedure to test
+    /proc isProc? not{
+         (Error: github.com.gnewton.aposkribh.trace/trace: proc is not executable. Fix your test.) testErrOut
+         procName testErrOut
+         quit
+     }if
+
+    %%% body
+    
+    % TODO: add procName, startTime into traceArray
+    proc
+    % TODO:  add endTime into traceEndDict: key startTime: value endTime
 
 }def
 
-end
 
 
-/github.com.gnewton.aposkribh.trace.private 100 dict def
+
+/traceArray 100 def
 
 
-end
+end % github.com.gnewton.aposkribh.trace
+end %github.com.gnewton.aposkribh.simple
+end %github.com.gnewton.aposkribh.util

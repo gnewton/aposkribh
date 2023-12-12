@@ -1,0 +1,141 @@
+/github.com.gnewton.aposkribh.util 100 dict def
+
+
+
+github.com.gnewton.aposkribh.util begin
+/isIntegerRealStringBool{
+    /isIntegerRealStringBool 1 assertMinStackSize
+
+    10 dict begin
+    /v exch def
+     v isInt?
+     v isReal?
+     v isString?
+     v isBoolean?
+     or
+     or
+     or
+    end
+}def
+
+
+% Type tests
+/isInt?{
+    /isInt? 1 assertMinStackSize
+    type /integertype eq
+}bind def
+
+/isReal?{
+    /isReal? 1 assertMinStackSize
+    type /realtype eq
+}bind def
+
+/isString?{
+    /isString? 1 assertMinStackSize
+    type /stringtype eq
+}bind def
+
+/isBoolean?{
+    /isBoolean? 1 assertMinStackSize
+    type /booleantype eq 
+}bind def
+
+/isArray?{
+    /isArray? 1 assertMinStackSize
+    type /arraytype eq
+} def
+
+/isNameType?{
+    /isNameType? 1 assertMinStackSize
+    type /nametype eq
+}bind def
+
+/isNull?{
+    type /nulltype eq
+}bind def
+
+/isDict?{
+    type /dicttype eq
+}bind def
+
+/isNumber?{ % real or int
+    dup
+    isInt? exch isReal? or
+}bind def
+%%%%%%%%%%%%%%
+
+/arrayAppendTo{ % item array
+    8 dict begin
+
+    /a exch def
+    /i exch def
+
+    /ia [i] def
+    
+    /z a length 1 add array def
+    
+    z 0 a putinterval
+    z a length ia putinterval
+    
+    z
+    end
+}bind def
+
+/BASize 1000 def
+/MaxArraySize 16777216 def
+
+/makeBigArray{
+    /a BASize array def
+    /i 0 def
+    [i a]
+}def
+
+/expandBA{
+    (/expandBA{) =
+    10 dict begin
+    /a exch def
+    /l a length def
+    %/newa l BASize add array def
+    l 2 mul MaxArraySize gt{
+        /newa MaxArraySize array def
+    }{
+        /newa l 2 mul array def
+    }ifelse
+    newa 0 a putinterval
+    newa
+    end
+}def
+
+/appendToBA{ %item ba
+    10 dict begin
+    /ba exch def
+    /item exch def
+
+    /index ba 0 get def
+    /a ba 1 get def
+
+    /l a length def
+    index l eq{
+        index =
+
+        /a a expandBA def
+        % Replace old array with expanded one
+        ba 1 a put
+    }if
+    
+    {
+        a index item put
+    }stopped{
+        (STOPPED) =
+        index =
+        a length =
+        quit
+    }if
+
+    % increment index
+    ba 0 index 1 add put
+
+    end
+}def
+
+end % github.com.gnewton.aposkribh.util

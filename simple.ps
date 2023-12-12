@@ -1,6 +1,6 @@
-/github.com.gnewton.aposkribh.simpletest 100 dict def
+/github.com.gnewton.aposkribh.simple 100 dict def
 
-github.com.gnewton.aposkribh.simpletest begin
+github.com.gnewton.aposkribh.simple begin
 
 /TestSuppressErrorMessages false def
 
@@ -9,6 +9,8 @@ github.com.gnewton.aposkribh.simpletest begin
 
 /initTesting{
     /TestSuppressErrorMessages true def
+    /TestSuppressTestMessages false def
+    /TestSuppressTestErrorMessages false def
     clear
 }def
 
@@ -17,7 +19,7 @@ github.com.gnewton.aposkribh.simpletest begin
 /AssertPass{ % proc testName
     10 dict begin
     /testName exch def  % Name of test being run
-    testName isString not{
+    testName isString? not{
         (/AssertPass: internal error: testName must be a string) testErrOut
         quit
     }if
@@ -65,13 +67,13 @@ github.com.gnewton.aposkribh.simpletest begin
 /AssertFail{
     10 dict begin
     /testName exch def  % Name of test being run
-    testName isString not{
+    testName isString? not{
         (/AssertFail: internal error: testName must be a string) testErrOut
         quit
     }if
     
     isProc? not{
-        (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix your test.) testErrOut
+        (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix this test.) testErrOut
         testName testErrOut
         quit
     }if
@@ -97,13 +99,6 @@ github.com.gnewton.aposkribh.simpletest begin
  }def
 
 
-/isString{
-    type /stringtype eq{
-         true
-    }{
-         false
-    }ifelse
-}def
 
 /isProc?{
     dup

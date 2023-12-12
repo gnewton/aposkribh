@@ -1,0 +1,39 @@
+
+(util.ps) run
+(simple.ps) run
+(trace.ps) run
+
+
+
+
+(trace_terst BEGIN) =
+github.com.gnewton.aposkribh.util begin
+github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.trace begin
+
+/a2{
+    (a2) =
+} def
+
+/a0{
+     {(a0.r has run)=} (a0)  trace
+}def
+
+/foo{
+    /proc exch def
+    proc
+}def
+
+(trace_terst a0) =
+a0
+(trace_terst end) =
+( )=
+%/a0 foo
+( )=
+{(hello)=} foo
+
+
+end % github.com.gnewton.aposkribh.util
+end % github.com.gnewton.aposkribh.simple
+end % github.com.gnewton.aposkribh.trace 
+
