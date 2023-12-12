@@ -1,0 +1,28 @@
+/github.com.gnewton.aposkribh.error 100 dict def
+
+github.com.gnewton.aposkribh.util begin
+github.com.gnewton.aposkribh.error begin
+
+
+
+% my proc only accepts integer
+% /myproc {
+%     dup type /integertype ne {
+%         /myproc (Must be an integer) typecheckerror
+%     } if
+%     % ... rest of proc ...
+% } def
+
+/typecheckerror{ % 
+    /msg exch def
+    /p exch def
+    /out (/) p 128 string cvs  concatstrings def
+    /out out ( : )   concatstrings def
+    /out out msg concatstrings def 
+
+    out /typecheck signalerror
+}def
+
+end % github.com.gnewton.aposkribh.error 
+end % github.com.gnewton.aposkribh.util
+

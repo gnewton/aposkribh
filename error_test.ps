@@ -1,0 +1,42 @@
+
+(util.ps) run
+(error.ps) run
+
+
+
+github.com.gnewton.aposkribh.error begin
+
+/github.com.gnewton.aposkribh.error_test  100 dict def
+github.com.gnewton.aposkribh.error_test begin
+
+/needsSingleInteger{
+    dup type /integertype eq not{
+        /needsSingleInteger (Must be an integer)        typecheckerror
+    }if
+}def
+
+
+{
+    10 needsSingleInteger
+}stopped{
+    (ERROR) =
+}{
+    (Expected) =
+}ifelse
+
+
+
+{
+    10.0 needsSingleInteger
+}stopped{
+    (Expected) =
+}{
+    (ERROR) =
+}ifelse
+
+
+end % github.com.gnewton.aposkribh.error_test 
+
+end % github.com.gnewton.aposkribh.error
+
+

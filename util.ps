@@ -1,8 +1,8 @@
 /github.com.gnewton.aposkribh.util 100 dict def
 
 
-
 github.com.gnewton.aposkribh.util begin
+
 /isIntegerRealStringBool{
     /isIntegerRealStringBool 1 assertMinStackSize
 
@@ -25,44 +25,53 @@ github.com.gnewton.aposkribh.util begin
     type /integertype eq
 }bind def
 
+
 /isReal?{
     /isReal? 1 assertMinStackSize
     type /realtype eq
 }bind def
+
 
 /isString?{
     /isString? 1 assertMinStackSize
     type /stringtype eq
 }bind def
 
+
 /isBoolean?{
     /isBoolean? 1 assertMinStackSize
     type /booleantype eq 
 }bind def
+
 
 /isArray?{
     /isArray? 1 assertMinStackSize
     type /arraytype eq
 } def
 
+
 /isNameType?{
     /isNameType? 1 assertMinStackSize
     type /nametype eq
 }bind def
 
+
 /isNull?{
     type /nulltype eq
 }bind def
+
 
 /isDict?{
     type /dicttype eq
 }bind def
 
+
 /isNumber?{ % real or int
     dup
     isInt? exch isReal? or
 }bind def
-%%%%%%%%%%%%%%
+
+
 
 /arrayAppendTo{ % item array
     8 dict begin
@@ -81,6 +90,8 @@ github.com.gnewton.aposkribh.util begin
     end
 }bind def
 
+
+%% Big Array
 /BASize 1000 def
 /MaxArraySize 16777216 def
 
@@ -138,4 +149,12 @@ github.com.gnewton.aposkribh.util begin
     end
 }def
 
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
 end % github.com.gnewton.aposkribh.util
