@@ -1,5 +1,8 @@
-(aposkribh.ps) run
 
+(simple.ps) run
+(util.ps) run
+(aposkribh.ps) run
+github.com.gnewton.aposkribh.simple begin
 
 % Example procs to test
 /addX{
@@ -156,7 +159,8 @@
      >>def % /Tests
  >>def %  /addX_ArgsAndTests
 
-github.com.gnewton.aposkribh begin
+
+ github.com.gnewton.aposkribh begin
 /addX addX_ArgsAndTests  register
 assertStackEmpty
 addX
@@ -167,7 +171,7 @@ stackk
 
 end % github.com.gnewton.aposkribh
 
-
+end % github.com.gnewton.simple
 
 
 

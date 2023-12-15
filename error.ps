@@ -4,24 +4,25 @@ github.com.gnewton.aposkribh.util begin
 github.com.gnewton.aposkribh.error begin
 
 
+/typecheckerror{ %
+    /typecheck checkerror
+}bind def
 
-% my proc only accepts integer
-% /myproc {
-%     dup type /integertype ne {
-%         /myproc (Must be an integer) typecheckerror
-%     } if
-%     % ... rest of proc ...
-% } def
-
-/typecheckerror{ % 
-    /msg exch def
-    /p exch def
-    /out (/) p 128 string cvs  concatstrings def
-    /out out ( : )   concatstrings def
-    /out out msg concatstrings def 
-
-    out /typecheck signalerror
-}def
+/checkerror{
+    /check exch   % Error to signal
+    /msg exch def % proc message
+    /p exch def   % proc
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    msg type /stringtype eq not{
+        (/typecheckerror: Error: requires a string for its message) =
+        quit
+    }
+    
+    (/) p 128 string cvs  concatstrings ( : )   concatstrings msg concatstrings
+    %    /typecheck signalerror
+    check signalerror
+}bind def
 
 end % github.com.gnewton.aposkribh.error 
 end % github.com.gnewton.aposkribh.util

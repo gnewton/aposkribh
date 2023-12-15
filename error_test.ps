@@ -19,20 +19,19 @@ github.com.gnewton.aposkribh.error_test begin
 {
     10 needsSingleInteger
 }stopped{
-    (ERROR) =
+    (FAIL) =
+    (Error in error handling: ) /invalidexit signalerror
 }{
-    (Expected) =
+    (PASS) =
 }ifelse
 
-
-
-{
-    10.0 needsSingleInteger
-}stopped{
-    (Expected) =
-}{
-    (ERROR) =
-}ifelse
+ {
+     10.0 needsSingleInteger
+ }stopped{
+     (PASS) =
+ }{
+     (FAIL) =
+ }ifelse
 
 
 end % github.com.gnewton.aposkribh.error_test 

@@ -2,6 +2,11 @@
 
 github.com.gnewton.aposkribh.simple begin
 
+/Test true def
+/TestDebug false def
+/TestStopOnFail true def
+
+
 /TestSuppressErrorMessages false def
 
 /TestSuppressTestMessages false def
@@ -24,29 +29,32 @@ github.com.gnewton.aposkribh.simple begin
         quit
     }if
     
-    isProc? not{
+    dup isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
         quit
     }if
 
-    load /proc exch def % Procedure to test
+    load
+    /proc exch def % Procedure to test
 
     % ---body -----------------------
     {
+        (EXEC START) =
         proc exec
+        (EXEC END) =
     }
     stopped 
     { % Errors: not expected
         (FAIL /AssertPass) testMsgOut
-
+        (/AssertPass 2) =
         $error begin
         newerror =
         errorname =
-        %command =
+        command =
         errorinfo ==
         ostack ==
-        estack ===
+        %estack ===
         
         dstack ==
         (End $error) =
@@ -73,13 +81,14 @@ github.com.gnewton.aposkribh.simple begin
         quit
     }if
     
-    isProc? not{
+    dup isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix this test.) testErrOut
         testName testErrOut
         quit
     }if
 
-    load /proc exch def % Procedure to test
+    load
+    /proc exch def % Procedure to test
     
     {
         proc exec
@@ -102,7 +111,6 @@ github.com.gnewton.aposkribh.simple begin
 
 
 /isProc?{
-    dup
     10 dict begin
     {
         load /p exch def
@@ -113,8 +121,10 @@ github.com.gnewton.aposkribh.simple begin
             (Surprise) =
         }ifelse
     }stopped{ % if not executable, load will fail
+        (isProc: not executable)=
         false
     }if
+    end
 }def
 
 
@@ -145,6 +155,19 @@ github.com.gnewton.aposkribh.simple begin
      }if
      pop % proc
 }bind def
+
+/assertFalse{
+    ([)=
+    stack
+    (])=
+    {
+        stop
+    }if
+}def
+
+/assertTrue{
+    not assertFalse
+}def
 
 end % github.com.gnewton.aposkribh.simpletest
 

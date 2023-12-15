@@ -1,5 +1,5 @@
-/github.com.gnewton.aposkribh.util 100 dict def
 
+/github.com.gnewton.aposkribh.util 100 dict def
 
 github.com.gnewton.aposkribh.util begin
 
@@ -91,45 +91,100 @@ github.com.gnewton.aposkribh.util begin
 }bind def
 
 
-%% Big Array
-/BASize 1000 def
-/MaxArraySize 16777216 def
 
-/makeBigArray{
-    /a BASize array def
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+
+%% Append Only Array
+/AOASize 1000 def
+/MaxAOASize 16777216 def
+
+/makeAOA{
+    /a AOASize array def
     /i 0 def
     [i a]
 }def
 
-/expandBA{
-    (/expandBA{) =
+/isAOA?{ % Array length 2; a[0] is int; a[1] is array
     10 dict begin
     /a exch def
-    /l a length def
+
+    a isArray? {
+        a length 2 eq{
+            a 0 get isInt? {
+                a 1 get isArray? {
+                    true
+                }
+                {
+                    false
+                }ifelse
+            }
+            {
+                false
+            }ifelse
+        }
+        {
+            false
+        }ifelse
+    }
+    {
+        false
+    }ifelse
+    end
+}def
+
+/clearAOA{
+    10 dict begin
+    
+    end
+}def
+
+/expandAOA{
+    %/expandAOA 1 assertMinStackSize
+    10 dict begin
+    /olda exch def
+    olda isArray? not{
+           github.com.gnewton.aposkribh.error begin
+           /expandAOA (Must be an array)        typecheckerror
+           end
+           stop
+    }if
+
+    % body
+    
+    /l olda length def
     %/newa l BASize add array def
-    l 2 mul MaxArraySize gt{
-        /newa MaxArraySize array def
+    l 2 mul MaxAOASize gt{
+        /newa MaxAOASize array def
     }{
         /newa l 2 mul array def
     }ifelse
-    newa 0 a putinterval
+    newa 0 olda putinterval
     newa
     end
 }def
 
-/appendToBA{ %item ba
+/appendToAOA{ %item ba
     10 dict begin
     /ba exch def
     /item exch def
 
+    % body
+    
     /index ba 0 get def
     /a ba 1 get def
 
     /l a length def
-    index l eq{
-        index =
 
-        /a a expandBA def
+    index l eq{
+        /a a expandAOA def
         % Replace old array with expanded one
         ba 1 a put
     }if
@@ -138,7 +193,9 @@ github.com.gnewton.aposkribh.util begin
         a index item put
     }stopped{
         (STOPPED) =
+        (Index=) =
         index =
+        (Length=) =
         a length =
         quit
     }if
@@ -149,12 +206,6 @@ github.com.gnewton.aposkribh.util begin
     end
 }def
 
-%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
-/concatstrings % (a) (b) -> (ab)  
-{
-    exch dup length    
-    2 index length add string    
-    dup dup 4 2 roll copy length
-    4 -1 roll putinterval
-} bind def
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end % github.com.gnewton.aposkribh.util

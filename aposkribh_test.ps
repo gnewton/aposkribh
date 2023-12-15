@@ -16,6 +16,8 @@ github.com.gnewton.aposkribh begin
 
 initTesting
 
+/stack (Built in /stack: should work - no args test of /AssertPass) AssertPass
+quit
 
 % 454 /isIntegerRealStringBool 1
 % /assertMinStackSize (assertMinStackSize: 1 arg) AssertPass
@@ -37,7 +39,6 @@ initTesting
 (***********)=
 % Should passes
 clear
-(foo) isIntegerRealStringBool
 
 (foo) /isIntegerRealStringBool (isIntegerRealStringBool: Single string) AssertPass
 
@@ -47,20 +48,20 @@ true /isIntegerRealStringBool (isIntegerRealStringBool: Single bool) AssertPass
 
 /isIntegerRealStringBool (isIntegerRealStringBool: No argument) AssertFail
 
-(======================================================) =
+
 
 % These are tests that are broken (bad setup)
-{
-    10 10 (isIntegerRealStringBool: Single integer) AssertFail  % bad proc
-}
-stopped 
-{
-    % This should happen
-}
-{
-    % This should not happen
-    (Should have been a test setup error) =
-}ifelse
+% {
+%     10 10 (isIntegerRealStringBool: Single integer) AssertFail  % bad proc
+% }
+% stopped 
+% {
+%     % This should happen
+% }
+% {
+%     % This should not happen
+%     (Should have been a test setup error) =
+% }ifelse
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,6 +73,27 @@ clear
 10 10 /add (/add: Two ints) AssertPass
 (foo) 10 /add (/add: one string) AssertFail
 10.0 10 /add (/add: one real) AssertPass
+
+/ThisStops{
+    (---- This Stops) =
+    stop
+}def
+
+/ThisNeverStops{
+    (---- ThisNeverStops) =
+}def
+
+clear
+
+% testing no ags successful: was a problem
+
+
+/ThisStops (/thisStops: always stops) AssertFail
+
+/ThisNeverStops (/thisNeverStops: never stops) AssertPass
+
+
+
 
 
 

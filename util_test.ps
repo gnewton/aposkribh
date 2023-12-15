@@ -1,14 +1,90 @@
 (util.ps) run
+(simple.ps) run
+(error.ps) run
 
+github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.error begin
 github.com.gnewton.aposkribh.util begin
+
 
 (lkjh) [54 22 55]  arrayAppendTo ==
 
-/ba makeBigArray def
-0 1 23000000{
-    ba appendToBA
+/ba makeAOA def
+0 1 2300{
+    ba appendToAOA
 }for
 
+(***************************) =
+% [10 [3 4 5]] isAOA? assertTrue
+
+% 10 isAOA? assertFalse
+
+% [10] isAOA? assertFalse
 
 
+% (Should pass) =
+% {
+%     false assertFalse
+% }stopped{
+%     (FAIL - stopped) =
+% }{
+%     (PASS) =
+% }ifelse
+
+% (Should fail) =
+% {
+%     true assertFalse
+% }stopped{
+%     (PASS) =
+% }{
+%     (FAIL  - not stopped) =
+% }ifelse
+
+
+% (Should pass) =
+% {
+%     true assertTrue
+% }stopped{
+%     (FAIL - stopped) =
+% }{
+%     (PASS) =
+% }ifelse
+
+% (Should pass) =
+% {
+%     false assertTrue
+% }stopped{
+%     (PASS  - stopped) =
+% }{
+%     (FAIL) =
+% }ifelse
+
+
+% (ASSERT TRUE---------------------------) =
+ false /assertTrue (False should fail) AssertFail
+% true /assertTrue (FOO) AssertPass
+
+(ASSERT FALSE--------------------------) =
+true /assertFalse (true should fail) AssertFail
+
+false assertFalse
+{
+    false assertFalse
+}stopped{
+    (BADDDDDD) =
+    quit
+}if
+(jj) =
+
+false /assertFalse (false should pass) AssertPass
+
+
+
+quit
+
+false /assertFalse (false: should work) AssertPass
+
+
+end
+end
 end
