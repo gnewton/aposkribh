@@ -24,13 +24,12 @@ github.com.gnewton.aposkribh.simple begin
 /AssertPass{ % proc testName
     10 dict begin
     /testName exch def  % Name of test being run
+    /proc exch def % Procedure to test
     testName isString? not{
         (/AssertPass: internal error: testName must be a string) testErrOut
         quit
     }if
 
-    /proc exch def % Procedure to test
-    
     proc isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
@@ -76,22 +75,23 @@ github.com.gnewton.aposkribh.simple begin
 /AssertFail{
     10 dict begin
     /testName exch def  % Name of test being run
+    /proc exch def % Procedure to test
+    
     testName isString? not{
         (/AssertFail: internal error: testName must be a string) testErrOut
         quit
     }if
     
-    dup isProc? not{
+    proc isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertFail: proc is not executable. Fix this test.) testErrOut
         testName testErrOut
         quit
     }if
 
-    load
-    /proc exch def % Procedure to test
     
+    % ---body -----------------------
     {
-        proc exec
+        proc load exec
     }
     stopped not{ % Wrong: Run with no errors: not expected
         (FAIL /AssertFail) testMsgOut

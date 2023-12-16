@@ -1,3 +1,5 @@
+(% FILE: util_test.ps) =
+
 (util.ps) run
 (simple.ps) run
 (error.ps) run
@@ -15,11 +17,11 @@ github.com.gnewton.aposkribh.util begin
 }for
 
 (***************************) =
-% [10 [3 4 5]] isAOA? assertTrue
+ [10 [3 4 5]] isAOA? assertTrue
 
-% 10 isAOA? assertFalse
+ 10 isAOA? assertFalse
 
-% [10] isAOA? assertFalse
+ [10] isAOA? assertFalse
 
 
 % (Should pass) =
@@ -80,9 +82,13 @@ false /assertFalse (false should pass) AssertPass
 
 
 
-quit
+
 
 false /assertFalse (false: should work) AssertPass
+true /assertFalse (true: should not work) AssertFail
+
+true /assertTrue (true: should work) AssertPass
+false /assertTrue (false: should not work) AssertFail
 
 
 end
