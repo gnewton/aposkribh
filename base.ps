@@ -48,7 +48,7 @@ github.com.gnewton.aposkribh.base.internal begin
 
 
 %% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
-/_github.com.gnewton.aposkribh.concatstrings % (a) (b) -> (ab)  
+/_concatstrings % (a) (b) -> (ab)  
 {
     exch dup length    
     2 index length add string    
@@ -87,7 +87,7 @@ github.com.gnewton.aposkribh.base.internal begin
     }
     {% Cache miss
         n 2 mul{
-            s ( ) _github.com.gnewton.aposkribh.concatstrings /s exch def
+            s ( ) _concatstrings /s exch def
         }repeat
         spaceCache# n s put
     }
@@ -97,7 +97,7 @@ github.com.gnewton.aposkribh.base.internal begin
     end
 }bind def
 
-end
+end % github.com.gnewton.aposkribh.base.internal begin
 
 
 
@@ -116,8 +116,8 @@ end
     filename _pushCurrentFile
     
     _fileTrack{
-        %(% FILE START: ) filename  _github.com.gnewton.aposkribh.concatstrings =
-        (%) _fileTrackingArrayIndex makeSpaces _github.com.gnewton.aposkribh.concatstrings ( FILE START: ) _github.com.gnewton.aposkribh.concatstrings filename  _github.com.gnewton.aposkribh.concatstrings =
+        %(% FILE START: ) filename  _concatstrings =
+        (%) _fileTrackingArrayIndex makeSpaces _concatstrings ( FILE START: ) _concatstrings filename  _concatstrings =
     }if
 
     end % github.com.gnewton.aposkribh.base.internal
@@ -139,14 +139,12 @@ end
     _popCurrentFile
     
     _fileTrack{
-        (%) _fileTrackingArrayIndex 1 add makeSpaces _github.com.gnewton.aposkribh.concatstrings ( FILE END: ) _github.com.gnewton.aposkribh.concatstrings filename  _github.com.gnewton.aposkribh.concatstrings =
+        (%) _fileTrackingArrayIndex 1 add makeSpaces _concatstrings ( FILE END: ) _concatstrings filename  _concatstrings =
     }if
 
     end % github.com.gnewton.aposkribh.base.internal
     end
 }def
-
-
 
 
 /currentFile{
@@ -155,11 +153,6 @@ end
     end
 } def
 
-github.com.gnewton.aposkribh.base.internal begin
-% _fileTrack{
-%     (% FILE END: base.ps) =
-% }if
-end
 
 
 

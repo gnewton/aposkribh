@@ -43,6 +43,7 @@ github.com.gnewton.aposkribh.simple begin
 
 
 /AssertPass{ % proc testName
+    () =
     10 dict begin
     /testName exch def  % Name of test being run
     /proc exch def % Procedure to test
@@ -58,11 +59,12 @@ github.com.gnewton.aposkribh.simple begin
     }if
 
     % ---body -----------------------
+    github.com.gnewton.aposkribh.base.internal begin
+    (Testing: AssertFail: /) proc 128 string cvs _concatstrings =
+    end
+
     {
-        (EXEC START) =
-        proc =
         proc load exec
-        (EXEC END) =
     }
     stopped 
     { % Errors: not expected
@@ -94,9 +96,13 @@ github.com.gnewton.aposkribh.simple begin
 }def
 
 /AssertFail{
+    () =
     10 dict begin
     /testName exch def  % Name of test being run
     /proc exch def % Procedure to test
+    github.com.gnewton.aposkribh.base.internal begin
+    (Testing: AssertFail: /) proc 128 string cvs _concatstrings =
+    end
     
     testName isString? not{
         (/AssertFail: internal error: testName must be a string) testErrOut
@@ -178,16 +184,17 @@ github.com.gnewton.aposkribh.simple begin
 }bind def
 
 /assertFalse{
-    ([)=
-    stack
-    (])=
     {
+        (/assertFalse FAIL) =
         stop
     }if
 }def
 
 /assertTrue{
-    not assertFalse
+    not{
+        (/assertTrue FAIL) =
+        stop
+    }if
 }def
 
 end % github.com.gnewton.aposkribh.simpletest

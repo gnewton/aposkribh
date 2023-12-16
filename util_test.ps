@@ -10,18 +10,28 @@ github.com.gnewton.aposkribh.simple begin
 github.com.gnewton.aposkribh.error begin
 github.com.gnewton.aposkribh.util begin
 
+false /assertFalse (false: should work) AssertPass
+true /assertFalse (true: should not work) AssertFail
 
-(lkjh) [54 22 55]  arrayAppendTo ==
+true /assertTrue (true: should work) AssertPass
+false /assertTrue (false: should not work) AssertFail
 
-/ba makeAOA def
-0 1 2300{
-    ba appendToAOA
-}for
+
+(lkjh) [54 22 55]  /arrayAppendTo (Goo args) AssertPass
+
+/baoTest{
+    /ba makeAOA def
+    0 1 2300{
+        ba appendToAOA
+    }for
+}def
+
+/baoTest (ba append to test) AssertPass
 
 (***************************) =
  [10 [3 4 5]] isAOA? assertTrue
+(***************************) =
 
- 10 isAOA? assertFalse
 
  [10] isAOA? assertFalse
 
@@ -86,15 +96,13 @@ false /assertFalse (false should pass) AssertPass
 
 
 
-false /assertFalse (false: should work) AssertPass
-true /assertFalse (true: should not work) AssertFail
 
-true /assertTrue (true: should work) AssertPass
-false /assertTrue (false: should not work) AssertFail
+10 isAOA? /assertFalse (foog) AssertPass
+10 isAOA? /assertTrue (foog2) AssertFail
 
 
 end
 end
 end
 
-(% FILE END: util_test.ps) =
+(util_test.ps) _aposkribh_fileEnd
