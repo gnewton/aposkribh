@@ -1,0 +1,38 @@
+(base.ps) run
+
+(tmp.ps) _aposkribh_fileStart
+
+(util.ps) run
+
+(simple.ps) run
+
+(aposkribh.ps) run
+
+github.com.gnewton.aposkribh.util begin
+github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh begin
+
+% (foo) debugAssert
+
+% debugAssertOn
+% (foo on) debugAssert
+
+%debugAssertOff
+%(FAIL) debugAssert
+
+% {
+%     stop
+% }stopped{
+%     (ERROR) =
+%     currentFile =
+% }if
+
+end % github.com.gnewton.aposkribh begin
+end % github.com.gnewton.aposkribh.simple begin
+end % github.com.gnewton.aposkribh.util begin
+
+(tmp.ps) _aposkribh_fileEnd
+
+
+
+

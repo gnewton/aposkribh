@@ -1,59 +1,107 @@
 
-aposkribh_examples_test.ps,56
-/addX{/addX5,45
-/addX2{/addX213,175
-/addX 160,4065
+aposkribh_examples_test.ps,57
+/addX{/addX8,117
+/addX2{/addX216,247
+/addX 164,4139
 
-aposkribh.ps,596
+aposkribh.ps,213
 /github.com.gnewton.aposkribh 2,1
-/Test 6,81
-/TestDebug 7,96
-/TestStopOnFail 8,117
-/assertStackEmpty{/assertStackEmpty11,144
-/err{/err19,259
-/stackk{/stackk27,343
-/str{/str33,424
-/isIntegerRealStringBool{/isIntegerRealStringBool51,801
-/isInt?{/isInt?68,1018
-/isReal?{/isReal?73,1096
-/isString?{/isString?78,1173
-/isBoolean?{/isBoolean?83,1256
-/isArray?{/isArray?88,1343
-/isNameType?{/isNameType?93,1419
-/isNull?{/isNull?98,1504
-/isDict?{/isDict?102,1547
-/isNumber?{/isNumber?106,1590
-/errorMsg{/errorMsg113,1678
-/run{/run121,1778
-/runTests{/runTests144,2174
+/assertStackEmpty{/assertStackEmpty9,123
+/err{/err17,238
+/stackk{/stackk25,322
+/str{/str31,403
+/errorMsg{/errorMsg51,782
+/run{/run59,882
+/runTests{/runTests82,1278
 
-aposkribh_test.ps,113
-/isIntegerRealStringBool 19,281
-/isIntegerRealStringBool 22,347
-/isIntegerRealStringBool 33,670
-/add 54,1118
+aposkribh_test.ps,235
+/add 21,220
+/foo 22,227
+/dooo 28,270
+/add 29,286
+/stack 34,332
+/isIntegerRealStringBool 64,1191
+/add 86,1649
+/ThisStops{/ThisStops92,1849
+/ThisNeverStops{/ThisNeverStops97,1900
+/ThisStops 106,2010
+/ThisNeverStops 108,2069
 
-simple.ps,595
-/github.com.gnewton.aposkribh.simpletest 1,0
-/TestSuppressErrorMessages 5,102
-/TestSuppressTestMessages 7,140
-/TestSuppressTestErrorMessages 8,176
-/initTesting{/initTesting10,218
-/AssertPass{/AssertPass17,290
-/AssertFail{/AssertFail65,1294
-/isString{/isString101,2098
-/AssertInteger{/AssertInteger109,2188
-/AssertProc{/AssertProc117,2285
-/cat{/cat133,2564
-/assertStackSize{/assertStackSize138,2614
-/testErrOut{/testErrOut147,2795
-/testMsgOut{/testMsgOut156,2899
-/assertMinStackSize{/assertMinStackSize166,2999
-/github.com.gnewton.aposkribh.simpletest.private 179,3196
+base.ps,331
+/github.com.gnewton.aposkribh.base.internal 2,1
+/_fileTrack 6,109
+/_github.com.gnewton.aposkribh.base.currentFile 8,131
+/_github.com.gnewton.aposkribh.concatstrings 18,339
+/_github.com.gnewton.aposkribh.concatstrings2 26,535
+/_aposkribh_fileStart{/_aposkribh_fileStart43,836
+/_aposkribh_fileEnd{/_aposkribh_fileEnd59,1113
 
-trace.ps,167
+error.ps,112
+/github.com.gnewton.aposkribh.error 1,0
+/typecheckerror{/typecheckerror7,133
+/checkerror{/checkerror11,189
+
+error_test.ps,97
+/github.com.gnewton.aposkribh.error_test 10,101
+/needsSingleInteger{/needsSingleInteger13,203
+
+simple.ps,693
+/github.com.gnewton.aposkribh.simple 5,26
+/Test 9,120
+/TestDebug 10,135
+/TestStopOnFail 11,156
+/TestSuppressErrorMessages 14,183
+/TestSuppressTestMessages 16,221
+/TestSuppressTestErrorMessages 17,257
+/initTesting{/initTesting19,299
+/debugAssert{/debugAssert27,455
+/debugAssertOn{/debugAssertOn31,483
+/debugAssertOff{/debugAssertOff37,542
+/AssertPass{/AssertPass45,606
+/AssertFail{/AssertFail96,1693
+/isProc?{/isProc?134,2521
+/testErrOut{/testErrOut152,2849
+/testMsgOut{/testMsgOut161,2953
+/assertMinStackSize{/assertMinStackSize170,3052
+/assertFalse{/assertFalse180,3238
+/assertTrue{/assertTrue189,3313
+/github.com.gnewton.aposkribh.simpletest.private 197,3401
+
+trace.ps,137
 /github.com.gnewton.aposkribh.trace 2,1
-/traceOn{/traceOn9,98
-/traceOff{/traceOff13,115
-/trace{/trace17,135
-/github.com.gnewton.aposkribh.trace.private 24,156
+/traceOn{/traceOn12,187
+/traceOff{/traceOff16,204
+/trace{/trace20,222
+/traceArray 48,876
+
+trace_test.ps,50
+/a2{/a215,222
+/a0{/a019,245
+/foo{/foo23,291
+
+util.ps,609
+/github.com.gnewton.aposkribh.util 4,23
+/isIntegerRealStringBool{/isIntegerRealStringBool8,113
+/isInt?{/isInt?25,340
+/isReal?{/isReal?31,419
+/isString?{/isString?37,497
+/isBoolean?{/isBoolean?43,581
+/isArray?{/isArray?49,669
+/isNameType?{/isNameType?55,746
+/isNull?{/isNull?61,832
+/isDict?{/isDict?66,876
+/isNumber?{/isNumber?71,920
+/arrayAppendTo{/arrayAppendTo78,994
+/concatstrings 98,1299
+/AOASize 108,1487
+/MaxAOASize 109,1505
+/makeAOA{/makeAOA111,1531
+/isAOA?{/isAOA?117,1595
+/clearAOA{/clearAOA145,2075
+/expandAOA{/expandAOA151,2123
+/appendToAOA{/appendToAOA176,2624
+
+util_test.ps,12
+/ba 16,225
+
+tmp.ps,0

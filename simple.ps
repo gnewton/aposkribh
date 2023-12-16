@@ -1,3 +1,7 @@
+
+(simple.ps) _aposkribh_fileStart
+
+
 /github.com.gnewton.aposkribh.simple 100 dict def
 
 github.com.gnewton.aposkribh.simple begin
@@ -17,6 +21,23 @@ github.com.gnewton.aposkribh.simple begin
     /TestSuppressTestMessages false def
     /TestSuppressTestErrorMessages false def
     clear
+}def
+
+
+/debugAssert{
+    pop
+}def
+
+/debugAssertOn{
+    /debugAssert{
+        =
+    }def
+}def
+
+/debugAssertOff{
+    /debugAssert{
+        pop
+    }def
 }def
 
 
@@ -181,3 +202,5 @@ github.com.gnewton.aposkribh.simpletest.private begin
 
 
 end % github.com.gnewton.aposkribh.simpletest.private 
+
+(simple.ps) _aposkribh_fileEnd

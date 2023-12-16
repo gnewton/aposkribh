@@ -1,0 +1,165 @@
+
+
+
+/github.com.gnewton.aposkribh.base.internal 100 dict def
+
+github.com.gnewton.aposkribh.base.internal begin
+
+/_fileTrack true def
+
+% Assumes you are loading not more than 100 files; change if this is not the case
+/_fileTrackingArraySize 100 def
+
+/_fileTrackingArray _fileTrackingArraySize array def
+
+/_fileTrackingArrayIndex -1 def
+
+/_pushCurrentFile{
+    count 1 lt{
+        (Error: base.ps:_pushCurrentFile: Needs at least one string argument) =
+        quit
+    }if
+
+    2 dict begin
+    /filename exch def
+    filename type /stringtype eq not{
+        (Error: base.ps:_pushCurrentFile: String argument requried) =
+        quit
+    }if
+
+    % body
+    _fileTrackingArray _fileTrackingArrayIndex 1 add filename put
+    end
+    /_fileTrackingArrayIndex  _fileTrackingArrayIndex 1 add def
+}def
+
+/_popCurrentFile{
+    _fileTrackingArrayIndex 0 lt{
+        (Error: base.ps:_popCurrentFile: Popping file below 0. Likely you many _aposkribh_fileEnd's) =
+        quit
+    }if
+    /_fileTrackingArrayIndex  _fileTrackingArrayIndex 1 sub def
+}def
+
+
+% _fileTrack{
+%     (% FILE START: base.ps) =
+% }if
+
+
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/_github.com.gnewton.aposkribh.concatstrings % (a) (b) -> (ab)  
+{
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+/_github.com.gnewton.aposkribh.concatstrings2 % (a) (b) -> (ab)  
+{
+    count 2 lt{
+        (Error: base.ps: needs two args) =
+        quit
+    }
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+
+/spaceCache# 10 dict def
+/makeSpaces{ % n -> string with n blank spaces; cached in dict
+    8 dict begin
+    /n exch def
+    n 0 lt{
+        () =
+        (Error) =
+        (makeSpaces) =
+        (Cannot be < 0) =
+        (STOPPING) =
+        quit
+    }if
+    /s () def
+    spaceCache# n known{ % cache hit
+        spaceCache# n get /s exch def
+    }
+    {% Cache miss
+        n 2 mul{
+            s ( ) _github.com.gnewton.aposkribh.concatstrings /s exch def
+        }repeat
+        spaceCache# n s put
+    }
+    ifelse
+    
+    s %leave on stack
+    end
+}bind def
+
+end
+
+
+
+
+/_aposkribh_fileStart{
+    count 1 lt{
+        (Error: base.ps: needs on arg) =
+        quit
+    }if
+    2 dict begin
+    /filename exch def
+    
+    % body
+    github.com.gnewton.aposkribh.base.internal begin
+
+    filename _pushCurrentFile
+    
+    _fileTrack{
+        %(% FILE START: ) filename  _github.com.gnewton.aposkribh.concatstrings =
+        (%) _fileTrackingArrayIndex makeSpaces _github.com.gnewton.aposkribh.concatstrings ( FILE START: ) _github.com.gnewton.aposkribh.concatstrings filename  _github.com.gnewton.aposkribh.concatstrings =
+    }if
+
+    end % github.com.gnewton.aposkribh.base.internal
+    end
+}def
+
+/_aposkribh_fileEnd{
+    count 1 lt{
+        (Error: base.ps: needs on arg) =
+        quit
+    }if
+    2 dict begin
+    /filename exch def
+
+    
+    % body
+    github.com.gnewton.aposkribh.base.internal begin
+
+    _popCurrentFile
+    
+    _fileTrack{
+        (%) _fileTrackingArrayIndex 1 add makeSpaces _github.com.gnewton.aposkribh.concatstrings ( FILE END: ) _github.com.gnewton.aposkribh.concatstrings filename  _github.com.gnewton.aposkribh.concatstrings =
+    }if
+
+    end % github.com.gnewton.aposkribh.base.internal
+    end
+}def
+
+
+
+
+/currentFile{
+    github.com.gnewton.aposkribh.base.internal begin
+    _fileTrackingArray _fileTrackingArrayIndex get
+    end
+} def
+
+github.com.gnewton.aposkribh.base.internal begin
+% _fileTrack{
+%     (% FILE END: base.ps) =
+% }if
+end
+
+
+
