@@ -6,6 +6,9 @@
 
 github.com.gnewton.aposkribh.simple begin
 
+/AssertPass_Coverage 30 dict def
+/AssertFail_Coverage 30 dict def
+
 /Test true def
 /TestDebug false def
 /TestStopOnFail true def
@@ -60,6 +63,9 @@ github.com.gnewton.aposkribh.simple begin
     }if
 
     % ---body -----------------------
+    % Add to coverage
+    AssertPass_Coverage proc true put
+    
     github.com.gnewton.aposkribh.base.internal begin
     (Testing: AssertFail: /) proc 128 string cvs _concatstrings =
     end
@@ -116,9 +122,10 @@ github.com.gnewton.aposkribh.simple begin
     github.com.gnewton.aposkribh.base.internal begin
     (Testing: AssertFail: /) proc 128 string cvs _concatstrings =
     end
-
     testName testMsgOut    
     % ---body -----------------------
+    % Add to coverage
+    AssertFail_Coverage proc true put
     {
         proc load exec
     }
