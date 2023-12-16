@@ -28,20 +28,20 @@ github.com.gnewton.aposkribh.simple begin
         (/AssertPass: internal error: testName must be a string) testErrOut
         quit
     }if
+
+    /proc exch def % Procedure to test
     
-    dup isProc? not{
+    proc isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
         quit
     }if
 
-    load
-    /proc exch def % Procedure to test
-
     % ---body -----------------------
     {
         (EXEC START) =
-        proc exec
+        proc =
+        proc load exec
         (EXEC END) =
     }
     stopped 
@@ -113,15 +113,15 @@ github.com.gnewton.aposkribh.simple begin
 /isProc?{
     10 dict begin
     {
-        load /p exch def
-        /p load xcheck{
+        /p exch def
+        p load xcheck{
             true
         }{
             false % Never get here...
-            (Surprise) =
+            (Internal Error: isProc? : Should never get here!) =
+            quit
         }ifelse
     }stopped{ % if not executable, load will fail
-        (isProc: not executable)=
         false
     }if
     end

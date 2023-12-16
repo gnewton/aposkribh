@@ -16,10 +16,23 @@ github.com.gnewton.aposkribh begin
 
 initTesting
 
-/stack (Built in /stack: should work - no args test of /AssertPass) AssertPass
-quit
+    /add =
+/foo where{
 
-% 454 /isIntegerRealStringBool 1
+}{
+    (NOT FOUND) =
+}ifelse
+
+/dooo isProc? =
+/add isProc? =
+
+10 10 /add (ADD) AssertPass
+
+
+/stack (Built in /stack: should work - no args test of /AssertPass) AssertPass
+
+
+ 454 /isIntegerRealStringBool 1
 % /assertMinStackSize (assertMinStackSize: 1 arg) AssertPass
 
 % 324 (765) /isIntegerRealStringBool 2
@@ -87,11 +100,11 @@ clear
 
 % testing no ags successful: was a problem
 
-
+(MMM) =
 /ThisStops (/thisStops: always stops) AssertFail
-
+(MMM 2) =
 /ThisNeverStops (/thisNeverStops: never stops) AssertPass
-
+(MMM 3) =
 
 
 
