@@ -19,6 +19,6 @@ error:
 	gs -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY error_test.ps
 
 tmp: 
-	gs -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY tmp.ps	
+	gs -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY -Sgithub.com.gnewton.aposkribh=foobar  tmp.ps	
 
 

@@ -12,26 +12,22 @@ github.com.gnewton.aposkribh.util begin
 github.com.gnewton.aposkribh.simple begin
 github.com.gnewton.aposkribh begin
 
-% (foo) debugAssert
-
-% debugAssertOn
-% (foo on) debugAssert
-
-%debugAssertOff
-%(FAIL) debugAssert
-
-% {
-%     stop
-% }stopped{
-%     (ERROR) =
-%     currentFile =
-% }if
 
 
 github.com.gnewton.aposkribh{
     pop % pop off proc definition
     = % print key (proc name)
 }forall
+
+/concatStrings{
+    github.com.gnewton.aposkribh.base.internal /_concatstrings get exec
+}def
+
+(foo) (bar) github.com.gnewton.aposkribh.base.internal /_concatstrings get exec =
+
+(bbbb) (  aaa) concatStrings =
+
+systemdict /github.com.gnewton.aposkribh get =
 
 end % github.com.gnewton.aposkribh begin
 end % github.com.gnewton.aposkribh.simple begin
