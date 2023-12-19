@@ -148,6 +148,29 @@ github.com.gnewton.aposkribh.util begin
     end
 }def
 
+/AOA2string{
+    /aoa exch def
+
+    aoa isAOA? not{
+        (ERROR: /AOA2string: arg not AOA) =
+        stop
+    }if
+
+    % body
+    /n aoa 0 get def
+    /a aoa 1 get def
+    
+    /s () def
+    0 1 n 1 sub{
+        /i exch def
+        i 0 gt{
+            /s s ( || ) concatstrings def
+        }if
+        /s s a i get concatstrings def
+    }for
+    s
+}def
+
 /expandAOA{
     %/expandAOA 1 assertMinStackSize
     10 dict begin
@@ -176,6 +199,10 @@ github.com.gnewton.aposkribh.util begin
 /appendToAOA{ %item ba
     10 dict begin
     /ba exch def
+    ba isArray? not{
+        (ERROR: appendToAOA: not array) =
+        stop
+    }if
     /item exch def
 
     % body

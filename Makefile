@@ -1,5 +1,5 @@
 
-all: examples_test test trace util
+all: examples_test test trace util tmp
 
 test:
 	echo "test"

@@ -6,9 +6,6 @@
 
 github.com.gnewton.aposkribh.simple# begin
 
-/AssertPass_Coverage# 200 dict def
-/AssertFail_Coverage# 200 dict def
-
 /Test true def
 /TestDebug false def
 /TestStopOnFail true def
@@ -27,11 +24,28 @@ github.com.gnewton.aposkribh.simple# begin
 }def
 
 
+/AssertPass_Coverage# 200 dict def
+/AssertFail_Coverage# 200 dict def
+
+
 /addPassCoverage{ % testname proc
     2 dict begin
     /testName exch def
     /proc exch def
     %AssertPass_Coverage proc true put
+
+    AssertPass_Coverage# proc known {
+        (HERE) =
+        /testsAOA AssertPass_Coverage# proc get def
+    }{
+        (NOT HERE) =
+        /testsAOA newAOA def
+        AssertPass_Coverage# proc testsAOA put
+    }ifelse
+    (DD) =
+    testName testsAOA appendToAOA
+    (DDm) =
+    
     % Need a dict with proc as keys; array as values, with names of tests in
     end
 }def
