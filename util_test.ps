@@ -6,7 +6,7 @@
 (simple.ps) run
 (error.ps) run
 
-github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.simple# begin
 github.com.gnewton.aposkribh.error begin
 github.com.gnewton.aposkribh.util begin
 
@@ -20,7 +20,7 @@ false /assertTrue (false: should not work) AssertFail
 (lkjh) [54 22 55]  /arrayAppendTo (Goo args) AssertPass
 
 /baoTest{
-    /ba makeAOA def
+    /ba newAOA def
     0 1 2300{
         ba appendToAOA
     }for
@@ -102,13 +102,13 @@ false /assertFalse (false should pass) AssertPass
 
 
 (777777777777777) =
-github.com.gnewton.aposkribh.simple begin
-github.com.gnewton.aposkribh.simple /AssertPass_Coverage get{
+github.com.gnewton.aposkribh.simple# begin
+github.com.gnewton.aposkribh.simple# /AssertPass_Coverage# get{
     %pop % pop off proc definition
     =
     =
 }forall
-end
+end % github.com.gnewton.aposkribh.simple#
 
 
 end

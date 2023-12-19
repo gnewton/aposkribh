@@ -2,12 +2,12 @@
 (simple.ps) _aposkribh_fileStart
 
 
-/github.com.gnewton.aposkribh.simple 100 dict def
+/github.com.gnewton.aposkribh.simple# 100 dict def
 
-github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.simple# begin
 
-/AssertPass_Coverage 30 dict def
-/AssertFail_Coverage 30 dict def
+/AssertPass_Coverage# 200 dict def
+/AssertFail_Coverage# 200 dict def
 
 /Test true def
 /TestDebug false def
@@ -26,6 +26,15 @@ github.com.gnewton.aposkribh.simple begin
     clear
 }def
 
+
+/addPassCoverage{ % testname proc
+    2 dict begin
+    /testName exch def
+    /proc exch def
+    %AssertPass_Coverage proc true put
+    % Need a dict with proc as keys; array as values, with names of tests in
+    end
+}def
 
 /debugAssert{
     pop
@@ -46,16 +55,19 @@ github.com.gnewton.aposkribh.simple begin
 
 
 /AssertPass{ % proc testName
-    () =
+    () testMsgOut
     10 dict begin
     /testName exch def  % Name of test being run
     /proc exch def % Procedure to test
+
+    % Arg check
     testName isString? not{
         (/AssertPass: internal error: testName must be a string) testErrOut
         testName testErrOut
         quit
     }if
 
+    % Arg check
     proc isProc? not{
         (Error: github.com.gnewton.aposkribh.simpletest/AssertPass: proc is not executable. Fix your test.) testErrOut
         testName testErrOut
@@ -64,13 +76,15 @@ github.com.gnewton.aposkribh.simple begin
 
     % ---body -----------------------
     % Add to coverage
-    AssertPass_Coverage proc true put
+    %AssertPass_Coverage proc true put
+    proc testName addPassCoverage 
     
     github.com.gnewton.aposkribh.base.internal begin
     (Testing: AssertPass: /) proc 128 string cvs _concatstrings testMsgOut
     (Test name: ) testName _concatstrings testMsgOut
-
     end
+
+    % Run the test
     {
         proc load exec
     }
@@ -128,7 +142,7 @@ github.com.gnewton.aposkribh.simple begin
     
     % ---body -----------------------
     % Add to coverage
-    AssertFail_Coverage proc true put
+    AssertFail_Coverage# proc true put
     {
         proc load exec
     }
@@ -209,17 +223,17 @@ github.com.gnewton.aposkribh.simple begin
     }if
 }def
 
-end % github.com.gnewton.aposkribh.simpletest
+end % github.com.gnewton.aposkribh.simpletest#
 
 
 
-/github.com.gnewton.aposkribh.simpletest.private 100 dict def
+/github.com.gnewton.aposkribh.simpletest.private# 100 dict def
 
-github.com.gnewton.aposkribh.simpletest.private begin
-
-
+github.com.gnewton.aposkribh.simpletest.private# begin
 
 
-end % github.com.gnewton.aposkribh.simpletest.private 
+
+
+end % github.com.gnewton.aposkribh.simpletest.private#
 
 (simple.ps) _aposkribh_fileEnd

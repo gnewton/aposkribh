@@ -11,7 +11,7 @@
 
 
 github.com.gnewton.aposkribh.util begin
-github.com.gnewton.aposkribh.simple begin
+github.com.gnewton.aposkribh.simple# begin
 github.com.gnewton.aposkribh begin
 
 
@@ -19,17 +19,11 @@ github.com.gnewton.aposkribh begin
 
 initTesting
 
-/add =
-/foo where{
-
-}{
-    (NOT FOUND) =
-}ifelse
 
 /dooo isProc? =
 /add isProc? =
 
-10 10 /add (ADD) AssertPass
+10 10 /add (Adding 10 and 10) AssertPass
 
 
 /stack (Built in /stack: should work - no args test of /AssertPass) AssertPass
@@ -114,7 +108,7 @@ clear
 
 
 end % github.com.gnewton.aposkribh
-end % github.com.gnewton.aposkribh.simple
+end % github.com.gnewton.aposkribh.simple#
 end % github.com.gnewton.aposkribh.util
 
 (aposkribh.ps) _aposkribh_fileEnd
