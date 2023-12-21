@@ -1,107 +1,0 @@
-
-aposkribh_examples_test.ps,57
-/addX{/addX8,117
-/addX2{/addX216,247
-/addX 164,4139
-
-aposkribh.ps,213
-/github.com.gnewton.aposkribh 2,1
-/assertStackEmpty{/assertStackEmpty9,123
-/err{/err17,238
-/stackk{/stackk25,322
-/str{/str31,403
-/errorMsg{/errorMsg51,782
-/run{/run59,882
-/runTests{/runTests82,1278
-
-aposkribh_test.ps,235
-/add 21,220
-/foo 22,227
-/dooo 28,270
-/add 29,286
-/stack 34,332
-/isIntegerRealStringBool 64,1191
-/add 86,1649
-/ThisStops{/ThisStops92,1849
-/ThisNeverStops{/ThisNeverStops97,1900
-/ThisStops 106,2010
-/ThisNeverStops 108,2069
-
-base.ps,331
-/github.com.gnewton.aposkribh.base.internal 2,1
-/_fileTrack 6,109
-/_github.com.gnewton.aposkribh.base.currentFile 8,131
-/_github.com.gnewton.aposkribh.concatstrings 18,339
-/_github.com.gnewton.aposkribh.concatstrings2 26,535
-/_aposkribh_fileStart{/_aposkribh_fileStart43,836
-/_aposkribh_fileEnd{/_aposkribh_fileEnd59,1113
-
-error.ps,112
-/github.com.gnewton.aposkribh.error 1,0
-/typecheckerror{/typecheckerror7,133
-/checkerror{/checkerror11,189
-
-error_test.ps,97
-/github.com.gnewton.aposkribh.error_test 10,101
-/needsSingleInteger{/needsSingleInteger13,203
-
-simple.ps,693
-/github.com.gnewton.aposkribh.simple 5,26
-/Test 9,120
-/TestDebug 10,135
-/TestStopOnFail 11,156
-/TestSuppressErrorMessages 14,183
-/TestSuppressTestMessages 16,221
-/TestSuppressTestErrorMessages 17,257
-/initTesting{/initTesting19,299
-/debugAssert{/debugAssert27,455
-/debugAssertOn{/debugAssertOn31,483
-/debugAssertOff{/debugAssertOff37,542
-/AssertPass{/AssertPass45,606
-/AssertFail{/AssertFail96,1693
-/isProc?{/isProc?134,2521
-/testErrOut{/testErrOut152,2849
-/testMsgOut{/testMsgOut161,2953
-/assertMinStackSize{/assertMinStackSize170,3052
-/assertFalse{/assertFalse180,3238
-/assertTrue{/assertTrue189,3313
-/github.com.gnewton.aposkribh.simpletest.private 197,3401
-
-trace.ps,137
-/github.com.gnewton.aposkribh.trace 2,1
-/traceOn{/traceOn12,187
-/traceOff{/traceOff16,204
-/trace{/trace20,222
-/traceArray 48,876
-
-trace_test.ps,50
-/a2{/a215,222
-/a0{/a019,245
-/foo{/foo23,291
-
-util.ps,609
-/github.com.gnewton.aposkribh.util 4,23
-/isIntegerRealStringBool{/isIntegerRealStringBool8,113
-/isInt?{/isInt?25,340
-/isReal?{/isReal?31,419
-/isString?{/isString?37,497
-/isBoolean?{/isBoolean?43,581
-/isArray?{/isArray?49,669
-/isNameType?{/isNameType?55,746
-/isNull?{/isNull?61,832
-/isDict?{/isDict?66,876
-/isNumber?{/isNumber?71,920
-/arrayAppendTo{/arrayAppendTo78,994
-/concatstrings 98,1299
-/AOASize 108,1487
-/MaxAOASize 109,1505
-/makeAOA{/makeAOA111,1531
-/isAOA?{/isAOA?117,1595
-/clearAOA{/clearAOA145,2075
-/expandAOA{/expandAOA151,2123
-/appendToAOA{/appendToAOA176,2624
-
-util_test.ps,12
-/ba 16,225
-
-tmp.ps,0
