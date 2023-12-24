@@ -1,0 +1,174 @@
+
+/dictExists?{
+    1 dict begin
+    /d exch def
+    d where{
+        pop
+        true
+    }{
+        false
+    }ifelse
+}def
+
+%<<
+/github.com.gnewton.aposkribh.unit# 100 dict def
+github.com.gnewton.aposkribh.unit# begin
+
+
+
+%<<
+/github.com.gnewton.aposkribh.unit.test# 100 dict def
+github.com.gnewton.aposkribh.unit.test# begin
+
+/testDict# 4 dict def
+/testProcedure null def
+/testName null def
+/passExpected true def
+
+
+
+end % github.com.gnewton.aposkribh.unit.test# 
+%>>
+
+/copyDict{
+    1 dict begin
+    /destDict# exch def
+    destDict# type /dicttype eq not{
+        (ERROR: /newTest: arg is not dictionary  [github.com.gnewton.aposkribh.unit.test#:] ) =
+        destDict# type =
+        stop
+    }if
+    github.com.gnewton.aposkribh.unit.test# destDict# copy
+    end
+}def
+
+/testRunner{ % newTest# procDict# proc [ [in args][out args]]
+    8 dict begin
+    /procDict exch def % /dicttype
+    /proc exch def % /nametype
+    /argsinout exch def % /arraytype
+
+    procDict type /dicttype eq not{
+        (ERROR: newTest2: procDict is not /dicttype)=
+        procDict type =
+        stop
+    }if
+
+    argsinout type /arraytype eq not{
+        (ERROR: newTest2: argsinout is not /arraytype)=
+        argsinout
+        stop
+    }if
+
+    argsinout length 4 ne{
+        (ERROR: newTest2: argsinout length != 4)=
+        argsinout ==
+        stop
+    }if
+
+    % Proc found in procDict?
+    procDict proc known not{
+        (ERROR: newTest2: proc does not exist in procDict)=
+        stop
+    }if
+
+    /inArgs argsinout 0 get def
+    inArgs type /arraytype ne{
+        (ERROR: newTest2: argsinout[0] (inArgs) not array)=
+        stop
+    }if
+
+    /outArgs argsinout 1 get def
+    outArgs type /arraytype ne{
+        (ERROR: newTest2: argsinout[1] (outArgs) not array)=
+        stop
+    }if
+
+    /passesTest argsinout 2 get def
+    passesTest type /booleantype ne{
+        (ERROR: newTest2: argsinout[2] (passesTest) not boolean) null handleError
+        stop
+    }if
+
+    /testName argsinout 3 get def
+    testName type /stringtype ne{
+        (ERROR: newTest2: argsinout[3] (testName) not string) null handleError
+        stop
+    }if
+
+    %%% END validating arguments
+
+    %body
+    clear % Stack should be empty
+    inArgs aload
+    pop
+    proc load exec
+
+    % Only the below errors should involve test PASS/FAILs
+    count outArgs length ne{
+        testName (ERROR: proc args results stack count does not equal expected results array length) passesTest handleError
+    }{
+        % Walk through supplied out args and stack args
+        0 1 outArgs length 1 sub{
+            /i exch def
+            /actualArg exch def
+            /expectedArg outArgs i get def
+            actualArg expectedArg ne{
+                testName (ERROR: proc arg result not equal to expected result) passesTest handleError
+            }if
+        }for
+    }ifelse
+    testName =
+    (PASS 2) =
+}def
+
+
+/handleError{ % message; bool or null
+    8 dict begin
+    % null == internal error
+    % true/false: passes test
+    (/handleError) =
+    /passTest exch def
+    /message exch def
+    /testName exch def
+    passTest null eq{
+        (/handleError: NULL - internal test error) =
+        quit
+    }if
+
+    passTest type /booleantype ne{
+        (/handleError needs null or boolean for passTest arg) =
+        quit
+    }if
+
+    testName type /stringtype ne{
+        (/handleError needs string for testname arg) =
+        quit
+    }if
+
+
+    passTest{
+        testName =
+        (FAIL) =
+        message =
+    }{
+        %(PASS) =
+    }ifelse
+    () =
+    end
+}def
+
+end % github.com.gnewton.aposkribh.unit#
+%>>
+
+/foo# 100 dict def
+
+github.com.gnewton.aposkribh.unit# begin
+foo# copyDict
+end
+
+foo# ===
+
+
+
+

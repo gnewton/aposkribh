@@ -1,6 +1,10 @@
 
 all: examples_test test trace util tmp
 
+unit:
+	echo "unit"
+	gs -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY unit_test.ps
+
 test:
 	echo "test"
 	gs -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY aposkribh_test.ps

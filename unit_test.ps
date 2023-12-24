@@ -1,0 +1,82 @@
+(unit.ps) run
+
+(unit_test.ps) =
+
+
+%<<
+/simpleDict# 100 dict def
+simpleDict# begin
+
+/addd{
+    % Takes 2 numbers on stack, adds them, but leaves the second number (top on stack) on stack _after_ add results
+    % 10 11 add --> 21 11
+    dup
+    /tmp exch def
+    add
+    tmp
+    exch
+}def
+
+end
+
+
+github.com.gnewton.aposkribh.unit# begin
+
+/testDict1# 10 dict def
+
+simpleDict# begin
+(NEW TEST2 -  START) =
+
+
+[[10 11] [21 11] true  (Add 2 numbers)] /addd simpleDict# testRunner % OK
+
+[[10 11] [21 1 1] false  (Too many results)] /addd simpleDict# testRunner % FAIL
+
+
+
+(NEW TEST2 -  END) =
+quit
+
+%[[10 11] [21] true] /mmm simpleDict# testRunner % FAIL unknown proc/ not in dict
+%true /addd simpleDict# testRunner % FAIL not array
+
+
+testDict1# copyDict
+end
+%%%%%%%%%%%
+end
+%%%%%%%%%%%
+
+quit
+
+(------------------)=
+(------------------)=
+/foobar dictExists? =
+(------------------)=
+/github.com.gnewton.aposkribh.unit# dictExists? =
+
+
+(***********************) =
+/t2# 10 dict def
+
+
+/sa 100 array def
+
+
+(=====================) =
+
+%[[10 11] [21] true] simpleDict# /addd  t2# testRunner
+
+% (2) =
+% [[10 11] [21] true] /simpleDict# /addd  t2# testRunner
+end
+end
+
+(1111111111111111111111111111)=
+/simpleDict# dictExists? =
+simpleDict# dictExists? =
+/mmmmmmm dictExists? = 
+
+
+
+
