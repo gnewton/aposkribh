@@ -28,9 +28,10 @@ simpleDict# begin
 (NEW TEST2 -  START) =
 
 
-[[10 11] [21 11] true  (Add 2 numbers)] /addd simpleDict# testRunner % OK
+[[10 11] [21 11] true  (Add 2 numbers)] /addd simpleDict# testRunner % OK, so PASS
 
-[[10 11] [21 1 1] false  (Too many results)] /addd simpleDict# testRunner % FAIL
+[[10 11] [21 1 1] false  (Too many results)] /addd simpleDict# testRunner % should FAIL, so ok
+[[10 11] [21 1 1] true  (Too many results)] /addd simpleDict# testRunner % error, so not PASS
 
 
 
