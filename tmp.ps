@@ -8,6 +8,8 @@
 
 (aposkribh.ps) run
 
+(appendArray.ps) run
+
 github.com.gnewton.aposkribh.util begin
 github.com.gnewton.aposkribh.simple# begin
 github.com.gnewton.aposkribh begin
@@ -65,30 +67,6 @@ end % Foo#
 () =
 () =
 
-/dispatch{ %proc dict
-    2 dict begin
-    /d exch def
-    github.com.gnewton.aposkribh.util begin
-    d isDict? not{
-        (/dispatch: not a dictionary)=
-        stop
-    }if
-    end
-    
-    /p exch def
-
-    % p found in d?
-    d p known not{
-        (/dispatch: proc not in dictionary)=
-        d ===
-        p =
-        stop
-    }if
-    d begin
-    d p get exec
-    end % d
-    end % local
-}def
 
 /FooCopy# 100 dict def
 
@@ -109,88 +87,6 @@ Foo# FooCopy# copy
 (End) =
 
 
-/AppendArray# 10 dict def
-
-AppendArray# begin
-/MaxArraySize 16777216 def
-
-/size 20 def
-/index 0 def
-/a size array def
-
-/print{
-    index =
-    a ==
-}def
-
-/new2{
-    1 dict begin
-    /destDict# exch def
-    AppendArray# begin
-    AppendArray# destDict# copy
-    destDict# begin
-    /a size array def
-    end % destDict#
-    end % AppendArray#
-    end
-}def
-
-/new{
-    1 dict begin
-    /newAppendArray# 100 dict def
-    AppendArray# begin
-    AppendArray# newAppendArray# copy
-    newAppendArray# begin
-    /a size array def
-    end % newAppendArray#
-    end % AppendArray#
-    end
-}def
-
-
-/append{ %item ba
-    /l a length def
-    index l eq{
-        expand 
-        (---------) =
-    }if
-    %%
-    (Ml;okj)=
-    a ===
-    (Ml;okjooooo)=
-    10 dict begin
-    /item exch def
-        
-    {
-        a index item put
-    }stopped{
-        (STOPPED) =
-        (Index=) =
-        index =
-        (Length=) =
-        a length =
-        quit
-    }if
-
-    end % local dict
-
-    % Needs to be outside of local dict
-    /index index 1 add def
-}def
-
-/expand{
-    /l a length def
-
-    l 2 mul MaxArraySize gt{
-        /newa MaxArraySize array def
-    }{
-        /newa l 2 mul array def
-    }ifelse
-    newa 0 a putinterval
-    /a newa def
-}def
-
-end % AppendArray#
 
 
 (************************) =

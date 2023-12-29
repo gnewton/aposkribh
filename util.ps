@@ -234,6 +234,34 @@ github.com.gnewton.aposkribh.util begin
     end
 }def
 
+/dispatch{ %proc dict
+    2 dict begin
+    /d exch def
+    github.com.gnewton.aposkribh.util begin
+    d isDict? not{
+        (/dispatch: not a dictionary)=
+        end
+        stop
+    }if
+    end
+    
+    /p exch def
+
+    % p found in d?
+    d p known not{
+        (/dispatch: proc not in dictionary)=
+        d ===
+        p =
+        stop
+    }if
+    d begin
+    d p get exec
+    end % d
+    end % local
+}def
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end % github.com.gnewton.aposkribh.util

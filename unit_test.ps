@@ -1,6 +1,8 @@
+(base.ps) run
+(unit_test.ps) _aposkribh_fileStart
+
 (unit.ps) run
 
-(unit_test.ps) =
 
 
 %<<
@@ -17,67 +19,49 @@ simpleDict# begin
     exch
 }def
 
-end
+end % simpleDict# 
 
 
+%simpleDict# begin
 github.com.gnewton.aposkribh.unit# begin
 
-/testDict1# 10 dict def
+% Test /addd
+/t43<<
+    /TestName (Addd 2 numbers: pass)
+    /InArgs[10 11]
+    /OutArgs[21]
+    /Expected ExpectError
+    /Proc /addd
+    /Dict simpleDict#
+>>def
 
-simpleDict# begin
-(NEW TEST2 -  START) =
+[[10 11] [21 11] ExpectError  (Addd 2 numbers: pass)] /addd simpleDict# testRunner % OK, so PASS
+[[10 11] [21 11] ExpectSuccess  (Addd 2 numbers: pass)] /addd simpleDict# testRunner % OK, so PASS
+[[10 11] [21 1 1] ExpectSuccess  (Too many results: fail exoected)] /addd simpleDict# testRunner % error, so not PASS
+[[10 11] [21 11 222] ExpectError  (Addd 2 numbers: wrong number of results; pass)] /addd simpleDict# testRunner % OK, so PASS
+[[10 11] [22 11] ExpectError  (Addd 2 numbers: wrong result: pass)] /addd simpleDict# testRunner % Error expected, so PASS
+[[10 11] [21 1 1] ExpectError  (0000 Too many results: pass)] /maddd simpleDict# testRunner % Test setup error: /maddd does not exist in simpleDict#
+[[10 11] [21 1 1] ExpectError  (0000 Too many results: pass)] /addd simpleDict# testRunner % should FAIL, so ok
 
+%t43 ===
 
-[[10 11] [21 11] true  (Add 2 numbers)] /addd simpleDict# testRunner % OK, so PASS
+%t43 validTestDict =
 
-[[10 11] [21 1 1] false  (Too many results)] /addd simpleDict# testRunner % should FAIL, so ok
-[[10 11] [21 1 1] true  (Too many results)] /addd simpleDict# testRunner % error, so not PASS
+() =
+() =
 
+(------------------------------------->>>>>) =
+t43 validTestDict2 =
 
-
-(NEW TEST2 -  END) =
-quit
-
-%[[10 11] [21] true] /mmm simpleDict# testRunner % FAIL unknown proc/ not in dict
-%true /addd simpleDict# testRunner % FAIL not array
-
-
-testDict1# copyDict
-end
+(&&&&&&&&&&&&&&&&) =
+%end % /simpleDict1# 
 %%%%%%%%%%%
-end
+
+end % github.com.gnewton.aposkribh.unit#
 %%%%%%%%%%%
 
-quit
-
-(------------------)=
-(------------------)=
-/foobar dictExists? =
-(------------------)=
-/github.com.gnewton.aposkribh.unit# dictExists? =
-
-
-(***********************) =
-/t2# 10 dict def
-
-
-/sa 100 array def
-
-
-(=====================) =
-
-%[[10 11] [21] true] simpleDict# /addd  t2# testRunner
-
-% (2) =
-% [[10 11] [21] true] /simpleDict# /addd  t2# testRunner
-end
-end
-
-(1111111111111111111111111111)=
-/simpleDict# dictExists? =
-simpleDict# dictExists? =
-/mmmmmmm dictExists? = 
 
 
 
 
+(unit_test.ps) _aposkribh_fileEnd

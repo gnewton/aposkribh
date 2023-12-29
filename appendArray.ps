@@ -1,0 +1,69 @@
+
+/AppendArray# 10 dict def
+
+AppendArray# begin
+/Docs (AppendArray is an expanding array which allows append expands, indexed reads and writes within the range of the array) def
+
+/MaxArraySize 16777216 def
+
+/size 20 def
+/index 0 def
+/a size array def
+
+/print{
+    index =
+    size =
+    a ===
+}def
+
+/new{
+    1 dict begin
+    /newAppendArray# 100 dict def
+    AppendArray# begin
+    AppendArray# newAppendArray# copy
+    newAppendArray# begin
+    /a size array def
+    end % newAppendArray#
+    end % AppendArray#
+    end
+}def
+
+
+/append{ %item ba
+    /l a length def
+    index l eq{
+        expand 
+    }if
+    10 dict begin
+    /item exch def
+    {
+        a index item put
+    }stopped{
+        (STOPPED) =
+        (Index=) =
+        index =
+        (Length=) =
+        a length =
+        quit
+    }if
+
+    end % local dict
+
+    % Needs to be outside of local dict
+    /index index 1 add def
+}def
+
+/expand{
+    /l a length def
+
+    l 2 mul MaxArraySize gt{
+        /newa MaxArraySize array def
+    }{
+        /newa l 2 mul array def
+    }ifelse
+    newa 0 a putinterval
+    /a newa def
+}def
+
+end % AppendArray#
+

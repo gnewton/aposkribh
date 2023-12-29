@@ -1,19 +1,50 @@
+(base.ps) run
 
-/dictExists?{
-    1 dict begin
-    /d exch def
-    d where{
-        pop
-        true
-    }{
-        false
-    }ifelse
-}def
+(unit.ps) _aposkribh_fileStart
 
 %<<
 /github.com.gnewton.aposkribh.unit# 100 dict def
 github.com.gnewton.aposkribh.unit# begin
 
+/ExpectError 0 def
+/ExpectSuccess 255 def
+
+/StopTestOnInternalError false
+
+/TestDictKeys [/TestName /InArgs /OutArgs /Expected /Proc /Dict] def
+
+/TestDictKeys2
+<<
+    /TestName
+    <<
+        /Type /stringtype
+    >>
+    
+    /InArgs
+    <<
+        /Type /arraytype
+    >>
+    
+    /OutArgs
+    <<
+        /Type /arraytype
+    >>
+    
+    /Expected
+    <<
+        /Type /booleantype
+    >>
+
+    /Proc
+    <<
+        /Type /nametype
+    >>
+
+    /Dict
+    <<
+        /Type /dicttype
+    >>
+>>def
 
 
 %<<
@@ -42,60 +73,72 @@ end % github.com.gnewton.aposkribh.unit.test#
     end
 }def
 
-/testRunner{ % newTest# procDict# proc [ [in args][out args]]
+/testRunner{
+    {
+        internal_testRunner
+    }stopped{
+        (testRunner stopped due to internal error) =
+    }if
+}bind def
+
+/internal_testRunner{ % newTest# procDict# proc [ [in args][out args]]
+    ()=
     8 dict begin
     /procDict exch def % /dicttype
     /proc exch def % /nametype
     /argsinout exch def % /arraytype
 
     procDict type /dicttype eq not{
-        (ERROR: newTest2: procDict is not /dicttype)=
+        (ERROR: testRunner: procDict is not /dicttype)=
         procDict type =
         stop
     }if
 
     argsinout type /arraytype eq not{
-        (ERROR: newTest2: argsinout is not /arraytype)=
+        (ERROR: testRunner: argsinout is not /arraytype)=
         argsinout
         stop
     }if
 
     argsinout length 4 ne{
-        (ERROR: newTest2: argsinout length != 4)=
+        (ERROR: testRunner: argsinout length != 4)=
         argsinout ==
         stop
     }if
 
     % Proc found in procDict?
     procDict proc known not{
-        (ERROR: newTest2: proc does not exist in procDict)=
+        github.com.gnewton.aposkribh.base.internal begin
+        (ERROR: testRunner: proc does not exist in procDict; proc= /) proc 50 string cvs _concatstrings =
+        end % github.com.gnewton.aposkribh.base.internal
         stop
     }if
 
     /inArgs argsinout 0 get def
     inArgs type /arraytype ne{
-        (ERROR: newTest2: argsinout[0] (inArgs) not array)=
+        (ERROR: testRunner: argsinout[0] (inArgs) not array)=
         stop
     }if
 
     /outArgs argsinout 1 get def
     outArgs type /arraytype ne{
-        (ERROR: newTest2: argsinout[1] (outArgs) not array)=
+        (ERROR: testRunner: argsinout[1] (outArgs) not array)=
         stop
     }if
 
-    /passesTest argsinout 2 get def
-    passesTest type /booleantype ne{
-        (ERROR: newTest2: argsinout[2] (passesTest) not boolean) null handleError
+    /expectation argsinout 2 get def
+    expectation ExpectError ne expectation  ExpectSuccess ne and{
+        (ERROR: testRunner: argsinout[2] (expectation) values != ExpectError or ExpectSuccess) null handleError
         stop
     }if
 
     /testName argsinout 3 get def
     testName type /stringtype ne{
-        (ERROR: newTest2: argsinout[3] (testName) not string) null handleError
+        (ERROR: testRunner: argsinout[3] (testName) not string) null handleError
         stop
     }if
 
+    testName =
     %%% END validating arguments
 
     %body
@@ -106,7 +149,8 @@ end % github.com.gnewton.aposkribh.unit.test#
 
     % Only the below errors should involve test PASS/FAILs
     count outArgs length ne{
-        testName (ERROR: proc args results stack count does not equal expected results array length) passesTest handleError
+        (Num results not correct) =
+        testName (ERROR: proc args results stack count does not equal expected results array length) expectation handleError
     }{
         % Walk through supplied out args and stack args
         0 1 outArgs length 1 sub{
@@ -114,61 +158,109 @@ end % github.com.gnewton.aposkribh.unit.test#
             /actualArg exch def
             /expectedArg outArgs i get def
             actualArg expectedArg ne{
-                testName (ERROR: proc arg result not equal to expected result) passesTest handleError
+                testName (ERROR: proc arg result not equal to expected result) expectation handleError
             }if
         }for
     }ifelse
-    testName =
-    (PASS 2) =
+    end % local dict
 }def
 
 
 /handleError{ % message; bool or null
     8 dict begin
-    % null == internal error
-    % true/false: passes test
-    (/handleError) =
-    /passTest exch def
+    /expectation exch def % ExpectError/ExpectSuccess: Fail/Pass test; null: internal error
     /message exch def
     /testName exch def
-    passTest null eq{
+    expectation null eq{
         (/handleError: NULL - internal test error) =
-        quit
+        message =
+        end
+        stop
     }if
 
-    passTest type /booleantype ne{
+    expectation ExpectError ne expectation  ExpectSuccess ne and{
         (/handleError needs null or boolean for passTest arg) =
-        quit
+        (ERROR: /handleError expectation: values != ExpectError or ExpectSuccess) =
+        end
+        stop
     }if
 
     testName type /stringtype ne{
         (/handleError needs string for testname arg) =
-        quit
+        end
+        stop
     }if
 
 
-    passTest{
+    expectation ExpectSuccess eq{
         testName =
         (FAIL) =
         message =
     }{
-        %(PASS) =
+        (PASS) =
     }ifelse
     () =
-    end
+    end % local dict
+}def
+
+/validTestDict{
+    2 dict begin
+    /testDict exch def
+
+    /isValid true def
+    testDict type /dicttype ne{
+        false
+    }{
+        % dict has all keys
+        TestDictKeys{
+            /k exch def
+            k =
+            testDict k known not{
+
+                (Not valid test dictionary: Missing key:) =
+                k =
+                /isValid false def
+                exit
+            }if
+        }forall
+    }ifelse
+    (----------------)=
+    isValid
+    end % local dict
+}def
+
+
+
+/validTestDict2{
+    2 dict begin
+    /testDict exch def
+    /isValid true def
+    testDict type /dicttype ne{
+        false
+    }{
+
+        % Check for required keys
+        TestDictKeys2{
+            /v exch def
+            /k exch def
+            (KEY=) =
+            k ===
+            (VALUE=) =
+            v ===
+            testDict k known not{
+                (Not valid test dictionary: Missing key:) =
+                k ===
+                /isValid false def
+                exit
+            }if
+        }forall
+    }ifelse
+    isValid
+    end % local dict
 }def
 
 end % github.com.gnewton.aposkribh.unit#
 %>>
 
-/foo# 100 dict def
-
-github.com.gnewton.aposkribh.unit# begin
-foo# copyDict
-end
-
-foo# ===
-
-
-
+(unit.ps) _aposkribh_fileStart
 
