@@ -1,0 +1,44 @@
+(base.ps) run
+github.com.gnewton.aposkribh.base begin
+(base_dict_test.ps) fileStart
+
+(base_dict.ps) arun
+
+github.com.gnewton.aposkribh.base begin
+
+BaseDict# ===
+
+BaseDict# begin
+print
+end
+
+
+/d0# (d0#) BaseDict# NewDict# /newDict get exec def
+
+/d1# (d1#) d0# NewDict# /newDict get exec def
+
+
+(d0) =
+d0# ===
+d0# begin
+print
+end
+
+(d1)=
+d1# ===
+d1# begin
+print
+end
+
+
+
+end
+
+
+
+
+
+(base_dict_test.ps) fileEnd
+
+
+end % github.com.gnewton.aposkribh.base

@@ -1,0 +1,59 @@
+
+github.com.gnewton.aposkribh.base begin
+(base_dict.ps) fileStart
+
+
+/NewDict# 32 dict def
+
+NewDict# begin
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/newDict{
+    (newDict)
+    {
+        stack
+       4 dict begin
+       /parentDict# exch def
+       parentDict# type /dicttype eq not{
+           (Error: base_dict.ps newDict: must supply a dictionary for parent)
+       }def
+       /newDictName exch def
+        /newDict# 128 dict def        
+        parentDict# newDict# copy
+
+        newDict# begin
+        /_parentDict# parentDict# store
+        /_dictName newDictName store
+        end % newDict#
+
+        end % local
+    }dbg
+}def
+end % NewDict#
+
+/BaseDict# 32 dict def
+BaseDict# begin
+
+/_dictName (BaseDict#) def
+
+/_parentDict# null def
+
+/print{
+    (BaseDict.print: not defined) =
+    (This DictName=)=
+    _dictName =
+    _parentDict# null ne{
+        (Parent dict exists:) =
+        _parentDict# begin
+        _dictName =
+        end
+    }{
+        (Null parent dict) =
+    }ifelse
+}def
+
+
+end % BaseDict#
+
+
+(base_dict.ps) fileEnd
+end %github.com.gnewton.aposkribh.base

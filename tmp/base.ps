@@ -1,0 +1,240 @@
+
+% From: https://riptutorial.com/postscript/example/21484/signalling--throwing--an-error
+/.error where {pop /signalerror /.error load def} if
+% End From %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/github.com.gnewton.aposkribh.base 100 dict def
+
+github.com.gnewton.aposkribh.base begin
+% Assumes you are loading not more than 100 files; change if this is not the case
+/_fileTrackingArraySize 100 def
+
+% File load tracking START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/_fileTrack true def
+
+/_fileTrackingArray _fileTrackingArraySize array def
+
+/_fileTrackingArrayIndex -1 def
+
+
+%% /concatstrings derived from https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    count 2 lt{
+        (Fatal Error: base.ps/concatstrings: needs two args) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+
+    0 index type /stringtype ne{
+        (Fatal Error: base.ps/concatstrings: first arg not string) =
+        $error /errorname /typecheck put
+        stop
+    }if
+
+    1 index type /stringtype ne{
+        (Fatal Error: base.ps/concatstrings: second arg not string) =
+        $error /errorname /typecheck put
+        stop
+    }if
+    
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+
+
+/_pushCurrentFile{ % FileTracking: Pushes filename onto tracking stack
+    count 1 lt{
+        (Error: base.ps:_pushCurrentFile: Needs at least one string argument) =
+        $error /errorname (MMMZZ) put
+        stop
+    }if
+
+    2 dict begin
+    /filename exch def
+    filename type /stringtype eq not{
+        (Error: base.ps:_pushCurrentFile: String argument requried) =
+        $error /errorname /typecheck put
+        stop
+    }if
+
+    % body %%%%%%%%%%%%%%%%%%%%%%%%
+    _fileTrackingArray _fileTrackingArrayIndex 1 add filename put
+    end
+    /_fileTrackingArrayIndex  _fileTrackingArrayIndex 1 add store
+}def
+
+/_popCurrentFile{ % FileTracking: Pops filename off tracking stack
+    _fileTrackingArrayIndex 0 lt{
+        (Error: base.ps:_popCurrentFile: Popping file below 0. Likely you many _aposkribh_fileEnd's) =
+        stop
+    }if
+    /_fileTrackingArrayIndex  _fileTrackingArrayIndex 1 sub store
+}def
+
+
+% _fileTrack{
+%     (% FILE START: base.ps) =
+% }if
+
+
+/_Debug true def
+
+/dbg{
+    count 2 lt{
+        (ERROR: needs at least 2 args) =
+        quit
+    }if
+
+    2 dict begin
+    /proc exch def
+    /procName exch def
+    github.com.gnewton.aposkribh.base begin
+    _Debug{
+        (Trace: Start: ) procName concatstrings =
+    }if
+    proc
+    _Debug{
+        (Trace: End:   ) procName concatstrings =
+    }if
+    end % github.com.gnewton.aposkribh.base 
+    end % local
+}def
+
+/arun{
+    2 dict begin
+    /filename exch def
+    (% Loading: ) filename concatstrings =
+    filename run
+    (% Done loading: ) filename concatstrings =
+    count 0 ne{
+        (! Fatal error: stack is not empty) =
+        stack
+        quit
+    }if
+    end
+}bind def
+
+
+
+/spaceCache# 10 dict def
+/makeSpaces{ % n -> string with n blank spaces; cached in dict
+    count 1 lt{
+        (Error: needs at least one int argument)=
+        stop
+    }if
+    0 index type /integertype ne{
+        (Error: argument needs to be an integer) =
+        stop
+    }if
+
+    8 dict begin
+    /n exch def
+    n 0 lt{
+        (Error: are cannot be < 0) =
+        stop
+    }if
+    /s () def
+    spaceCache# n known{ % cache hit
+        spaceCache# n get /s exch def
+    }
+    {% Cache miss
+        n 2 mul{
+            s ( ) concatstrings /s exch def
+        }repeat
+        spaceCache# n s put
+    }
+    ifelse
+    
+    s %leave on stack
+    end
+}bind def
+
+
+
+/fileStart{
+    count 1 lt{
+        (Error: base.ps: fileStart: needs one arg) =
+        stop
+    }if
+
+    0 index type /stringtype ne{
+        (Error: base.ps: fileStart: arg not string) =
+        stop
+    }if
+    
+    2 dict begin
+    /filename exch def
+    
+    % body %%%%%%%%%%%%%%%%%%
+
+    github.com.gnewton.aposkribh.base begin
+    filename _pushCurrentFile
+    _fileTrack{
+        %(% FILE START: ) filename  concatstrings =
+        (%) _fileTrackingArrayIndex makeSpaces concatstrings ( FILE START: ) concatstrings filename  concatstrings =
+    }if
+    end % github.com.gnewton.aposkribh.base
+
+    end % local
+}def
+
+/fileEnd{
+    count 1 lt{
+        (Error: base.ps: needs on arg) =
+        stop
+    }if
+
+    0 index type /stringtype ne{
+        (Error: base.ps: fileStart: arg not string) =
+        stop
+    }if
+
+    2 dict begin
+    /filename exch def
+    
+    % body
+
+    github.com.gnewton.aposkribh.base begin
+    _popCurrentFile
+    _fileTrack{
+        () =
+        (%) _fileTrackingArrayIndex 1 add makeSpaces concatstrings ( FILE END: ) concatstrings filename  concatstrings =
+    }if
+    end % github.com.gnewton.aposkribh.base
+
+    end
+}def
+
+
+/currentFile{
+    github.com.gnewton.aposkribh.base begin
+    _fileTrackingArray _fileTrackingArrayIndex get
+    end
+} def
+
+% Look into systemdict for value; if not found, use supplied default value; value left on stack
+/envDefault{ % KEY DEFAULTVALUE
+    count 2 lt{
+        (Fatal Error: base.ps/envDefault: needs two args) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+    2 dict begin
+    /defValue exch def
+    /key exch def
+    
+    systemdict key known{
+        systemdict key get
+    }{
+        defValue
+    }ifelse
+    end
+}def
+
+
+end % github.com.gnewton.aposkribh.base begin
+

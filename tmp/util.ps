@@ -1,0 +1,296 @@
+
+
+github.com.gnewton.aposkribh.base begin
+(base_test.ps) fileStart
+
+/github.com.gnewton.aposkribh.util 100 dict def
+
+github.com.gnewton.aposkribh.util begin
+
+/isIntegerRealStringBool?{
+    /isIntegerRealStringBool? 1 assertMinStackSize
+
+    10 dict begin
+    /v exch def
+     v isInt?
+     v isReal?
+     v isString?
+     v isBoolean?
+     or
+     or
+     or
+    end
+}def
+
+
+% Type tests
+/isInt?{
+    /isInt? 1 assertMinStackSize
+    type /integertype eq
+}bind def
+
+
+/isReal?{
+    /isReal? 1 assertMinStackSize
+    type /realtype eq
+}bind def
+
+
+/isString?{
+    /isString? 1 assertMinStackSize
+    type /stringtype eq
+}bind def
+
+
+/isBoolean?{
+    /isBoolean? 1 assertMinStackSize
+    type /booleantype eq 
+}bind def
+
+
+/isArray?{
+    /isArray? 1 assertMinStackSize
+    type /arraytype eq
+} def
+
+
+/isNameType?{
+    /isNameType? 1 assertMinStackSize
+    type /nametype eq
+}bind def
+
+
+/isNull?{
+    type /nulltype eq
+}bind def
+
+
+/isDict?{
+    type /dicttype eq
+}bind def
+
+
+/isNumber?{ % real or int
+    dup
+    isInt? exch isReal? or
+}bind def
+
+
+/arrayAppendTo{ % item array
+    8 dict begin
+
+    /a exch def
+    /i exch def
+
+    /ia [i] def
+    
+    /z a length 1 add array def
+    
+    z 0 a putinterval
+    z a length ia putinterval
+    
+    z
+    end
+}bind def
+
+
+
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+
+%% Append Only Array
+/AOASize 20 def
+/MaxAOASize 16777216 def
+
+/newAOA{
+    /a AOASize array def
+    /i 0 def
+    [i a]
+}def
+
+/isAOA?{ % Array length 2; a[0] is int; a[1] is array
+    10 dict begin
+    /a exch def
+
+    a isArray? {
+        a length 2 eq{
+            a 0 get isInt? {
+                a 1 get isArray? {
+                    true
+                }
+                {
+                    false
+                }ifelse
+            }
+            {
+                false
+            }ifelse
+        }
+        {
+            false
+        }ifelse
+    }
+    {
+        false
+    }ifelse
+    end
+}def
+
+/clearAOA{
+    10 dict begin
+    
+    end
+}def
+
+/AOA2string{
+    /aoa exch def
+
+    aoa isAOA? not{
+        (ERROR: /AOA2string: arg not AOA) =
+        stop
+    }if
+
+    % body
+    /n aoa 0 get def
+    /a aoa 1 get def
+    
+    /s () def
+    0 1 n 1 sub{
+        /i exch def
+        i 0 gt{
+            /s s ( || ) concatstrings def
+        }if
+        /s s a i get concatstrings def
+    }for
+    s
+}def
+
+/expandAOA{
+    %/expandAOA 1 assertMinStackSize
+    10 dict begin
+    /olda exch def
+    olda isArray? not{
+           github.com.gnewton.aposkribh.error begin
+           /expandAOA (Must be an array)        typecheckerror
+           end
+           stop
+    }if
+
+    % body
+    
+    /l olda length def
+    %/newa l BASize add array def
+    l 2 mul MaxAOASize gt{
+        /newa MaxAOASize array def
+    }{
+        /newa l 2 mul array def
+    }ifelse
+    newa 0 olda putinterval
+    newa
+    end
+}def
+
+/appendToAOA{ %item ba
+    10 dict begin
+    /ba exch def
+    ba isArray? not{
+        (ERROR: appendToAOA: not array) =
+        stop
+    }if
+    /item exch def
+
+    % body
+    
+    /index ba 0 get def
+    /a ba 1 get def
+
+    /l a length def
+
+    index l eq{
+        /a a expandAOA def
+        % Replace old array with expanded one
+        ba 1 a put
+    }if
+    
+    {
+        a index item put
+    }stopped{
+        (STOPPED) =
+        (Index=) =
+        index =
+        (Length=) =
+        a length =
+        quit
+    }if
+
+    % increment index
+    ba 0 index 1 add put
+
+    end
+}def
+
+/dispatch{ %proc dict
+    2 dict begin
+    /d exch def
+    github.com.gnewton.aposkribh.util begin
+    d isDict? not{
+        (/dispatch: not a dictionary)=
+        end
+        stop
+    }if
+    end
+    
+    /p exch def
+
+    % p found in d?
+    d p known not{
+        (/dispatch: proc not in dictionary)=
+        d ===
+        p =
+        stop
+    }if
+    d begin
+    d p get exec
+    end % d
+    end % local
+}def
+
+/assertMinStackSize{ % procName num
+    1 add count ge{
+        /procName exch def
+        (Error: assertMinStackSize: Stack arguments missing for: )  procName concatstrings =
+         stop
+     }{
+        pop % proc
+    }ifelse
+}bind def
+
+/assertFalse{
+    {
+        (/assertFalse FAIL) =
+        stop
+    }if
+}def
+
+/assertTrue{
+    not{
+        (/assertTrue FAIL) =
+        stop
+    }if
+}def
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+end % github.com.gnewton.aposkribh.util
+
+
+(base_test.ps) fileEnd

@@ -1,0 +1,142 @@
+%
+% base.ps is tested using simple testing mechanisms; no aposkribh test framework
+(base.ps) run
+github.com.gnewton.aposkribh.base begin
+
+(base_test.ps) fileStart
+
+/envWhichTests (TESTS) (ALL) envDefault def
+/envStopOnFail (STOP_ON_FAIL) true envDefault def
+
+/base_test{
+    envWhichTests (ALL) eq envWhichTests (PASS) eq or{
+        (% Expect no errors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%) =
+        /tests [
+            ((foo) _pushCurrentFile)
+            (_popCurrentFile)
+            ((a) (b) concatstrings)
+            (() (b) concatstrings)
+            ((a) () concatstrings)
+            ((aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)  concatstrings)
+            (currentFile pop)
+            (10 20 envDefault)
+            (1 makeSpaces)
+            (10 makeSpaces)
+            (1000 makeSpaces)
+            ((foo) fileStart)
+            ((foo) fileEnd)
+        ]def
+
+        tests{
+            ()=
+            /test exch def
+            test =
+            clear
+            {
+                test cvx exec
+            }stopped{
+                (FAIL: No error expected: ) test concatstrings =
+                $error /errorname get ==
+                clear
+                envStopOnFail{
+
+                    stop
+                }if
+            }{
+                (PASS: ) test concatstrings =
+                clear
+            }ifelse
+        }forall
+    }if
+
+
+    envWhichTests (ALL) eq envWhichTests (FAIL) eq or{
+        () =
+        (% Expect errors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%) =
+        /tests [
+            [ (22 _pushCurrentFile)
+              (Int arg bad; needs string)
+              /typecheck ]
+            
+            [ ((a) 1 add)
+              (String arg bad; needs int)
+              /typecheck ]
+                        
+            [ (20 envDefault)
+              (One arg; needs 2)
+              /stackunderflow ]
+            
+            [ (envDefault)
+              (Zero args; needs 2) 
+              /stackunderflow ]
+            
+            [ (makeSpaces)
+              (No args; needs 1)
+              /stackunderflow ]
+            
+            [ (-2 makeSpaces)
+              (Arg needs to be >= 0)
+              /stackunderflow ]
+            
+            [ (true makeSpaces)
+              (Arg needs to be an int)
+              /stackunderflow
+            ]
+            
+            [ ((foo) makeSpaces)
+              (Arg needs to be an int)
+              /stackunderflow ]
+
+            [ (fileStart)
+              (No args; needs 1)
+              /stackunderflow ]
+            
+            [ (22 fileStart)
+              (Needs 1 string arg)
+              /stackunderflow ]
+            
+            [ (fileEnd)
+              (No args; needs 1)
+              /stackunderflow ]
+            
+            [ (22 fileEnd)
+              (Needs 1 string arg)
+              /stackunderflow ]
+            
+        ]def
+        
+        tests{
+            ()=
+            /testInfo exch def
+            /testProc testInfo 0 get def
+            /testName testInfo 1 get def
+            (Test: ) testName concatstrings =
+            testProc =
+            clear
+            {
+                testProc cvx exec
+            }stopped{
+                $error /errorname get ==
+                (PASS: ) testProc concatstrings =
+                clear
+            }{
+                (FAIL: Error expected: ) testProc concatstrings =
+                clear
+                envStopOnFail{
+                    quit
+                }if
+            }ifelse
+            
+        }forall
+    }if
+}def
+
+
+base_test
+
+
+
+(base_test.ps) fileEnd
+end % github.com.gnewton.aposkribh.base
+
+
