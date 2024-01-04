@@ -278,29 +278,37 @@ end % github.com.gnewton.aposkribh.base
 
 /ttt
 [
-    [
-        <<
-         /dic /github.com.gnewton.aposkribh.base
-         /proc /addd
-         /tests[
-             <<
-                 /in [22 33]
-                 /out [55]
-             >>
-             <<
-                 /in [(foo)]
-                 /out [55]
-                 /error /typecheck
-             >>
-             <<
-                 /in []
-                 /out [55]
-                 /error /stackunderflow
-             >>
+    <<
+        /dic /github.com.gnewton.aposkribh.base
+        /proc /addd
+        /tests[
+            <<
+                /name (Add 2 ints)
+                /in [22 33]
+                /out [55]
+            >>
+            <<
+                /name (Add 2 ints)
+                /in [20 3]
+                /out [55]
+                /resultsError true
+            >>
+            <<
+                /name (Add one string arg)
+                /in [(foo)]
+                /out [54]
+                /runError /typecheck
+            >>
+            <<
+                /name (Add no args)
+                /in []
+                /out [51]
+                /runError /stackunderflow
+            >>
         ]
-        >>
-    ]
+    >>
 ]def
+
 
 (--------------------------) =
 (ttt)=
@@ -308,11 +316,15 @@ ttt ===
 (--------------------------) =
 ttt length =
 
-ttt 0 get 0 get /tests get 0 get /in get aload pop
+ttt 0 get /tests get 0 get /in get aload pop
 
-ttt 0 get 0 get /dic get load begin
-ttt 0 get 0 get /proc get load exec ===
+ttt 0 get /dic get load begin
+ttt 0 get /proc get load exec ===
 end
 
 (OUT) =
-ttt 0 get 0 get /tests get 0 get /out get ===
+
+ttt 0 get /tests get
+{
+    /out get ===
+}forall
