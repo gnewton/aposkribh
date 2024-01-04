@@ -21,13 +21,13 @@ github.com.gnewton.aposkribh.base begin
 /concatstrings % (a) (b) -> (ab)  
 {
     count 2 lt{
-        (Fatal Error: base.ps/concatstrings: needs two args) =
+        (Error: base.ps/concatstrings: needs two args) =
         $error /errorname /stackunderflow put
         stop
     }if
 
     0 index type /stringtype ne{
-        (Fatal Error: base.ps/concatstrings: first arg not string) =
+        (Error: base.ps/concatstrings: first arg not string) =
         $error /errorname /typecheck put
         stop
     }if
@@ -124,17 +124,21 @@ github.com.gnewton.aposkribh.base begin
 /makeSpaces{ % n -> string with n blank spaces; cached in dict
     count 1 lt{
         (Error: needs at least one int argument)=
+        $error /errorname /stackunderflow put
         stop
     }if
     0 index type /integertype ne{
         (Error: argument needs to be an integer) =
+        $error /errorname /typecheck put
         stop
     }if
 
+    % body
     8 dict begin
     /n exch def
     n 0 lt{
         (Error: are cannot be < 0) =
+        $error /errorname /rangecheck put
         stop
     }if
     /s () def
@@ -142,12 +146,11 @@ github.com.gnewton.aposkribh.base begin
         spaceCache# n get /s exch def
     }
     {% Cache miss
-        n 2 mul{
-            s ( ) concatstrings /s exch def
+        n {
+            s ( ) concatstrings /s exch store
         }repeat
         spaceCache# n s put
-    }
-    ifelse
+    }ifelse
     
     s %leave on stack
     end
@@ -158,11 +161,13 @@ github.com.gnewton.aposkribh.base begin
 /fileStart{
     count 1 lt{
         (Error: base.ps: fileStart: needs one arg) =
+        $error /errorname /stackunderflow put
         stop
     }if
 
     0 index type /stringtype ne{
         (Error: base.ps: fileStart: arg not string) =
+        $error /errorname /typecheck put
         stop
     }if
     
@@ -184,12 +189,14 @@ github.com.gnewton.aposkribh.base begin
 
 /fileEnd{
     count 1 lt{
-        (Error: base.ps: needs on arg) =
+        (Error: base.ps: needs one arg) =
+        $error /errorname /stackunderflow put
         stop
     }if
 
     0 index type /stringtype ne{
         (Error: base.ps: fileStart: arg not string) =
+        $error /errorname /typecheck put
         stop
     }if
 
@@ -234,6 +241,168 @@ github.com.gnewton.aposkribh.base begin
     }ifelse
     end
 }def
+
+/concat{ % arrayof int, string, real, boolean, nametype;
+    % Space as separator
+    count 0 eq{
+        (Error: base.ps/concatWithSeparator: Needs 1 arg) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+    0 index type /arraytype ne{
+        (Error: base.ps/concat: arg not array) =
+        $error /errorname /typecheck put
+        stop
+    }if
+    ( ) concatWithSeparator
+}def
+
+/concatWithSeparator{ % array, string separator[1 2 3] (|)
+    count 2 lt{
+        (Error: base.ps/concatWithSeparator: Needs 2 args) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+
+    0 index type /stringtype ne{
+        (Error: base.ps/concatWithSeparator: First arg not string) =
+        $error /errorname /typecheck put
+        stop
+    }if
+    1 index type /arraytype ne{
+        (Error: base.ps/concatWithSeparator: Second arg not array) =
+        $error /errorname /typecheck put
+        stop
+    }if
+
+    % body %%%%%%%%%
+    5 dict begin
+    /separator exch def
+    /aray exch def
+
+    % If array is empty, return empty string
+    /results () def
+
+    aray length 0 gt{
+        /first true def
+        aray{
+            /v exch def
+            first {
+                /first false store
+            }{
+                /results results separator concatstrings store
+            }ifelse
+
+            v type /stringtype eq{
+                /results results v concatstrings store
+            }{
+                /results results v toString concatstrings store
+            }ifelse
+        }forall
+    }if
+    results
+    end
+}def
+
+/toString{ % converts int, real, bool, /nametype to string
+    count 1 lt{
+        (Error: base.ps/toString: Needs 1 arg) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+        
+    1 dict begin
+    /v exch def
+
+    % Ints, reals, /nametypes
+    v type /integertype eq   v type /realtype eq   v type /nametype eq   or or{
+        v 64 string cvs
+    }{
+        v type /booleantype eq{
+            v true eq{
+                (true)
+            }{
+                (false)
+            }ifelse
+        }{
+            v type /arraytype eq{
+                v concat
+            }{
+                (Error: base.ps/toString: unsupported type: /) v type 24 string cvs concatstrings =
+                $error /errorname /typecheck put
+                stop
+            }ifelse
+        }ifelse
+    }ifelse
+    end
+}def
+
+/contains{ % checks to see if item in contained in array; array v;
+    count 2 lt{
+        (Error: base.ps/contains: Needs 2 args) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+
+    1 index type /arraytype ne{
+        (Error: base.ps/contains: Second arg not array) =
+        $error /errorname /typecheck put
+        stop
+    }if
+
+    /results false def
+
+    1 index length 0 gt{
+        (m)=
+        2 dict begin
+        /v exch def
+        /aray exch def
+        
+        aray{
+            v eq{
+                /results true store
+                exit
+            }if
+        }forall
+        end
+    }if
+    
+    results
+}bind def
+
+/sameArray{
+    /result true def
+
+    0 index type /arraytype ne{
+        (Error: base.ps/sameArray: First arg not array) =
+        $error /errorname /typecheck put
+        stop
+    }if
+    1 index type /arraytype ne{
+        (Error: base.ps/sameArray: Second arg not array) =
+        $error /errorname /typecheck put
+        stop
+    }if
+
+    2 dict begin
+    /a1 exch def
+    /a2 exch def
+    
+    a1 length a2 length ne{
+        /result false store
+    }{
+        0 1 a1 length 1 sub{
+            /i exch def
+            a1 i get  a2 i get ne{
+                /result false store
+                exit
+            }if
+        }for
+    }ifelse
+    end
+    
+    result
+}bind def
 
 
 end % github.com.gnewton.aposkribh.base begin

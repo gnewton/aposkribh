@@ -8,47 +8,101 @@ github.com.gnewton.aposkribh.base begin
 /envWhichTests (TESTS) (ALL) envDefault def
 /envStopOnFail (STOP_ON_FAIL) true envDefault def
 
+/some_teests[
+    /concatstrings
+    [ [(a) (b)]  [(ab)] true]
+    [ [() (b) ]  [(b)] true]
+    [ [(a) () ]  [(a)] true]
+    [ [() ()  ]  [()] true]
+    [ [       ]  []   false]
+def
+
+/addd{
+    add
+}def
+
+    
+
 /base_test{
+    /singleTest exch def
+    
     envWhichTests (ALL) eq envWhichTests (PASS) eq or{
         (% Expect no errors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%) =
         /tests [
-            ((foo) _pushCurrentFile)
-            (_popCurrentFile)
-            ((a) (b) concatstrings)
-            (() (b) concatstrings)
-            ((a) () concatstrings)
-            ((aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)  concatstrings)
-            (currentFile pop)
-            (10 20 envDefault)
-            (1 makeSpaces)
-            (10 makeSpaces)
-            (1000 makeSpaces)
-            ((foo) fileStart)
-            ((foo) fileEnd)
+            [ ((foo) _pushCurrentFile) [] ]
+            [ (_popCurrentFile)  [] ]
+            [ ((a) (b) concatstrings)  [(ab)] ]
+            [ (() (b) concatstrings)  [(b)] ]
+            [ ((a) () concatstrings)  [(a)] ]
+            [ (() () concatstrings)  [()] ]
+            [ ((aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) (bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)  concatstrings)  [(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb)] ]
+            [ (currentFile)  null 1 ]
+            [ (10 20 envDefault)  null 1 ]
+            [ (1 makeSpaces)  [( )] ]
+            [ (10 makeSpaces)  [(          )] ]
+            [ (11 makeSpaces)  [(           )] ]
+            [ ((foo) fileStart)  [] ]
+            [ ((foo) fileEnd)  [] ]
+
+            [ ([1 2 3] concat)  [(1 2 3)]  ]
+            [ ([(a) 2 3] concat)  [(a 2 3)]  ]
+            [ ([(a) 2.0 3] concat)  [(a 2.0 3)]  ]
+            [ ([(a) 2.0 3 true /foo] concat)  [(a 2.0 3 true foo)]  ] 
+            [ ([(a) 2.0 3 true /foo [33 54] 23] concat)  [(a 2.0 3 true foo 33 54 23) ]  ]
+            [ ([] concat)  [()] ]
+            [ ([2] concat)  [(2)] ]
+
+            [ (2 4 7)  [2 4 7] ]
+
+            [ ([2 4 7] 2 contains)  [true] ]
+            [ ([2 4 7] 12 contains)  [false] ]
+            %[ ([2 (foo) 7] (foo) contains)  [false true] ]
+            [ ([1 2 3 4] aload pop)  [1 2 3 4]  ]
         ]def
 
         tests{
-            ()=
-            /test exch def
-            test =
-            clear
-            {
-                test cvx exec
-            }stopped{
-                (FAIL: No error expected: ) test concatstrings =
-                $error /errorname get ==
-                clear
-                envStopOnFail{
+            /testInfo exch def
+            /testProc testInfo 0 get def
 
-                    stop
-                }if
-            }{
-                (PASS: ) test concatstrings =
+            singleTest null eq singleTest testProc eq or{
+                /pass true def
+                ()=
+                (Test: ) testProc concatstrings =
                 clear
-            }ifelse
+                {
+                    testProc cvx exec
+                }stopped{
+                    (FAIL: No error expected: ) testProc concatstrings =
+                    $error /errorname get ==
+                    $error /errorname null put
+                    clear
+                    envStopOnFail{
+                        stop
+                    }if
+                    /pass fail store
+                }{
+                    % Expected results match actual results ?
+                    testInfo matchingResults not{
+                        (Error: wrong number of results returned) =
+                                (FAIL: No error expected: ) testProc concatstrings =
+                                /undefineresult ==
+                                $error /errorname null put
+                                clear
+                                envStopOnFail{
+                                    stop
+                                }if
+                                /pass fail store
+                    }if
+                }ifelse
+                clear
+                pass{
+                    (PASS) =
+                }{
+                    (FAIL) =
+                }ifelse
+            }if
         }forall
     }if
-
 
     envWhichTests (ALL) eq envWhichTests (FAIL) eq or{
         () =
@@ -76,16 +130,15 @@ github.com.gnewton.aposkribh.base begin
             
             [ (-2 makeSpaces)
               (Arg needs to be >= 0)
-              /stackunderflow ]
+              /rangecheck ]
             
             [ (true makeSpaces)
               (Arg needs to be an int)
-              /stackunderflow
-            ]
+              /typecheck ]
             
             [ ((foo) makeSpaces)
               (Arg needs to be an int)
-              /stackunderflow ]
+              /typecheck ]
 
             [ (fileStart)
               (No args; needs 1)
@@ -93,7 +146,7 @@ github.com.gnewton.aposkribh.base begin
             
             [ (22 fileStart)
               (Needs 1 string arg)
-              /stackunderflow ]
+              /typecheck ]
             
             [ (fileEnd)
               (No args; needs 1)
@@ -101,42 +154,165 @@ github.com.gnewton.aposkribh.base begin
             
             [ (22 fileEnd)
               (Needs 1 string arg)
+              /typecheck ]
+
+            [ (concat)
+              (Needs 1 arg)
               /stackunderflow ]
+
+            [ (34 concat)
+              (Needs 1 array arg, not int)
+              /typecheck ]
+
+            [ ((foo) concat)
+              (Needs 1 array arg, not string)
+              /typecheck ]
+
+            [ (/foo concat)
+              (Needs 1 array arg, not nametype)
+              /typecheck ]
+
+            [ ([(a) 2.0 3 true /foo [33 54] <</bb 32>>] concat)
+              (Unsupported type: dictionary)
+              /typecheck ]
             
+            [ (2 12 contains)
+              (First arg not array)
+              /typecheck  ]
+
+            [ (contains)
+              (Zero args; needs 2 args)
+              /stackunderflow  ]
+
+            [ (1 contains)
+              (One arg; needs 2 args)
+              /stackunderflow  ]
+
+            [ ((foo) contains)
+              (One arg; needs 2 args)
+              /stackunderflow  ]
         ]def
         
         tests{
-            ()=
+
             /testInfo exch def
             /testProc testInfo 0 get def
-            /testName testInfo 1 get def
-            (Test: ) testName concatstrings =
-            testProc =
-            clear
-            {
-                testProc cvx exec
-            }stopped{
-                $error /errorname get ==
-                (PASS: ) testProc concatstrings =
+
+            singleTest null eq singleTest testProc eq or{
+                ()=            
+                /testName testInfo 1 get def
+                /testExpectedError  testInfo 2 get def
+                (Test: ) testName concatstrings =
+                testProc =
                 clear
-            }{
-                (FAIL: Error expected: ) testProc concatstrings =
-                clear
-                envStopOnFail{
-                    quit
-                }if
-            }ifelse
-            
+                {
+                    testProc cvx exec
+                }stopped{
+                    /actualError $error /errorname get def
+                    $error /errorname null put
+                    actualError testExpectedError ne{
+                        (FAIL: wrong error: expected: /) testExpectedError 30 string cvs concatstrings (; actual: /) concatstrings actualError 30 string cvs concatstrings ==
+                        clear
+                        envStopOnFail{
+                            quit
+                        }if
+                    }if
+
+                    actualError =
+                    (PASS) =
+                    $error /errorname null put
+                    clear
+                }{
+                    (FAIL: Error expected: ) testProc concatstrings =
+                    clear
+                    envStopOnFail{
+                        quit
+                    }if
+                }ifelse
+            } if % Single test IF            
         }forall
     }if
 }def
 
+/matchingResults{
+    4 dict begin
+    % array of: proc + null + int
+    %       or: proc + array of results
+    /testInfo exch def
 
-base_test
+    /results true def
+    testInfo 1 get null eq{ % proc + null + int
+        testInfo length 2 eq{
+            (Num results do not match) =
+            /results false def
+        }{
+            count testInfo 2 get ne{
+                /results false store
+            }if
+        }ifelse
+    }{ % proc + array of results
+        count testInfo 1 get length ne{ % actual array and expected array NOT same length
+            (Num results do not match (array)) =
+            /results false store
+        }{ 
+            /stackResults count 1 sub array def
+            stackResults astore
+            stackResults ===
+            testInfo 1 get ===
+            /results stackResults testInfo 1 get sameArray store
+            (0000000000000000000) =
+            testInfo 1 get ===
+            stack
+            results =
+        }ifelse
+    }ifelse
+    results
+    end
+}bind def
+
+null base_test
 
 
-
-(base_test.ps) fileEnd
+(base_test.ps)  fileEnd
 end % github.com.gnewton.aposkribh.base
 
+/ttt
+[
+    [
+        <<
+         /dic /github.com.gnewton.aposkribh.base
+         /proc /addd
+         /tests[
+             <<
+                 /in [22 33]
+                 /out [55]
+             >>
+             <<
+                 /in [(foo)]
+                 /out [55]
+                 /error /typecheck
+             >>
+             <<
+                 /in []
+                 /out [55]
+                 /error /stackunderflow
+             >>
+        ]
+        >>
+    ]
+]def
 
+(--------------------------) =
+(ttt)=
+ttt ===
+(--------------------------) =
+ttt length =
+
+ttt 0 get 0 get /tests get 0 get /in get aload pop
+
+ttt 0 get 0 get /dic get load begin
+ttt 0 get 0 get /proc get load exec ===
+end
+
+(OUT) =
+ttt 0 get 0 get /tests get 0 get /out get ===

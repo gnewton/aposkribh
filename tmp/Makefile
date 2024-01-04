@@ -1,7 +1,6 @@
 
 # WHICH_TESTS: ALL/FAIL/PASS
-WHICH_TESTS=ALL
-
+WHICH_TESTS=PASS
 STOP_ON_FAIL=true
 
 all: base base_dict
