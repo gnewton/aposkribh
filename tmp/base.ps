@@ -304,7 +304,7 @@ github.com.gnewton.aposkribh.base begin
     end
 }def
 
-/toString{ % converts int, real, bool, /nametype to string
+/toString{ % converts int, real, bool, /nametype, string to string
     count 1 lt{
         (Error: base.ps/toString: Needs 1 arg) =
         $error /errorname /stackunderflow put
@@ -328,9 +328,29 @@ github.com.gnewton.aposkribh.base begin
             v type /arraytype eq{
                 v concat
             }{
-                (Error: base.ps/toString: unsupported type: /) v type 24 string cvs concatstrings =
-                $error /errorname /typecheck put
-                stop
+                v type /stringtype eq{
+                    v
+                }{
+                    v type /nulltype eq{
+                        (null)
+                    }{
+                        v type /marktype eq{
+                            ([)
+                        }{
+                            v type /fonttype eq{
+                                (-font-) =
+                            }{
+                                v type /dicttype eq{
+                                    (<<dict TODO>>)
+                                }{
+                                    (Error: base.ps/toString: unsupported type: /) v type 24 string cvs concatstrings =
+                                    $error /errorname /typecheck put
+                                    stop
+                                }ifelse
+                            }ifelse
+                        }ifelse
+                    }ifelse
+                }ifelse
             }ifelse
         }ifelse
     }ifelse
@@ -402,6 +422,36 @@ github.com.gnewton.aposkribh.base begin
     end
     
     result
+}bind def
+
+
+/assertMinStackSize{ % proc num
+    count 2 lt{
+        (Error: assertMinStackSize: Needs at least 2 args) =
+        $error /errorname /stackunderflow put
+        quit
+    }if
+    
+    0 index type /integertype ne{
+        (Error: assertMinStackSize: First arg needs to be integertype) =
+        $error /errorname /typedef put
+        quit
+    }if
+
+    1 index type /stringtype ne{
+        (Error: assertMinStackSize: Second arg needs to be stringtype)  =
+        $error /errorname /typedef put
+        quit
+    }if
+
+    % body
+    /n exch def
+    /procName exch def
+    count n lt{
+         (Error: assertMinStackSize: Stack arguments missing from procedure: ) procName concatstrings =
+        $error /errorname /stackunderflow put
+        stop
+     }if
 }bind def
 
 

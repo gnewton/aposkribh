@@ -1,0 +1,142 @@
+
+%(Start) =
+%/f (in.txt) (r) file def
+/f (%stdin) (r) file def
+
+%/out (out.txt) (w) file def
+/out (%stdout) (w) file def
+
+
+%out (START) writestring
+%out (\n) writestring
+
+/switch{
+    count 3 lt{
+        (Error: switch: need 3 args: value being tested, case dictionary, default fall through executable) =
+        stop
+    }if
+    
+    0 index type /arraytype ne{
+        (Error: switch: default must be an executable array) =
+        stop
+    }{
+        0 index xcheck not{
+            (Error: switch: default is array but not an executable array) =
+            stop
+        }if
+    }ifelse
+
+    1 index type /dicttype ne{
+        (Error: switch: case statements must be a dictionary) =
+        stop
+    }if
+    % value being checked can be anything
+        
+    /default exch def
+    /dic exch def
+    /v exch def
+
+    % body
+    dic v known not{
+        default exec
+    }{
+        dic v get exec
+    }ifelse
+    
+}bind def
+
+/kvstore 1000 dict def
+/line 0 def
+/cmd 1 string def
+{
+    /line line 1 add store
+    f cmd readline
+    /ok exch def
+    ok not{
+        exit
+    }if
+    /cmd exch def
+    %cmd =
+
+    cmd
+    <<
+        (p) {
+            /key 100 string def
+            /value 100 string def
+
+            /line line 1 add store
+            f key readline
+            /ok exch def
+            ok not{
+                exit
+            }if
+            /key exch store
+            %key =
+
+            /line line 1 add store
+            f value readline
+            /ok exch def
+            ok not{
+                exit
+            }if
+            /value exch store
+            kvstore key value put
+        }
+
+        (g) {
+            /key 100 string def
+            /value 100 string def
+
+            /line line 1 add store
+            f key readline
+            /ok exch def
+            ok not{
+                exit
+            }if
+            /key exch store
+            key =
+            %out key writestring
+            %out (\n) writestring
+            kvstore key known not{
+                %(f) =
+                out (f\n) writestring
+            }{
+                %(t) =
+                out (t\n) writestring
+                out kvstore key get writestring
+                out (\n) writestring
+                %kvstore key get =
+            }ifelse
+        }
+        
+        (Q) {(quit) =
+             quit} 
+    >>
+    {(Unknown command) =
+     cmd =
+     (line #) =
+     line =
+     quit
+    }
+    switch
+    
+}loop
+
+
+
+
+() =
+(-----------) =
+[30 10 22 23]
+{
+    /v exch def
+    v =
+    v
+    <<10 {4898985 =}>>
+    {(defaukt)= }
+    switch
+}forall
+
+
+
+

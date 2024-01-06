@@ -1,0 +1,69 @@
+
+/github.com.gnewton.aposkribh.test# 100 dict def
+
+
+github.com.gnewton.aposkribh.test# begin
+
+/runTests{
+    (runTests) =
+    2 dict begin
+    %1 assertHasNArgs
+    count 0 eq{
+        (Needs at least one argument) =
+        stop
+    }if
+
+    /tests exch def
+    (----_)=
+    tests type =
+    (----_)=
+
+    ttt validateTestData not{ % returns bool, bad data message
+        (Invalid test data) =
+    }if
+
+    end % local dict
+}bind def
+
+/validateTestData{ % returns bool, bad data message
+    (validateTestData) =
+    (validateTestData) 1 assertMinStackSize
+
+    2 dict begin
+    count 0 eq{
+        (Needs at least one argument) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+
+    % array of dicts with /proc, /dic(Optional), array of tests that are dicts, each with: /name, /in, /out(Optional) /resultsError (O), /runError(O)
+    /testArray exch def
+    %(validateTestData) testArray assertIsArray
+    (validateTestData) testArray assertIsArray
+
+    
+    true
+}bind def
+
+
+/assertIsArray{
+    (assertIsArray) 2 assertMinStackSize
+
+    1 index type /stringtype ne{
+        (ERROR: assertIsArray First argument not /stringtype) =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+
+    /ar exch def
+    /procName exch def
+
+    ar type /arraytype ne{
+        (87878878) =
+        (ERROR: assertIsArray: Not an array; type is: ) ar type 30 string cvs concatstrings ( = ) concatstrings ar toString concatstrings =
+        $error /errorname /stackunderflow put
+        stop
+    }if
+}bind def
+
+end % /github.com.gnewton.aposkribh.test# 

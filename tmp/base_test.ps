@@ -1,6 +1,8 @@
 %
 % base.ps is tested using simple testing mechanisms; no aposkribh test framework
 (base.ps) run
+(test.ps) run
+
 github.com.gnewton.aposkribh.base begin
 
 (base_test.ps) fileStart
@@ -280,12 +282,22 @@ end % github.com.gnewton.aposkribh.base
 [
     <<
         /dic /github.com.gnewton.aposkribh.base
-        /proc /addd
+        /proc [/add /sub /mul /idiv /div /mod]
         /tests[
             <<
-                /name (Add 2 ints)
-                /in [22 33]
-                /out [55]
+                /name (2 ints input)
+                /in [20 10]
+                /out [30]
+                /outdict
+                <<
+                    /add [30]
+                    /sub [10]
+                    /mul [200]
+                    /div [2.0]
+                    /idiv [2]
+                    /mod [0]
+                    /exp[1.024e+13]
+                >>
             >>
             <<
                 /name (Add 2 ints)
@@ -296,13 +308,11 @@ end % github.com.gnewton.aposkribh.base
             <<
                 /name (Add one string arg)
                 /in [(foo)]
-                /out [54]
                 /runError /typecheck
             >>
             <<
                 /name (Add no args)
                 /in []
-                /out [51]
                 /runError /stackunderflow
             >>
         ]
@@ -316,15 +326,50 @@ ttt ===
 (--------------------------) =
 ttt length =
 
-ttt 0 get /tests get 0 get /in get aload pop
+
 
 ttt 0 get /dic get load begin
-ttt 0 get /proc get load exec ===
+(K)=
+ttt 0 get /tests get 0 get /in get aload pop
+ttt 0 get /proc get 0 get load exec ===
+
+(MMMMMMMM) =
+/thisProc ttt 0 get /proc get 0 get def
+thisProc =
+
+%
+(add out) =
+ttt 0 get  /tests get 0 get /outdict get thisProc get ===
+
 end
 
 (OUT) =
 
 ttt 0 get /tests get
 {
-    /out get ===
+    /name =
+    /in get ===
+    () =
 }forall
+
+
+github.com.gnewton.aposkribh.test# begin
+github.com.gnewton.aposkribh.base begin
+clear
+
+
+(***********************) =
+
+clear
+{
+    (HELLO)=
+    ttt runTests
+    }stopped
+    {
+     (ERROR) =
+     $error /errorname get =
+ }if
+end % github.com.gnewton.aposkribh.base
+
+end %github.com.gnewton.aposkribh.test 
+
