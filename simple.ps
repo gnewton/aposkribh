@@ -213,15 +213,6 @@ github.com.gnewton.aposkribh.simple# begin
     }ifelse
 }def
 
-/assertMinStackSize{ % proc num
-     1 add count ge{
-         (assertMinStackSize: Stack arguments missing) =
-         =
-         clear
-         stop
-     }if
-     pop % proc
-}bind def
 
 /assertFalse{
     {

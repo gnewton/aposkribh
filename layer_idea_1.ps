@@ -1,0 +1,51 @@
+
+/layers 10 array def/B
+
+0 1 layers length 1 sub {
+    /i exch def
+    i ==
+}for
+
+/arrayfor{
+    /proc exch def
+    /a exch def
+    0 1 a length 1 sub {proc} for
+    
+}def
+(nnnn)=
+layers{
+    /i exch def
+    i ==
+}arrayfor
+
+(----------------) =
+quit
+
+/addToLayer{
+    10 dict begin
+    (Add to layer) =
+    % Dict
+    % lambda
+    % layer_number
+    /layerNumber exch def
+    load /lambda exch def
+    /d# exch def
+    d# ===
+    layerNumber =
+    d# lambda 
+    (Add to layer END) =
+    end
+}def
+
+/lambda0{
+    (lambda0 S) ==
+    10 dict begin
+    /dd exch def
+    dd /ff  get =
+    end
+    (lambda0 E) ==
+}def
+
+<< /ff 23>> /lambda0 0 addToLayer
+
+
