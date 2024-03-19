@@ -1,10 +1,166 @@
 
-/layers 10 array def/B
+<< /AllowTransparency true >> pop% enable transparency
+% .5 .setfillconstantalpha % FILL opacity
+% .5 .setstrokeconstantalpha  % stroke opacity
 
-0 1 layers length 1 sub {
+/mergeArrays{
+    8 dict begin
+
+    /y exch def
+    y /arraytype (Error: /mergeArrays: Second arg not array) stopIfNotType
+    /x exch def
+    x /arraytype (Error: /mergeArrays: First arg not array) stopIfNotType
+
+    /z x length y length add array def
+    
+    z 0 x putinterval
+    z x length y putinterval
+    
+    z
+    
+    end
+} def
+
+/debug false def
+
+/qbegin{
+    dict begin
+    /_this exch def
+    debug{
+        (START) =
+        _this =
+    }if
+}bind def
+
+/qend{
+    debug{
+        _this =
+        (END) =
+    }if
+    end
+}bind def
+
+/stopIfNotType{
+    10 dict begin
+    /msg exch def
+    msg type /stringtype eq not{
+        (Error: /stopIfNotType: Third arg is not a string) =
+        msg =
+        msg type =
+        stop
+    }if
+    
+    /t exch def
+    t type /nametype eq not{
+        (Error: /stopIfNotType: Second arg is not a nametype) =
+        t =
+        t type =
+        stop
+    }if
+
+    /v exch def
+
+     v type t eq not{
+         msg =
+         v =
+         v type =
+         stop
+     }if
+     end
+ }bind def
+
+/appendToArray{
+    /addToLayer 2 qbegin
+
     /i exch def
-    i ==
-}for
+    /a exch def
+
+    a /arraytype (Error: /appendToArray: First arg not array) stopIfNotType
+    
+    a [i] mergeArrays
+
+    qend
+}def
+
+% Num payers allowed
+/layers#<<
+            /initLayers{
+                (INIT========================================) =
+                /zlayers 32 array def
+
+                /numLayers zlayers length def
+                
+                0 1 numLayers 1 sub{
+                    /i exch def
+                    zlayers i 0 array put
+                }for
+            }
+            
+            /addToLayers{
+                /layerNumber exch def
+                {
+                    zlayers type pop
+                }stopped{
+                    $error /errorname get /undefined eq{
+                        layers# /initLayers get exec
+                    }{
+                        (Error) =
+                        $error /errorname get =
+                        quit
+                    }ifelse
+                }if
+
+                % Convert proc to string
+                cvlit /lambda exch def
+
+                layers# begin
+                /layer zlayers layerNumber get def
+                /newLayer layer lambda appendToArray def
+                zlayers layerNumber newLayer put
+                end
+            }
+            /renderLayerPerPage{
+                % TODO
+                quit
+            }
+            
+            /renderLayers{
+                1 dict begin 
+                /layersArray exch def
+                layersArray{
+                    renderLayer
+                }forall
+                
+                end
+            }
+            
+            /renderLayer{
+                1 dict begin
+                /layerNumber exch def
+                /layerArray zlayers layerNumber get def
+
+                layerArray length 0 ne{
+                    () =
+                    (Render loop) =
+                    i =
+                    0 1 layerArray length 1 sub{
+                        /j exch def
+                        j =
+                        /lambda layerArray j get def
+                        lambda cvx exec
+                    }for
+                }if
+                end
+            }
+            
+            /render{
+                0 1 numLayers 1 sub{
+                    renderLayer
+                  }for
+            }
+       >>
+def
+
 
 /arrayfor{
     /proc exch def
@@ -12,40 +168,84 @@
     0 1 a length 1 sub {proc} for
     
 }def
-(nnnn)=
-layers{
-    /i exch def
-    i ==
-}arrayfor
+
+
+/run{
+    /name exch def
+    /d# exch def
+
+    d# name get exec
+}bind def
+
+
+
 
 (----------------) =
+
+/bill{
+    (bill-55) =
+}bind def
+
+/addToLayers{
+    layers# /addToLayers run
+}def
+
+/circle{
+    gsave
+    100 0 325 arc
+    gsave
+    fill
+    grestore
+    0 setgray stroke
+    grestore
+}def
+
+{1 0 0 setrgbcolor 300 300 circle} 0 addToLayers
+{0 1 0 setrgbcolor 400 400 circle} 0 addToLayers
+{0 1 1 setrgbcolor 350 350 circle} 0 addToLayers
+
+{.5 .5 .5 setrgbcolor 370 370 circle} 1 addToLayers
+
+clear
+layers# begin
+%render
+
+ .5 .setstrokeconstantalpha  % stroke opacity
+ .5 .setfillconstantalpha % FILL opacity
+0 renderLayer
+1 renderLayer
+%[1 0] renderLayers
+ end
+
+ showpage
+
+    
+
+
+[1 2 3] [5] mergeArrays ==
+[1 2 3] 4 appendToArray ==
+[1 2 3] 54.0 appendToArray ==
+[1 2 3] null appendToArray ==
+[1 2 3] (foo)  appendToArray ==
+[1 2 3] false  appendToArray ==
+[1 2 3] <</m false>>  appendToArray ==
+[] <</m false>>  appendToArray ==
+/bb [] (/foo 100 def  foo =)  appendToArray def
+
+bb 0 get ==
+bb 0 get cvx exec
+bb 0 get cvx cvlit =
+(888) =
+%3 <</m false>>  appendToArray ==
+
+
 quit
 
-/addToLayer{
-    10 dict begin
-    (Add to layer) =
-    % Dict
-    % lambda
-    % layer_number
-    /layerNumber exch def
-    load /lambda exch def
-    /d# exch def
-    d# ===
-    layerNumber =
-    d# lambda 
-    (Add to layer END) =
-    end
-}def
 
-/lambda0{
-    (lambda0 S) ==
-    10 dict begin
-    /dd exch def
-    dd /ff  get =
-    end
-    (lambda0 E) ==
-}def
+/args{
+    /argsarray exch def/B
 
-<< /ff 23>> /lambda0 0 addToLayer
+}bind def
+    
 
 
