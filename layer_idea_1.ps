@@ -3,6 +3,242 @@
 % .5 .setfillconstantalpha % FILL opacity
 % .5 .setstrokeconstantalpha  % stroke opacity
 
+
+/argsRegistry#<<
+                  % Dictionary of dictionaries, with first key dict key, second key proc key
+                  /registry#<< >>
+
+                  /getArgsInfo{
+                      10 dict begin
+                      /procName exch def
+                      /procDict# exch def
+
+                      registry# procDict# known not{
+                          (Inknown dict key) =
+                          null
+                      }{
+                          (Known dict key) =
+                          registry# procDict# get procName known not{
+                              (Unknown inner key) =
+                          }{
+                              registry# procDict# get procName get ===
+                          }ifelse
+                      }ifelse
+
+                      end
+                  }bind def
+                  
+                  /registerArgs{
+                      2 dict begin
+                      /procDict# exch def
+                      /argsInfo# exch def
+                      
+                      argsInfo# ===
+                      
+                      /procName argsInfo# /procName get def
+                                            
+                      % Any d# entries?
+                      registry# procDict# known not{
+                          registry# procDict# <<>> put
+                      }if
+
+                      /thisDictReg# registry# procDict# get def
+                      thisDictReg# ===
+                      thisDictReg# procName argsInfo# put
+                      thisDictReg# ===
+                      (======_ ) =
+                      registry# ===
+                      
+                      
+                      
+                      end
+                  }
+
+              >>
+def
+
+
+
+/checkArgs{
+    10 dict begin
+    /procName exch def
+    /inOutArgsTypes exch def
+    %
+    /argsGood false def
+
+    inOutArgsTypes{ % A
+        (******************************************************) =
+        /args# exch def
+        /inArgs args# /in get def
+        0 1 inArgs length 1 sub{ %B
+            /i exch def
+            () =
+            i =
+            inArgs i get =
+
+            % Check to see if stack size is at least as large as array
+            count inArgs length lt{
+                (!!!!!!!!!!!) =
+                count =
+                inArgs length =
+                exit
+            }if
+
+            (OK) =
+            % Walk through stack to see if types match inArgs
+            stack
+            /allArgsMatch true def
+            0 1 inArgs length 1 sub{ % C
+                /j exch def
+                (JJJ) =
+                j =
+                j index type =
+                inArgs j get  =
+                j index type inArgs j get ne{
+                   /allArgsMatch false store
+                }if
+                (===) =
+            }for % C
+            allArgsMatch{
+                /argsGood true store
+                exit
+            }if
+        }for % B
+
+        argsGood{
+            exit
+        }if
+    }forall % A
+    
+    argsGood
+    end
+}bind def
+
+/evaluateArgs{
+    10 dict begin
+    /d# exch def
+    d# begin
+    inOutArgsTypes procName checkArgs
+    end
+    end
+}bind def
+
+/testArgs{
+    <<
+        /procName /testArgs
+        /inOutArgsTypes [
+            << /in [/integertype /floattype]
+               /out [/booltype]
+            >>
+            << /in [/integertype]
+               /out [/booltype]
+            >>
+            << /in [/stringtype /dicttype]
+               /out []
+            >>
+            << /in [/arraytype]
+               /out []
+            >>
+            << /in [/nulltype]
+               /out []
+            >>
+            << /in [/booleantype]
+               /out []
+            >>
+        ]
+    >> evaluateArgs
+}def
+
+
+true  testArgs  =
+
+/showInArgs{
+    {
+        /in get ==
+    }forall
+}def
+
+/Zbegin{
+    4 dict begin
+    /argInfo# exch def
+    argInfo# evaluateArgs not{
+        (Error: Bad args) =
+        (Need:) =
+        argInfo# /inOutArgsTypes get showInArgs
+        stop
+    }if
+
+}bind def
+
+/Zend{
+    end
+}bind def
+
+/simpleProc{
+    % int,string in; string out
+    <<
+        /procName /simpleProc
+        /inOutArgsTypes [
+            << /in [/integertype /stringtype]
+               /out [/stringtype]
+            >>
+        ]
+    >> Zbegin
+
+    10045
+    Zend
+
+
+}def
+
+(SIMPLE PROC) =
+(fooo)  43 simpleProc =
+
+/thisDict#
+<<
+    /simpleProc{
+        (This is simpleProc) =
+    }
+    
+    /anotherProc{
+        (This is anotherProc) =
+    }
+>> def
+
+argsRegistry# begin
+<<
+    /procName /simpleProc
+    /inOutArgsTypes [
+        << /in [/integertype /stringtype]
+           /out [/stringtype]
+        >>
+    ]
+>> thisDict# registerArgs
+
+
+<<
+    /procName /anotherProc
+    /inOutArgsTypes [
+        << /in [/booleantype]
+           /out []
+        >>
+    ]
+>> thisDict# registerArgs
+
+thisDict# /anotherProc getArgsInfo
+
+<<>> /simpleProc getArgsInfo
+
+
+end
+
+    
+
+
+
+quit
+
+
 /mergeArrays{
     8 dict begin
 
@@ -40,22 +276,36 @@
     end
 }bind def
 
+/stopIfNotTypeMessage{
+    2 dict begin
+    /var exch def
+    /errorMsg exch def
+    /procName exch def
+
+    () =
+    (-----Error------------) =
+    procName =
+    errorMsg =
+    var =
+    var type =
+    (-----End Error------------) =
+    () =
+    
+    end
+}bind def
+
 /stopIfNotType{
     10 dict begin
     /msg exch def
     msg type /stringtype eq not{
-        (Error: /stopIfNotType: Third arg is not a string) =
-        msg =
-        msg type =
-        stop
+        (stopIfNotType) (Third arg is not a string) msg stopIfNotTypeMessage
+        quit
     }if
     
     /t exch def
     t type /nametype eq not{
-        (Error: /stopIfNotType: Second arg is not a nametype) =
-        t =
-        t type =
-        stop
+        (stopIfNotType) (Second arg is not a type type) t stopIfNotTypeMessage
+        quit
     }if
 
     /v exch def
@@ -119,9 +369,33 @@
                 zlayers layerNumber newLayer put
                 end
             }
-            /renderLayerPerPage{
-                % TODO
-                quit
+
+            /renderOneLayerPerPage{
+                (/renderOneLayerPerPage) =
+                1 dict begin
+                0 1 numLayers 1 sub{
+                    /i exch def
+                    zlayers i get length 0 gt{
+                        (Layer#) =
+                        i =
+                        zlayers i get length =
+                        zlayers i get  ==
+                        () =
+                        i renderLayer
+
+                        /Times-Roman findfont 42 scalefont setfont
+                        gsave
+                        1 .setfillconstantalpha % FILL opacity
+                        1 .setstrokeconstantalpha  % stroke opacity
+                        newpath
+                        0 setgray
+                        10 10 moveto
+                        i 5 string cvs show
+                        grestore
+                        showpage
+                    }if
+                  }for
+                end
             }
             
             /renderLayers{
@@ -137,6 +411,8 @@
             /renderLayer{
                 1 dict begin
                 /layerNumber exch def
+                layerNumber /integertype (ERROR: /renderLayer: layerNumber not int) stopIfNotType
+                
                 /layerArray zlayers layerNumber get def
 
                 layerArray length 0 ne{
@@ -193,6 +469,7 @@ def
 /circle{
     gsave
     100 0 325 arc
+    closepath
     gsave
     fill
     grestore
@@ -206,21 +483,33 @@ def
 
 {.5 .5 .5 setrgbcolor 370 370 circle} 1 addToLayers
 
+{.2 .2 .5 setrgbcolor 170 170 circle} 29 addToLayers
+
 clear
-layers# begin
-%render
 
  .5 .setstrokeconstantalpha  % stroke opacity
  .5 .setfillconstantalpha % FILL opacity
-0 renderLayer
+ 
+layers# begin
+render
+%0 renderLayer
 1 renderLayer
 %[1 0] renderLayers
  end
 
  showpage
 
-    
+ .5 .setstrokeconstantalpha  % stroke opacity
+ .5 .setfillconstantalpha % FILL opacity
 
+ layers# begin
+ renderOneLayerPerPage
+ end
+
+
+44 /integertype (Fail) stopIfNotType
+ 
+ quit
 
 [1 2 3] [5] mergeArrays ==
 [1 2 3] 4 appendToArray ==
@@ -246,6 +535,7 @@ quit
     /argsarray exch def/B
 
 }bind def
-    
+
+
 
 
