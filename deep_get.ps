@@ -1,0 +1,165 @@
+
+
+/Quit true def
+
+/nquit{
+    Quit{
+        quit
+    }if
+}bind def
+
+/notNull{
+    /msg1 exch def
+    /msg0 exch def
+    /v exch def
+
+    v null eq{
+        (Error) =
+        msg0 =
+        msg1 =
+        nquit
+    }if
+}def
+
+/dget{
+    3 dict begin
+    /msg exch def
+    /k exch def
+    /d# exch def
+
+    k (j Key is null) msg notNull 
+    d# (Error:mm  dict is null) msg notNull
+
+    d# k get
+    end
+}def
+
+/dknown{
+    3 dict begin
+    /msg exch def
+    /k exch def
+    /d# exch def
+
+    k (m Key is null) msg notNull 
+    d# (Error:mm  dict is null) msg notNull
+
+    d# k known
+    end
+}def
+
+
+    
+
+/deepGet{ % Gets deep value from hierarchy of dicts
+    () =
+    (#################) =
+    % dict9# [/dict0Name /dict1Name ... /dictNname] /finalKey]
+    % returns null if not found, value if found
+    10 dict begin
+    /da# exch def
+    /base# exch def
+    /key exch def
+
+    base# type /dicttype eq not{
+        (Error base dict not dictype) =
+        nquit
+    }if
+
+    /tmp# base# def
+
+    0 1 da# {
+        /thisD# exch def
+        thisD# (this#) notNull
+
+        (MM)=
+        thisD# =
+        tmp# thisD# (tmp# thisD# ) dknown not{
+            (NOT FOUND) =
+            null
+            exit
+        }{
+            (FOUND) =
+             /tmp# tmp# thisD# (Getting tmp# thisD#) dget store
+             tmp# type /dicttype eq not{
+                 (Error sub dict not dictype) =
+                 nquit
+             }if
+ 
+        }ifelse
+    }forall
+
+    tmp# key (foo) dknown not{
+        null
+    }{
+        tmp# key get
+    }ifelse
+    end
+}def
+
+ /baseGoodWithValue#
+ << /a (foo)
+    /d0# <<
+            /b (bar)
+            /d1# <<
+                    /c (foobar)
+                    /d2# <<
+                            /v (VALUE)
+                        >>
+                >>
+        >>
+ >>
+ def
+
+ /baseGoodNoValue#
+ << /a (foo)
+    /d0# <<
+            /b (bar)
+            /d1# <<
+                    /c (foobar)
+                    /d2# <<
+                            /foo (bar)
+                        >>
+                >>
+        >>
+ >>
+ def
+
+/baseSubDictNotDict#
+<< /a (foo)
+   /d0# <<
+           /b (bar)
+           /d1# 42
+        >>
+>>
+def
+
+(88888) =
+% both of these fail
+%%% null /a get =
+%%% baseGoodWithValue# null get =
+%nquit
+
+
+
+% Should cause error
+/v baseSubDictNotDict# [null /d1# /d2#]  deepGet ===
+
+
+% Should cause error
+/v null [/d0# /d1# /d2#]  deepGet ===
+
+% Shoud return (VALUE)
+/v baseGoodWithValue# [/d0# /d1# /d2#]  deepGet ===
+
+% Shoud return null
+/v baseGoodNoValue# [/d0# /d1# /d2#]  deepGet ===
+
+% Should cause error
+/v baseSubDictNotDict# [/d0# /d1# /d2#]  deepGet ===
+
+
+% Should cause error
+
+
+
+quit

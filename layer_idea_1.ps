@@ -4,6 +4,20 @@
 % .5 .setstrokeconstantalpha  % stroke opacity
 
 
+
+/scope{ % proc dict % Runs procName within scope of parent dict
+    2 dict begin
+    /procName exch def
+    /d# exch def
+    d# begin procName load exec end
+    end
+}bind def
+
+
+/github.com.gnewton.aposkribh.args# 100 dict def
+
+%%%%%%%%%%%%%% DICT start
+github.com.gnewton.aposkribh.args# begin
 /argsRegistry#<<
                   % Dictionary of dictionaries, with first key dict key, second key proc key
                   /registry#<< >>
@@ -14,14 +28,22 @@
                       /procDict# exch def
 
                       registry# procDict# known not{
-                          (Inknown dict key) =
+                          % Unknown procDict key
                           null
                       }{
-                          (Known dict key) =
+                          (Known proc dict key) =
                           registry# procDict# get procName known not{
-                              (Unknown inner key) =
+                              % Unknown proc key) =
+                              null
                           }{
-                              registry# procDict# get procName get ===
+                              registry# procDict# get procName get /inOutArgsTypes known not{
+                                  % inOutArgsTypes not defined
+                                  null
+                              }{
+                                  registry# procDict# get procName get /inOutArgsTypes get
+                              }ifelse
+                              
+                              (END KNOWN) =
                           }ifelse
                       }ifelse
 
@@ -53,10 +75,12 @@
                       
                       end
                   }
-
+                  
               >>
 def
 
+end % github.com.gnewton.aposkribh.args
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 /checkArgs{
@@ -205,7 +229,7 @@ true  testArgs  =
     }
 >> def
 
-argsRegistry# begin
+github.com.gnewton.aposkribh.args# begin
 <<
     /procName /simpleProc
     /inOutArgsTypes [
@@ -213,7 +237,7 @@ argsRegistry# begin
            /out [/stringtype]
         >>
     ]
->> thisDict# registerArgs
+>> thisDict# argsRegistry# begin registerArgs end
 
 
 <<
@@ -223,20 +247,26 @@ argsRegistry# begin
            /out []
         >>
     ]
->> thisDict# registerArgs
+>> thisDict# argsRegistry# begin registerArgs end
 
-thisDict# /anotherProc getArgsInfo
+(777) =
+thisDict# /anotherProc argsRegistry# /getArgsInfo scope ===
+([[[[[[) =
+thisDict# /FakeProc argsRegistry# /getArgsInfo  scope ==
 
-<<>> /simpleProc getArgsInfo
-
-
+% (8888) =
+% <<>> /simpleProc argsRegistry# begin getArgsInfo end ==
+% (99999) =
+% <<>> /simpleProc argsRegistry# /getArgsInfo scope ==
+% (77777) =
+% <<>> /FakeProc argsRegistry# /getArgsInfo scope ==
 end
-
+quit
     
 
+($$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
 
 
-quit
 
 
 /mergeArrays{
