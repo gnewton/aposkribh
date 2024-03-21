@@ -9,6 +9,17 @@
     2 dict begin
     /procName exch def
     /d# exch def
+
+    procName type /nametype eq not{
+        (Error: scope: Second arg not /nametype) =
+        quit
+    }if
+
+    d# type /dicttype eq not{
+        (Error: scope: First arg not /dicttype) =
+        quit
+    }if
+    
     d#  github.com.gnewton.aposkribh.util# /hasState get exec{
         d# begin procName load exec end
     }{
@@ -304,12 +315,17 @@ end
 (Testing hasState) =
 
 (A)=
-<<>> github.com.gnewton.aposkribh.util# begin hasState end =
+<<>> github.com.gnewton.aposkribh.util# /hasState scope =
 (B)=
-github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState get exec =
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState scope =
 (C)=
-github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# begin hasState end =
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState scope  =
 (D)=
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState scope =
+
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# null scope =
+
+
 quit
     
 
