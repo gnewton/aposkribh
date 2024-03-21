@@ -5,81 +5,116 @@
 
 
 
-/scope{ % proc dict % Runs procName within scope of parent dict
+/scope{ % dict proc % Runs dict.procName. If dict is StateFul, pushes dict onto dict stack before running;
     2 dict begin
     /procName exch def
     /d# exch def
-    d# begin procName load exec end
+    d#  github.com.gnewton.aposkribh.util# /hasState get exec{
+        d# begin procName load exec end
+    }{
+        d# procName get exec
+    }ifelse
     end
 }bind def
 
 
-/github.com.gnewton.aposkribh.args# 100 dict def
+/github.com.gnewton.aposkribh.util#
+<<
+    /hasState{
+        2 dict begin
+        /d# exch def
+
+        d# type /dicttype eq not{
+            (Error: /hasState: arg is not dict) =
+            quit
+        }if
+
+        d# /_Metadata known not{
+            false % return
+        }{
+            d# /_Metadata get /_Stateful known not{
+                false
+            }{
+                d# /_Metadata get /_Stateful get % return
+            }ifelse % return
+        }ifelse
+        end
+    }
+>>def
+
+
 
 %%%%%%%%%%%%%% DICT start
-github.com.gnewton.aposkribh.args# begin
-/argsRegistry#<<
-                  % Dictionary of dictionaries, with first key dict key, second key proc key
-                  /registry#<< >>
+/github.com.gnewton.aposkribh.args#
+<<
+    /_Metadata
+    <<
+        /_DictName (/github.com.gnewton.aposkribh.args#)
+        /_Stateful true
+    >>
 
-                  /getArgsInfo{
-                      10 dict begin
-                      /procName exch def
-                      /procDict# exch def
+    /argsRegistry#
+    <<
+        /_Metadata
+        <<
+            /_DictName (/argsRegistry#)
+            /_Stateful true
+        >>
+        % Dictionary of dictionaries, with first key dict key, second key proc key
+        /registry#<< >>
 
-                      registry# procDict# known not{
-                          % Unknown procDict key
-                          null
-                      }{
-                          (Known proc dict key) =
-                          registry# procDict# get procName known not{
-                              % Unknown proc key) =
-                              null
-                          }{
-                              registry# procDict# get procName get /inOutArgsTypes known not{
-                                  % inOutArgsTypes not defined
-                                  null
-                              }{
-                                  registry# procDict# get procName get /inOutArgsTypes get
-                              }ifelse
-                              
-                              (END KNOWN) =
-                          }ifelse
-                      }ifelse
+        /getArgsInfo{
+            10 dict begin
+            /procName exch def
+            /procDict# exch def
 
-                      end
-                  }bind def
-                  
-                  /registerArgs{
-                      2 dict begin
-                      /procDict# exch def
-                      /argsInfo# exch def
-                      
-                      argsInfo# ===
-                      
-                      /procName argsInfo# /procName get def
-                                            
-                      % Any d# entries?
-                      registry# procDict# known not{
-                          registry# procDict# <<>> put
-                      }if
+            registry# procDict# known not{
+                % Unknown procDict key
+                null
+            }{
+                (Known proc dict key) =
+                registry# procDict# get procName known not{
+                    % Unknown proc key) =
+                    null
+                }{
+                    registry# procDict# get procName get /inOutArgsTypes known not{
+                        % inOutArgsTypes not defined
+                        null
+                    }{
+                        registry# procDict# get procName get /inOutArgsTypes get
+                    }ifelse
+                    
+                    (END KNOWN) =
+                }ifelse
+            }ifelse
 
-                      /thisDictReg# registry# procDict# get def
-                      thisDictReg# ===
-                      thisDictReg# procName argsInfo# put
-                      thisDictReg# ===
-                      (======_ ) =
-                      registry# ===
-                      
-                      
-                      
-                      end
-                  }
-                  
-              >>
-def
+            end
+        }bind def
+        
+        /registerArgs{
+            2 dict begin
+            /procDict# exch def
+            /argsInfo# exch def
+            
+            argsInfo# ===
+            
+            /procName argsInfo# /procName get def
+            
+            % Any d# entries?
+            registry# procDict# known not{
+                registry# procDict# <<>> put
+            }if
 
-end % github.com.gnewton.aposkribh.args
+            /thisDictReg# registry# procDict# get def
+            thisDictReg# ===
+            thisDictReg# procName argsInfo# put
+            thisDictReg# ===
+            (======_ ) =
+            registry# ===
+            end
+        }
+    >> def %   /argsRegistry#<<
+>>def % github.com.gnewton.aposkribh.args
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -261,6 +296,20 @@ thisDict# /FakeProc argsRegistry# /getArgsInfo  scope ==
 % (77777) =
 % <<>> /FakeProc argsRegistry# /getArgsInfo scope ==
 end
+
+
+(hello)=
+
+() =
+(Testing hasState) =
+
+(A)=
+<<>> github.com.gnewton.aposkribh.util# begin hasState end =
+(B)=
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState get exec =
+(C)=
+github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# begin hasState end =
+(D)=
 quit
     
 
