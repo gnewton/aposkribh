@@ -1,5 +1,5 @@
 
-all: examples_test test trace util tmp
+all: examples_test test trace util tmp deep_get 
 
 unit:
 	echo "unit"
@@ -26,6 +26,10 @@ tmp:
 	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY -Sgithub.com.gnewton.aposkribh=foobar  tmp.ps
 
 appendArray: 
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY -Sgithub.com.gnewton.aposkribh=foobar  appendArray_test.ps	
+	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY -Sgithub.com.gnewton.aposkribh=foobar  appendArray_test.ps
 
+deepGet: 
+	gs -sDEVICE=nullpage  -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY   deep_get.ps	
 
+layer_idea:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE -dQUIET -dSAFER -sDEVICE=pdfwrite  -dDOINTERPOLATE  -o layer_idea_1.pdf layer_idea_1.ps
