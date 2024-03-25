@@ -1,0 +1,70 @@
+
+
+/T2
+<<
+    /z {
+        (ZZZ) =
+    }bind def
+
+    /bar{
+        z
+    }
+>>def
+
+
+T2 /bar get exec
+
+T2 begin
+z
+bar
+end
+
+
+%%% Below from: https://seriot.ch/projects/programming_in_postscript.html
+
+/CALLSTACK 20 array def
+/CS_INDEX 0 def            % callstack index
+/CSI 0 def            % callstack index
+
+/CS_PRINT {
+    5 dict begin
+    (\nCALLSTACK:) =
+    0 1 CSI {
+        /idx exch def
+        /line CALLSTACK idx get def
+        idx ==only ( ) =only line =
+    } for
+    end
+} def
+
+/CS_PUT {
+    1 dict begin
+    /s exch def
+    CALLSTACK CS_INDEX s put    
+    end
+    /CSI CSI 1 add def
+} def
+
+/CS_POP {        
+    CALLSTACK CS_INDEX null put
+    /CS_INDEX CS_INDEX 1 sub def
+} def
+
+/_tc { errordict/typecheck } bind def     % save original procedure
+errordict/typecheck { CS_PRINT _tc } put  % redefine the procedure
+
+/su_ { errordict/stackunderflow } bind def 
+errordict/stackunderflow { CS_PRINT su_ } put
+
+/bbb{
+    (/bbb) CS_PUT
+    
+    (HELLO){
+        
+    }if
+    CS_POP
+}bind def
+
+%bbb
+
+22 =only (mm)  ==only (hello) =
