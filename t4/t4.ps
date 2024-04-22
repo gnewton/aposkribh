@@ -1,4 +1,5 @@
 
+
 /#Args
 <<
     %/#dicts <<>>
@@ -7,13 +8,18 @@
 
 
 
-/Debug2
+/Debug
 <<
     /#MyDict
     <<
         /foo false
         /ZZ true
     >>
+
+    /addDebug{
+
+    }def
+    
 >>def
 
 
@@ -32,9 +38,9 @@
 /isDebugging{
      /procName exch def
      /dictName exch def
-     Debug2 dictName  known{
-         Debug2  dictName get procName known{
-             Debug2  dictName get procName get{
+     Debug dictName  known{
+         Debug  dictName get procName known{
+             Debug  dictName get procName get{
                  true
              }{
                  false                 

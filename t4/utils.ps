@@ -6,7 +6,7 @@
     /d# exch def
 
     d# /Name known{
-        d# /Name get =
+        d# /__Name get =
     }if
     d# begin
 }def
@@ -19,7 +19,7 @@
 
 github.com.gnewton.aposkribh.util# nbegin
 
-/Name (Hello) def
+/__Name (github.com.gnewton.aposkribh.util#) def
 
 /switch{ % Value, case dict, default {}
     3 dict nbegin
@@ -131,9 +131,93 @@ nend
 
 github.com.gnewton.aposkribh.util# nbegin
 (MMMM - )(b) concatstrings =
-github.com.gnewton.aposkribh.util# /Name known  =
+github.com.gnewton.aposkribh.util# /__Name known  =
 
 clear
-1.1 [(M2) (Znn)(mm2)] concatAstrings =
+%( ) [(M2) (Znn)(mm2)] concatAstrings =
 
 nend
+
+% ############################# ++
+/tmpTest# 100 dict def
+tmpTest# begin
+/zoom_test{
+    (zoom TEST) =
+}def
+end % ######################### --
+
+
+
+% ############################# ++
+/tmp# 100 dict def
+tmp# begin
+/zoom{
+    (zoom) =
+}def
+end % ######################### --
+
+
+(------------) =
+/test2 {/zoom 4 string cvs (_test) concatstrings}def
+test2 =
+tmpTest# test2 known =
+
+tmpTest# test2 get exec
+
+
+(----------------------------------) =
+tmpTest# ===
+
+%github.com.gnewton.aposkribh.util# 200 string cvs ===
+
+%github.com.gnewton.aposkribh.util# === 
+
+
+
+
+/runTests{
+    10 dict begin
+    /procKey exch def
+    /d# exch def
+
+    procKey =
+    d# =
+
+
+    /testName {procKey (_test) concatstrings} def
+
+    tmpTest# testName known{
+        tmpTest# testName get exec
+    }if
+
+
+    end
+}def
+
+/test{
+    (TEST start) =
+    10 dict begin
+
+    /ds# exch def
+
+    ds#{
+        /d# exch def
+        d# ===
+
+        d#{
+            pop
+            /key exch def
+            key =
+            d# key get xcheck{
+                (RUN TESTS) =
+                d# key key length string cvs runTests 
+            }if
+        }forall
+    }forall
+
+    end
+}def
+
+[tmp#] test
+
+
