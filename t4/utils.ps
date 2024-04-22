@@ -1,0 +1,137 @@
+
+
+
+/nbegin{
+    (A)=
+    /d# exch def
+
+    d# /Name known{
+        d# /Name get =
+    }if
+    d# begin
+}def
+
+/nend{
+    end
+}def
+
+/github.com.gnewton.aposkribh.util# 100 dict def
+
+github.com.gnewton.aposkribh.util# nbegin
+
+/Name (Hello) def
+
+/switch{ % Value, case dict, default {}
+    3 dict nbegin
+    count 3 lt{
+        (/switch: need 3 args: value being tested, case dictionary, default fall through executable) Error
+    }if
+    
+    0 index type /arraytype ne{
+        (/switch: default must be an executable array) Error
+    }{
+        0 index xcheck not{
+            (/switch: default is array but not an executable array) Error
+        }if
+    }ifelse
+
+    1 index type /dicttype ne{
+        (/switch: case statements must be a dictionary) Error
+    }if
+    % value being checked can be anything
+        
+    /default exch def
+    /dic exch def
+    /v exch def
+
+    % body
+    dic v known not{
+        default exec
+    }{
+        dic v get exec
+    }ifelse
+    nend
+}bind def % switch
+
+
+/setError{
+    /e exch def
+    /emsg exch def
+    $error /errorname e put
+    $error /errorinfo emsg put
+}bind def
+
+/concatAstrings{ % (Z) [(a) (b) (M)] -> (aZbZM)
+
+    count 2 lt{
+        (/concatAstrings: needs two args) /stackunderflow  setError
+    }if
+
+    0 index type /arraytype ne{
+        (/concatAstrings: first arg not array) /typecheck setError
+        (ZZ) =
+    }if
+
+    1 index type /stringtype ne {
+        (/concatAstrings: second arg not string) /typecheck setError
+        (ZZ-2) =
+        $error /errorname (AAA) put
+        /Foo signalerror
+    }if
+    
+    10 dict begin
+    (MMMMMMMMMMMMMMM) =
+    /a exch def
+    /spc exch def
+
+    /s () def
+    0 1 a length 1 sub{
+        /i exch def
+        /str a i get def
+        () =
+        i =
+        str =
+        i 0 ne{
+            /s s spc concatstrings def
+        }if
+        /s s str concatstrings def
+    }for
+    s =
+    (------)=
+    end
+}bind def
+
+%% /concatstrings derived from https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings{ % (a) (b) -> (ab)  
+%    $error ===
+    count 2 lt{
+        (/concatstrings: needs two args) /stackunderflow  setError
+    }if
+
+    0 index type /stringtype ne{
+        (/concatstrings: first arg not string) /typecheck setError
+    }if
+
+    1 index type /stringtype ne{
+        (/concatstrings: second arg not string) /typecheck setError
+    }if
+
+    % body
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} bind def
+
+
+
+nend
+
+github.com.gnewton.aposkribh.util# nbegin
+(MMMM - )(b) concatstrings =
+github.com.gnewton.aposkribh.util# /Name known  =
+
+clear
+1.1 [(M2) (Znn)(mm2)] concatAstrings =
+
+nend
