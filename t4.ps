@@ -1,0 +1,193 @@
+
+/#Args
+<<
+    %/#dicts <<>>
+>>def
+
+
+/Debug [[/#MyDict /foo]] def
+
+/Debug2
+<<
+    /#MyDict
+    <<
+        /foo false
+        /ZZ true
+    >>
+>>def
+
+
+/debugStart{
+    /procName exch def
+    /dictName exch def
+
+    dictName procName isDebugging{
+        (--------------START DEBUG) =
+        dictName =
+        procName =
+    }if
+}bind def
+
+
+/isDebugging{
+     /procName exch def
+     /dictName exch def
+     Debug2 dictName  known{
+         Debug2  dictName get procName known{
+             Debug2  dictName get procName get{
+                 true
+             }{
+                 false                 
+             }ifelse
+         }{
+             false
+         }ifelse
+     }
+     {false}
+     ifelse
+
+ }def
+
+/debugEnd{
+    /procName exch def
+    /dictName exch def
+
+    dictName procName isDebugging{
+        (--------------END DEBUG) =
+    }if
+}def
+
+/isRegistered{
+    /procName exch def
+    /dictName exch def
+
+    #Args dictName known not{
+        (----ERROR-----) =
+        (Dictionary not registered) =
+        dictName =
+        exit
+    }if
+
+    #Args dictName get procName known not{
+        (----ERROR-----) =
+        (Dict registered) =
+        dictName =
+        (Proc not registered) =
+        procName =
+        exit
+    }if
+
+    true
+}bind def
+
+/run{
+    /proc exch def
+    /procName exch def
+    /dictName exch def
+    (RUN) =
+
+    dictName procName isRegistered
+
+    procName =
+        dictName =
+        (00000)=
+        #Args dictName get procName get ===
+        (00000)=
+        % record stacksize
+        % look up in args and validate they are OK
+        dictName procName debugStart
+        proc
+        dictName procName debugEnd
+        % look up out args and see if they are ok
+        % verify stack delta is correct
+
+}def
+
+
+/#MyDict 100 dict def
+% Need to pre-define, so can reference in proc definitions
+
+
+/inOutArgsTypes [
+    << /in [/integertype /floattype]
+       /out [/booltype]
+    >>
+    << /in [/integertype]
+       /out [/booltype]
+    >>
+    << /in [/stringtype /dicttype]
+       /out []
+    >>
+    << /in [/arraytype]
+       /out []
+    >>
+    << /in [/nulltype]
+       /out []
+    >>
+    << /in [/booleantype]
+       /out []
+    >>
+] def
+
+/registerProcDocs{
+
+}bind def
+
+/registerProcArgs{
+    /args exch def
+    /dictName exch def
+    /procName exch def
+
+    #Args dictName known not{
+        #Args dictName <<>> put
+    }if
+    #Args ===
+    #Args dictName get procName args put
+    #Args ===
+    (====) =
+}bind def
+
+/foo /#MyDict inOutArgsTypes  registerProcArgs
+
+/ZZ /#MyDict null  registerProcArgs
+
+
+#MyDict begin
+/foo{
+    /#MyDict /foo{
+        (Hello foo) =
+    }run
+}bind def
+
+
+/ZZ{
+    /#MyDict /ZZ{
+        (Hello ZZ) =
+    }run
+}bind def
+
+
+/bar{
+    /#MyDict /bar{
+        (Hello bar) =
+    }run
+}bind def
+end % #MyDict
+
+
+
+#MyDict ===
+
+#Args ===
+%#Args /#MyDict /foo inOutArgsTypes
+
+
+
+#MyDict begin
+foo
+ZZ
+bar
+end
+
+
+

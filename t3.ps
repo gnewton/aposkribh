@@ -1,0 +1,160 @@
+
+
+
+((hello) =) cvx exec
+
+/m{
+    (What is this) =
+}def
+
+m
+
+/m load exec
+
+
+
+
+/inOutArgsTypes [
+    << /in [/integertype /floattype]
+       /out [/booltype]
+    >>
+    << /in [/integertype]
+       /out [/booltype]
+    >>
+    << /in [/stringtype /dicttype]
+       /out []
+    >>
+    << /in [/arraytype]
+       /out []
+    >>
+    << /in [/nulltype]
+       /out []
+    >>
+    << /in [/booleantype]
+       /out []
+    >>
+] def
+
+
+
+/#MyDict
+<<
+     /M{
+     (This is M) def
+ }
+
+
+
+>> def
+
+
+
+/#Args
+<<
+    /#dicts <<>>
+>>def
+
+/#Procs
+<<
+    /#dicts <<>>
+>>def
+
+
+/#All
+<<
+    /#Args #Args
+    /#Procs #Procs
+>>def
+
+/registerArgs{
+    /_#args exch def
+    /_procName exch def
+    /_d# exch def
+    %#Args _procName _#args  put
+    #All /#Args get /#dicts get _procName _#args  put 
+}def
+
+/registerProc{
+    /_proc exch def
+    /_procName exch def
+    /_dictName exch def
+
+    (***) =
+    /_proc load /_proc exch def
+    (**) =
+
+    #All /#Procs get /#dicts get _d# known not{
+        #All /#Procs get /#dicts get _dictName <<>> put
+    }if
+    
+    #All /#Procs get /#dicts get _dictName get _procName {_proc}  put 
+}def
+
+
+
+/foo{
+     (This is foo) =
+ }def
+
+
+/#MyDict /bar inOutArgsTypes registerArgs
+
+(Hello) =
+
+
+
+ /#MyDict  /M {M} registerProc
+
+quit
+ 
+
+/#MyDict
+ /FooBar
+ {
+
+     (This is FooBar) =
+
+ } registerProc
+
+
+
+
+
+/#MyDict
+ /bar
+ {
+     (This is Bar) =
+ } registerProc
+ (Hellohhh) =
+
+
+
+foo
+(Hellohhhhhhlllllh) =
+
+#Args ===
+(**********************************)=
+#Procs ===
+
+%#All /#Procs get /#dicts get /#MyDict get /bar  get exec
+(**********************************) =
+
+#Args /#dicts get /bar get ===
+
+
+/run{
+    /_dictName exch def
+    /_procName exch def
+    (START RUN) =
+    (ZZZ) #All /#Procs get /#dicts get _dictName get _procName  get exec
+    (END RUN) =
+}def
+
+(---BAR) =
+/bar /#MyDict run
+
+(---FOOBAR)=
+(HHHHH) /FooBar /#MyDict  run
+    
+(+++++++++++) =
+#All ===

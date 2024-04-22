@@ -5,25 +5,26 @@
 
 
 
+
 /scope{ % dict proc % Runs dict.procName. If dict is StateFul, pushes dict onto dict stack before running;
     2 dict begin
-    /procName exch def
-    /d# exch def
+    /_procName exch def
+    /_d# exch def
 
-    procName type /nametype eq not{
+    _procName type /nametype eq not{
         (Error: scope: Second arg not /nametype) =
         quit
     }if
 
-    d# type /dicttype eq not{
+    _d# type /dicttype eq not{
         (Error: scope: First arg not /dicttype) =
         quit
     }if
-    
-    d#  github.com.gnewton.aposkribh.util# /hasState get exec{
-        d# begin procName load exec end
+
+    _d#  github.com.gnewton.aposkribh.util# /hasState get exec{
+        _d# begin _procName load exec end
     }{
-        d# procName get exec
+        _d# _procName get exec
     }ifelse
     end
 }bind def
@@ -33,20 +34,20 @@
 <<
     /hasState{
         2 dict begin
-        /d# exch def
+        /_d# exch def
 
-        d# type /dicttype eq not{
+        _d# type /dicttype eq not{
             (Error: /hasState: arg is not dict) =
             quit
         }if
 
-        d# /_Metadata known not{
+        _d# /Metadata known not{
             false % return
         }{
-            d# /_Metadata get /_Stateful known not{
+            _d# /Metadata get /_Stateful known not{
                 false
             }{
-                d# /_Metadata get /_Stateful get % return
+                _d# /Metadata get /_Stateful get % return
             }ifelse % return
         }ifelse
         end
@@ -58,7 +59,7 @@
 %%%%%%%%%%%%%% DICT start
 /github.com.gnewton.aposkribh.args#
 <<
-    /_Metadata
+    /Metadata
     <<
         /_DictName (/github.com.gnewton.aposkribh.args#)
         /_Stateful true
@@ -66,7 +67,7 @@
 
     /argsRegistry#
     <<
-        /_Metadata
+        /Metadata
         <<
             /_DictName (/argsRegistry#)
             /_Stateful true
@@ -323,10 +324,10 @@ github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState
 (D)=
 github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# /hasState scope =
 
-github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# null scope =
+%github.com.gnewton.aposkribh.args#  github.com.gnewton.aposkribh.util# null scope =
 
 
-quit
+%quit
     
 
 ($$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
@@ -429,6 +430,10 @@ quit
 
 % Num payers allowed
 /layers#<<
+            /clear{
+                initLayers
+            }
+            
             /initLayers{
                 (INIT========================================) =
                 /zlayers 32 array def
@@ -563,7 +568,7 @@ def
 
 /circle{
     gsave
-    100 0 325 arc
+    100 0 225 arc
     closepath
     gsave
     fill
@@ -598,10 +603,13 @@ render
  .5 .setfillconstantalpha % FILL opacity
 
  layers# begin
+% clear
  renderOneLayerPerPage
  end
 
+(YYYYYYYYYYYYYYYYYYYYYYYY) =
 
+ 
 44 /integertype (Fail) stopIfNotType
  
  quit
@@ -630,6 +638,8 @@ quit
     /argsarray exch def/B
 
 }bind def
+
+
 
 
 
