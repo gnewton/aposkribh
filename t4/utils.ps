@@ -55,28 +55,30 @@ github.com.gnewton.aposkribh.util# nbegin
 
 
 /setError{
+    5 begin
     /e exch def
     /emsg exch def
     $error /errorname e put
     $error /errorinfo emsg put
-}bind def
+    end
+}def
 
 /concatAstrings{ % (Z) [(a) (b) (M)] -> (aZbZM)
 
-    count 2 lt{
-        (/concatAstrings: needs two args) /stackunderflow  setError
-    }if
+    % count 2 lt{
+    %     (/concatAstrings: needs two args) /stackunderflow  setError
+    % }if
+
+
 
     0 index type /arraytype ne{
         (/concatAstrings: first arg not array) /typecheck setError
         (ZZ) =
     }if
 
-    1 index type /stringtype ne {
+    1 index type /stringtype ne{
+        (EEE)=
         (/concatAstrings: second arg not string) /typecheck setError
-        (ZZ-2) =
-        $error /errorname (AAA) put
-        /Foo signalerror
     }if
     
     10 dict begin
