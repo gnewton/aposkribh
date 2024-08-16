@@ -15,11 +15,25 @@ Library# begin
     <<
         /Test emptyDict
         /Params emptyDict
-        
         /Code emptyDict
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        /hrun{
-            (hrun) =
+        /drun{
+            2 dict begin
+            /proc exch def
+            /#dict exch def
+
+            #dict /Code get proc get exec
+            end
+        }def
+
+
+        /prun{
+            2 dict begin
+            /proc exch def
+
+            Code proc get exec
+            end
         }def
         
         /procAdd{ % key proc
@@ -39,15 +53,14 @@ end
 
 Library# begin
 
-/baseLibrary newLibrary def
+/baseLibrary# newLibrary def
 
-/lib2 newLibrary def
 
-baseLibrary  ===
+baseLibrary#  ===
 
-baseLibrary /Test get /value 42 put
-baseLibrary   ===
-lib2  ===
+baseLibrary# /Test get /value 42 put
+baseLibrary#   ===
+
 
 /foo {
     (This is foo) =
@@ -60,19 +73,19 @@ lib2  ===
 
 
 
-baseLibrary /foo /foo procAdd
-baseLibrary /bar /bar  procAdd
+baseLibrary# /foo /foo procAdd
+baseLibrary# /bar /bar  procAdd
 
 (------------MMMMMMMMMMM RUN /foo)=
 
-baseLibrary /Code get /foo get  exec
+baseLibrary# /Code get /foo get  exec
 
 (MMMMMMMMMMM Run /bar)=
-baseLibrary /Code get /bar get  exec
-baseLibrary /Code get /bar get  ===
+baseLibrary# /Code get /bar get  exec
+baseLibrary# /Code get /bar get  ===
 
 (-------------------------) =
-baseLibrary   ===
+baseLibrary#   ===
 
 
 realtime =
@@ -83,4 +96,18 @@ usertime =
 usertime =
 %status
 
+
+baseLibrary# begin
+baseLibrary# /bar drun
+baseLibrary# /foo drun
+
+(#####################################) =
+/bar prun
+/foo prun
+end
+
+baseLibrary# begin
+/bar prun
+/foo prun
+end
 end % Library
