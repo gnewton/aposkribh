@@ -1,0 +1,464 @@
+<< /AllowTransparency true >> pop% enable transparency
+
+/maxRandom 2147483648.0 def
+
+/randomN{ % Random number between 0 and N
+    1 dict begin
+    /n exch cvr def
+    rand cvr  maxRandom div n mul cvi
+    end
+}bind def
+
+/sqr{
+    dup mul
+}bind def
+
+/min{
+    2 dict begin
+    /a exch def
+    /b exch def
+    a b lt{
+        a
+    }
+    {
+        b
+    }
+    ifelse
+    end
+}bind def
+
+/max{
+    2 dict begin
+    /a exch def
+    /b exch def
+    a b gt{
+        a
+    }
+    {
+        b
+    }
+    ifelse
+    end
+}bind def
+
+
+% From: https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+
+/dist2{ % distance between 2 points
+    4 dict begin
+    cvr /y1 exch def
+    cvr /x1 exch def
+    cvr /y0 exch def
+    cvr /x0 exch def
+
+    y1 y0 sub sqr x1 x0 sub sqr add
+    end
+}bind def
+
+
+/dist2Segment{
+    10 dict begin
+    cvr /wy exch def
+    cvr /wx exch def
+    cvr /vy exch def
+    cvr /vx exch def
+    cvr /py exch def
+    cvr /px exch def
+
+    vx wx eq     vy wy eq and{ % zero lenght line segment
+        px py wx wy dist2
+    }{
+        vx vy wx wy dist2 /l2 exch def
+
+        /t px vx sub  wx vx sub mul  py vy sub  wy vy sub mul  add   l2 div  def
+
+        /t 1 t min store
+        /t 0 t max store
+
+        /x vx t wx vx sub mul add def
+        /y vy t wy vy sub mul add def
+
+        px py x y dist2 sqrt
+        
+    }ifelse
+    end
+}def
+
+/bbox{ %
+    {
+        currentpoint
+    } 
+    (bbox: no current point: need a path)
+    isStopped
+
+    pop pop % throw away currentpoint x,y
+    
+    10 dict begin
+    pathbbox
+     /bby1 exch def
+     /bbx1 exch def
+     /bby0 exch def
+     /bbx0 exch def
+
+     % Draws bbox lower left and upper right
+     gsave
+     1 0 0 setrgbcolor 
+     bbx0 bby0 5 drawX
+     bbx1 bby1 5 drawX
+
+     bbx0 bby0    bbx1 bbx0 sub   bby1 bby0 sub rectstroke
+     
+     grestore
+    end
+}bind def
+
+/drawX{
+    2 dict begin
+    /l exch def
+    gsave
+    newpath
+    translate
+    l neg l neg moveto
+    l 2 mul l   2 mul rlineto
+
+    l neg l moveto
+    l 2 mul l -2 mul rlineto
+
+    stroke
+    grestore
+    end
+}def
+
+
+/line{
+    newpath
+    0 0 moveto
+    5 0 lineto
+    stroke
+}bind def
+
+
+/isStopped{
+    /stoppedMsg exch def
+    /proc exch def
+    {
+        proc
+    }
+    stopped
+    {
+        (ERROR) =
+        stoppedMsg =
+        quit
+    }if
+}bind def
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+/speckle{
+    /n exch def
+    /angle exch def
+    /drawProc exch def
+    % path
+    {
+        currentpoint
+    } 
+    (Speckle: no current point: need a path)
+    isStopped
+
+    pop pop % throw away currentpoint x,y
+
+    pathbbox
+    /bby1 exch def
+    /bbx1 exch def
+    /bby0 exch def
+    /bbx0 exch def
+
+    centroid
+    /cy exch def
+    /cx exch def
+
+    gsave
+    1 0 0 setrgbcolor
+    newpath
+    bbx0 bby0 moveto
+    0 10 rlineto
+    stroke
+    newpath
+    bbx1 bby1 moveto
+    0 10 rlineto
+    stroke
+    grestore
+
+    clipsave
+    clip
+
+    gsave
+    1 0 0 setrgbcolor
+    stroke
+    grestore
+
+    n {
+        gsave
+        bbx0 bby0  bbx1 bby1 randomXY translate
+        angle rotate
+        line
+        grestore
+    }repeat
+
+    cliprestore
+    
+}def
+
+
+/speckle2{
+    /n exch def
+    /angle exch def
+    /drawProc exch def
+    % path
+    {
+        currentpoint
+    } 
+    (Speckle: no current point: need a path)
+    isStopped
+
+    pop pop % throw away currentpoint x,y
+
+    clipsave
+    clip
+    
+    pathbbox
+    /bby1 exch def
+    /bbx1 exch def
+    /bby0 exch def
+    /bbx0 exch def
+
+    /counter 0 def
+    {
+        
+        %bbx0 bby0  bbx1 bby1 randomXY infill{
+        bbx0 bby0 bbx1 bby1 randomXY /ry exch def /rx exch def
+        bbx0 bby0 bbx1 bby1 rx ry infill{
+            gsave
+            rx ry translate
+            angle rotate
+            5 50 randomRange 100 div .setstrokeconstantalpha
+            line
+            grestore
+            /counter counter 1 add store
+        }if
+        counter n gt{
+            exit
+        }if
+    }loop
+    cliprestore
+}def
+
+/randomXY{
+    /y1 exch def
+    /x1 exch def
+    /y0 exch def
+    /x0 exch def
+
+    x0 x1 randomRange
+    y0 y1 randomRange
+}def
+
+/randomRange{ % Random numbers in range n1 - n2 or n2 - n1
+    /n2 exch def
+    /n1 exch def
+
+    n1 n2 gt{
+        /tmp n2 def
+        /n2 n1 def
+        /n1 tmp def
+    }if
+
+    n2 n1 sub randomN
+    n1 add
+}bind def
+
+    
+
+
+/test1{
+    newpath
+    250 250 moveto
+    200 0 rlineto
+    0 100 rlineto
+    -100 0 rlineto
+    closepath
+
+    pathbbox
+    /bby1 exch def
+    /bbx1 exch def
+    /bby0 exch def
+    /bbx0 exch def
+
+
+    gsave
+    newpath
+    bbx0 bby0 moveto
+    1 0 0 setrgbcolor
+    0 10 rlineto
+    stroke
+    newpath
+    bbx1 bby1 moveto
+    1 0 0 setrgbcolor
+    0 10 rlineto
+    stroke
+    grestore
+
+
+   clip
+    stroke
+
+%    clippath
+
+
+
+    0 1 1000{
+        gsave
+        newpath
+        %      20 20 500 500 randomXY translate 45 rotate line
+        (--) =
+
+        bbx0 bby0  bbx1 bby1 randomXY translate 45 rotate line
+         grestore
+    }for
+
+
+    grestore
+    
+}def    
+
+ /centroid{ % Returns centroid of path
+     /x0 0 def
+     /y0 0 def
+     /xs 0 def
+     /ys 0 def
+     /N 0 def
+
+     { % moveto
+         /y0 exch def
+         /x0 exch def
+         /xs x0 def
+         /ys y0 def
+         /N N 1 add def
+     }
+     { % lineto
+      /y exch def
+      /x exch def
+      /xs xs x add def
+      /ys ys y add def
+      /N N 1 add def
+     }
+     { % curveto
+         pop pop pop pop pop pop
+     }
+     { % closepath
+
+     }
+     pathforall
+
+
+     xs N div
+     ys N div
+ }bind def
+
+
+% test1
+
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%
+ newpath
+ 100 500 moveto
+ 100 0 rlineto
+ 0 100 rlineto
+ 56 34 rlineto
+ -75 34 rlineto
+ -100 0 rlineto
+ closepath
+ {line} 45 1000 speckle2
+
+
+ 
+ newpath
+ 250 250 moveto
+ 200 0 rlineto
+ 0 100 rlineto
+ -100 0 rlineto
+ closepath
+ {line} 90 1000 speckle2
+% gsave
+% 100 100 translate
+% line
+% grestore
+
+
+
+
+ clear
+
+ newpath
+ 100 100 moveto
+ 200 50 rlineto
+ 45 -58 rlineto
+ closepath
+
+gsave
+centroid 5 drawX
+grestore
+
+
+ {line} 45 1000 speckle2
+stroke
+ 
+
+ gsave
+ 1 0 0 setrgbcolor
+ 500 500 5 drawX
+ grestore
+
+
+ newpath
+ 400 600 moveto
+ 90 90 rlineto
+ -90 -40 rlineto
+ closepath
+
+
+ bbox
+ stroke
+
+
+ 
+ 100 100 200 200 dist2  =
+
+ 0 0 200 0 200 300  dist2Segment =
+
+ quit
+
+
+ newpath
+ 10 10 moveto
+ 0 100 rlineto
+ 100 0 rlineto
+ 0 -100 rlineto
+ closepath
+
+ stroke
+
+
+ gsave
+ /xx 110.49999 def
+ /yy 50 def
+ xx yy infill =
+  xx yy instroke =
+ xx yy 5 drawX
+ grestore
+
+ 
+showpage
+

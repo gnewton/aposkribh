@@ -1,0 +1,124 @@
+
+/xylooperState
+<<
+    /x 0
+    /y 0
+    /startx 0
+    /starty 0
+    /endx 0
+    /endy 0
+    /dx 0
+    /dy 0
+ >>def
+
+/xylooper<<
+           /state <<>>
+           
+           /lloop{
+               10 dict begin
+               /thisDict exch def
+               /endx thisDict /state get /endx get def
+               /startx thisDict /state get /startx get def
+               /endy thisDict /state get /endy get def
+               /starty thisDict /state get /starty get def
+               /_x thisDict /state get /x get def
+               /_y thisDict /state get /y get def
+               
+               /dx thisDict /state get /dx get def
+               /dy thisDict /state get /dy get def
+
+               /newY _y dy add def
+               _y endy eq{
+                   thisDict /state get /y starty put
+                   /newX _x dx add def
+                   newX endx eq{
+                       false % returns
+                       exit
+                   }if
+                   thisDict /state get /x newX put
+               }{
+
+                   thisDict /state get /y newY put
+               }ifelse
+               _x _y % returns
+               %}ifelse
+               end
+           }
+       >> def
+
+/newXYLooper{
+    /_nxyl<<>>def
+    xylooper _nxyl  copy
+    pop
+
+    _nxyl /thisDict _nxyl put
+    
+    /newLooperState<<>>def
+    xylooperState newLooperState copy
+    pop
+
+    _nxyl /state newLooperState put
+    _nxyl
+}def
+
+/runXYLoop{
+    10 dict begin
+    /stateDict exch def
+    /l newXYLooper def
+
+    l /state get ===
+
+    /_state l /state get def
+    _state /startx -3 put
+    _state /endx 10 put
+    _state /dx 1 put
+    
+    _state /starty 2 put
+    _state /endy 12 put
+    _state /dy 1 put
+    
+    _state /x -3 put
+    _state /y 2 put
+
+    {
+        l /thisDict get l /lloop get exec
+        /y exch def
+        y type /booleantype  eq{
+            exit
+        }{
+            /x exch def
+            x =
+            y =
+            (----) =
+        }ifelse
+    }loop
+end
+}def
+
+<<>> runXYLoop
+
+%loop
+
+% looper /newLoop get exec
+
+% /newLooperState<<
+%                >>def
+
+% looperState newLooperState copy 
+
+% looperState /x 22 put
+
+% newLooperState /x 345 put
+
+% looperState ===
+% newLooperState ===
+
+/foo newXYLooper def
+
+foo ==
+
+foo /state get ==
+foo /thisDict get ==
+
+xylooperState ==
+

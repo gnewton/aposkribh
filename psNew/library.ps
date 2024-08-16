@@ -1,0 +1,86 @@
+
+
+/Library# 50 dict def
+
+Library# begin
+
+/emptyDict{
+    <<
+    >>
+}def
+
+
+
+/newLibrary{
+    <<
+        /Test emptyDict
+        /Params emptyDict
+        
+        /Code emptyDict
+        
+        /hrun{
+            (hrun) =
+        }def
+        
+        /procAdd{ % key proc
+            load
+            /proc exch def
+            
+            /key exch def
+            /library exch def
+            
+            library begin
+            Code key /proc load put
+            end
+        }def
+    >>
+}bind def
+end
+
+Library# begin
+
+/baseLibrary newLibrary def
+
+/lib2 newLibrary def
+
+baseLibrary  ===
+
+baseLibrary /Test get /value 42 put
+baseLibrary   ===
+lib2  ===
+
+/foo {
+    (This is foo) =
+}bind def
+
+/bar {
+    (This is bar) =
+}def
+
+
+
+
+baseLibrary /foo /foo procAdd
+baseLibrary /bar /bar  procAdd
+
+(------------MMMMMMMMMMM RUN /foo)=
+
+baseLibrary /Code get /foo get  exec
+
+(MMMMMMMMMMM Run /bar)=
+baseLibrary /Code get /bar get  exec
+baseLibrary /Code get /bar get  ===
+
+(-------------------------) =
+baseLibrary   ===
+
+
+realtime =
+
+realtime =
+
+usertime =
+usertime =
+%status
+
+end % Library

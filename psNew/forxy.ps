@@ -1,0 +1,157 @@
+
+<< /AllowTransparency true >> pop% enable transparency
+
+
+
+/forxy{
+    10 dict begin
+    /proc exch def
+
+    /endy exch def
+    /dy exch def
+    /starty exch def
+
+    /endx exch def
+    /dx exch def
+    /startx exch def
+
+    startx dx endx{
+        /x exch def
+        starty dy endy{
+            /y exch def
+            x y
+            proc
+        }for
+    }for
+    end
+}def
+
+
+.5 .setfillconstantalpha
+
+/csize 110 def
+
+/weirdShape{
+    2 dict begin
+    /size exch def
+    size size rlineto
+    size size -1 mul rlineto
+    0 size -1 mul rlineto
+    closepath
+    end
+}def
+
+-100 130 1200  -100 130 1200
+{
+    2 dict begin
+    /y exch def
+    /x exch def
+
+    newpath
+    
+    x y moveto
+    csize weirdShape
+
+    gsave
+    .8 .4 0 setrgbcolor
+    x 10 add y 10 add csize 4 div 0 360 arc fill % circle
+    grestore
+    
+    gsave
+    0 .4 0 setrgbcolor
+    fill
+    grestore
+
+    gsave
+    .5 .setstrokeconstantalpha
+    0 setgray
+    stroke
+    grestore
+
+
+    end
+} forxy
+
+
+/drawText{
+    /text exch def
+    gsave
+    /Times-Roman findfont 82 scalefont setfont
+    newpath
+    100 370 moveto
+    
+    .4 .setfillconstantalpha
+    .5 .setstrokeconstantalpha
+    1 setgray
+    text show
+    grestore
+}def
+
+(STRATEGY) drawText
+
+showpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+newpath
+100 100 moveto
+100 100 rlineto
+stroke
+
+(external/poly.ps) run
+
+Poly# begin
+
+gsave
+45 11 300 300 drawpoly
+gsave
+.5 setgray fill
+grestore
+stroke
+grestore
+
+end
+
+showpage
+
+
+
+-50 150 1200  -100 150 1200
+{
+    2 dict begin
+    /y exch def
+    /x exch def
+
+    newpath
+    
+    x y moveto
+    Poly# begin
+
+    gsave
+    160 6 x  y drawpoly
+    gsave
+    .7 .setfillconstantalpha
+    .4 0 0 setrgbcolor
+    fill
+    grestore
+
+    gsave
+    .5 .setstrokeconstantalpha
+    1 setgray
+    stroke
+    grestore
+    grestore
+
+
+    grestore
+    end % Poly#
+    end
+    
+}forxy
+
+showpage
+
+
+

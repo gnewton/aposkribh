@@ -1,0 +1,35 @@
+
+% from https://stackoverflow.com/questions/20476121/postscript-programming-regular-polygon-with-diagonals
+
+/Poly# 10 dict def
+
+Poly# begin
+
+/atpoly {
+    4 dict begin /p exch def /n exch def % rad 
+    /m matrix currentmatrix def 
+    dup scale
+    /s matrix currentmatrix def 
+    0 360 n div 359.9 %0 dAng maxAng %{}for
+    ({
+        {
+            //s setmatrix
+            rotate
+            //p exec
+        } for 
+        //m setmatrix
+    }) token pop exch pop %instantiate code template
+    bind
+    end exec % run loop without dictionary
+} bind def 
+
+/drawpoly { % rad n x y
+        translate 
+        1 index 0 moveto
+        {
+            1 0 lineto
+        } atpoly
+        closepath
+} def
+
+end

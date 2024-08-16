@@ -1,0 +1,520 @@
+% 
+
+
+
+
+/example (PostScript Language Reference 3edition: Example 4.23, p258, ) def
+
+/printExample{
+    gsave
+    /Times-Roman findfont 12 scalefont setfont
+    10 10 moveto
+    show
+    grestore
+}def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+gsave
+<<
+    /PatternType 1 % Tiling pattern
+    /PaintType 2 % Uncolored
+    /TilingType 1
+    /BBox [-12 -12 12 12]
+    /XStep 30
+    /YStep 30
+    /PaintProc
+    { pop % Pop pattern dictionary
+      0 12 moveto
+      4 {144 rotate 0 12 lineto} repeat
+      closepath
+      fill
+    } bind
+>> % End prototype pattern dictionary
+
+matrix % Identity matrix
+makepattern % Instantiate the pattern
+/Star exch def
+140 110 170 100 4 copy % Two copies of rectangle operands
+0.9 setgray rectfill % Fill rectangle with gray
+[/Pattern /DeviceGray] setcolorspace
+1.0 Star setcolor rectfill % Fill rectangle with white stars
+225 185 60 0 360 arc % Build circular path
+0.0 Star setpattern gsave fill grestore % Fill circle with black stars
+0.0 setgray stroke % Stroke black outline
+
+grestore
+example printExample
+
+showpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+gsave
+<<
+    /PatternType 1 % Tiling pattern
+    /PaintType 1 % Colored
+    /TilingType 1
+    /BBox [0 0 60 60]
+    /XStep 60
+    /YStep 60
+    /star
+    { gsave % Private procedure used by PaintProc
+      0 12 moveto
+      4 {144 rotate 0 12 lineto} repeat
+      closepath fill
+      grestore
+    } bind
+    /PaintProc
+    { begin % Push pattern on dictionary stack
+      0.3 setgray % Set color for dark gray stars
+      15 15 translate star
+      30 30 translate star
+      0.7 setgray % Set color for light gray stars
+      -30 0 translate star
+      30 -30 translate star
+      end
+    } bind
+>> % End prototype pattern dictionary
+
+matrix % Identity matrix
+makepattern % Instantiate the pattern
+/Star4 exch def
+120 120 184 120 4 copy % Two copies of rectangle operands
+/Pattern setcolorspace
+Star4 setcolor rectfill % Fill rectangle with stars
+0.0 setgray rectstroke % Stroke black outline
+/Times-Roman 270 selectfont
+160 100 translate
+0.9 setgray 0 0 moveto (A) show % Paint glyph with gray
+Star4 setpattern 0 0 moveto (A) show % Paint glyph with stars
+
+grestore
+
+/example (PostScript Language Reference 3edition: Example 4.21 p255, ) def
+
+example printExample
+
+showpage
+
+
+save
+0.480 setlinewidth
+1 setlinecap
+1 setlinejoin
+0.302 0.302 0.302 setrgbcolor
+/stop_function
+<<
+    /FunctionType 2
+    /Domain[0 1]
+    /C0 [1 0 0]
+    /C1 [0 1 0]
+    /N 1
+>> def
+/RepFunction
+<<
+    /FunctionType 3
+    /Domain [ -81 1 ]
+    /Functions [ 82 {stop_function} repeat ]
+    /Bounds [ -80 1 0 {} for ]
+    /Encode [ -81 1 0 { pop 0 1 } for ]
+>> def
+<<
+    /PatternType 2
+    /Shading
+    <<
+      /ShadingType 3
+      /ColorSpace [/DeviceRGB]
+      /Extend [false false]
+      /Coords [-1300.8 -468 979.2 60 504 7.2]
+      /Function
+      <<
+        /FunctionType 3
+        /Domain [0 1]
+        /Bounds []
+        /Encode[-80 1]
+        /Functions [RepFunction]
+      >>
+    >> 
+>>
+matrix makepattern setpattern
+12.000 528.000 moveto
+84.000 528.000 lineto
+84.000 456.000 lineto
+12.000 456.000 lineto
+closepath
+gsave
+fill
+grestore
+0.302 0.302 0.302 setrgbcolor
+stroke
+grestore
+
+/example (https://stackoverflow.com/questions/40112220/type-3-function-procedure-in-post-script) def
+example printExample
+
+
+
+
+showpage
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/example (https://stackoverflow.com/questions/75118600/shading-a-triangle-in-postscript) def
+
+gsave
+/square{
+ 0 0 40 40 rectclip
+ << /ShadingType 2
+    /ColorSpace [ /DeviceRGB ]
+    /Coords [ 0 0 40 40 ]
+    /Function <<
+      /FunctionType 2
+      /Domain [ 0 1 ]
+      /C0 [ 0.9 0.2 0.0 ]
+      /C1 [ 0.0 0.2 0.9 ]
+      /N 1
+    >>
+ >>
+} bind def
+save gsave
+200 200 translate 45 rotate
+square shfill
+grestore restore    
+100 100 translate  300 rotate
+square shfill
+grestore
+
+example printExample
+showpage  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+/example (https://community.adobe.com/t5/postscript-discussions/shfill-trouble/m-p/10478021) def
+%%Creator:      Gernot Hoffmann
+
+%%Title:        K-Bars Smooth shades
+
+%%CreationDate: June 19 2019
+
+gsave
+/mm  {2.834646 mul} def
+/tx1 [(1.0  ) (1.1  ) (1.2  ) (1.3  ) (1.4  ) (1.5  ) (1.6  )
+      (1.7  ) (1.8  ) (1.9  ) (2.0  ) (2.1  ) (2.2  )] def
+
+/tx2 [(1.000) (0.909) (0.833) (0.769) (0.714) (0.667) (0.625)
+      (0.588) (0.555) (0.526) (0.500) (0.476) (0.455)] def      
+
+                    
+/xa  20 mm def      % Reference left
+/ye 270 mm def      % Reference top 
+/ya  16 mm def 
+/bx  20 mm def      % Width    
+/by  ye ya sub def  % Height
+/sx  23 mm def      % Distance of boxes
+/fo  12 def         % Font size
+
+/Showtext {moveto show} def   
+/Bars{
+    /Helvetica findfont fo scalefont setfont
+    0 0 0 1 setcmykcolor
+
+    /x0 xa def
+
+    /y0 ya def
+
+    /y1 ye def
+
+    /y2 y1 6 mm add def
+
+    0 1 12{
+        /k exch def
+        /ig tx2 k get cvr def
+        /x1 x0 bx add def
+        /x2 x0 9.5 mm add def
+        
+        <<
+            /ShadingType 2
+            /ColorSpace /DeviceCMYK
+            /Coords [x0 y0 x0 y1]
+          %  /BBox   [x0 y0 x1 y1]
+            /Function
+            <<
+                /FunctionType 2
+                /Domain [0 1] % for t 
+                /C0 [0 0 0 1] % t=0 black
+                /C1 [0 0 0 0] % t=1 white
+                /N  ig        % C=C0+(C1-C0)t^N
+            >>
+        >>
+        gsave
+        x0 y0 bx by rectclip
+        shfill
+        grestore
+
+        tx1 k get x0 y2 Showtext
+        tx2 k get x2 y2 Showtext
+        /x0 x0 sx add def
+    } for
+} def
+
+Bars
+grestore
+
+example printExample
+
+showpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+(https://stackoverflow.com/questions/65907826/a-pdf-with-different-outputs-in-different-pdf-viewers-with-shades) printExample
+
+gsave
+[1 0 0.5 0.866 150 550] concat
+<< 
+    /ShadingType 2 
+    /Coords [ 0 0 100 100] 
+    /BBox [ 0 0 100 100] 
+    /ColorSpace [ /DeviceRGB ] 
+    /Function 
+    << 
+        /FunctionType 0 
+        /Domain [0 1] 
+        /Range [0 1 0 1 0 1] 
+        /BitsPerSample 8 
+        /Size [2] 
+        /DataSource <FFA0A0FFE0E0> 
+    >>
+    /Extend [false false] 
+>> 
+shfill
+grestore
+
+showpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+gsave
+
+gsave
+0.480 setlinewidth
+1 setlinecap
+1 setlinejoin
+0.302 0.302 0.302 setrgbcolor
+/stop_function
+<<
+    /FunctionType 2
+    /Domain[0 1]
+    /C0 [1 0 0]
+    /C1 [0 1 0]
+    /N 1
+>> def
+/RepFunction
+<<
+    /FunctionType 3
+    /Domain [ -81 1 ]
+    /Functions [ 82 {stop_function} repeat ]
+    /Bounds [ -80 1 0 {} for ]
+    /Encode [ -81 1 0 { pop 0 1 } for ]
+>> def
+<<
+    /PatternType 2
+    /Shading
+    <<
+      /ShadingType 3
+      /ColorSpace [/DeviceRGB]
+      /Extend [false false]
+      /Coords [-1300.8 -468 979.2 60 504 7.2]
+      /Function
+      <<
+        /FunctionType 3
+        /Domain [0 1]
+        /Bounds []
+        /Encode[-80 1]
+        /Functions [RepFunction]
+      >>
+    >> 
+>>
+matrix makepattern setpattern
+12.000 528.000 moveto
+84.000 528.000 lineto
+84.000 456.000 lineto
+12.000 456.000 lineto
+closepath
+gsave
+fill
+grestore
+0.302 0.302 0.302 setrgbcolor
+stroke
+grestore
+
+showpage
+
+gsave
+200 300 moveto
+400 300 lineto
+400 450 lineto
+200 450 lineto
+200 300 lineto
+
+fill
+grestore
+showpage
+
+gsave
+clippath  % set current path to be the clipping path
+reversepath  % may need to reverse the rectangle depending on implementation
+
+200 300 moveto
+400 300 lineto
+400 450 lineto
+200 450 lineto
+200 300 lineto
+closepath
+
+eofill
+grestore
+
+showpage
+
+
+newpath
+0 0 moveto
+500 500 rlineto
+stroke
+
+showpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+gsave
+(https://stackoverflow.com/questions/43646841/how-to-efficiently-color-quadrilaterals-using-bilinear-gradients-in-postscript/43667946#43667946) printExample
+
+newpath
+<<
+    /BBox [294      353.6387      627.0481      644.4492
+           /Domain [294      353.6387      627.0481      644.4492
+                    /ShadingType 6
+                    /ColorSpace [/DeviceRGB]
+                    /DataSource
+                    [
+                        0
+                        322.00000000    639.52198166
+                        308.00000000    633.28505452
+                        308.00000000    633.28505452
+                        294.00000000    627.04812738
+                        309.50334395    629.25461291
+                        309.50334395    629.25461291
+                        325.00668790    631.46109845
+                        339.32269715    637.95516131
+                        339.32269715    637.95516131
+                        353.63870639    644.44922417
+                        337.81935320    641.98560292
+                        337.81935320    641.98560292
+                        0.23047     0.29688        0.75 
+                        0.23047     0.29688        0.75 
+                        0.91493     0.82918     0.78143 
+                        0.91948     0.82593     0.77364 
+                    ]
+          >>
+    gsave
+    x y w h rectclip
+    shfill
+    grestore
+
+    grestore
+showpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+gsave
+(https://comp.lang.postscript.narkive.com/kHdRZODP/shading-patterns-example)
+printExample
+
+% This example sprays an array of ``cinnebar'' images across the
+% page and smoothly shades from lower left to upper right.
+
+/inch { 72 mul } def % Three Barleycorns
+
+currentfile /ASCIIHexDecode filter /ReusableStreamDecode filter
+FFFFFFFFFFFFFFFF FFFFFFFCFFFFFFFF FFFFFFF87FFFFFFF FFFFFFF83FFFFFFF
+FFFFFFF83FFFFFFF FFFFFFF83FFFFFFF FFFFFFF83FFFFFFF EFFFFFF83FFFFFFF
+F3FFFFF83FFFFFFF F8FFFFF83FFFFFFF FE3FFFF83FFFFC7F FF0FFFF83FFFF87F
+FF87FFF83FFFE01F FFE1FFF87FFFC00F FFF0FFF87FFF0003 FFF87FF87FFE007F
+FFFC3FF87FFC03FF FFFE0FF87FF80FFF FFFF07FC7FF03FFF FFFF83FC7FE0FFFF
+FFFFC1FC7FC1FFFF FFFFE0FC7F87FFFF FFFFF07C7F0FFFFF FFFFF87C7E1FFFFF
+FFFFFC3C7C7FFFFF FFFFFC1C7CFFFFFF FFFFFE0C78FFFFFF FFFFFF0C73FFFFFF
+FFFFFF8473FFFFFF FFFFFF8067FFFFFF FFFFFFC06FFFFFFF FFFFFFE04FFFFFFF
+FFFFFFF05FFFFFFF E00000000000000F E00000000000000F FFFFFFFC7FFFF80F
+FFFFFFFC7FFFFC1F FF7FFFFC7FFFFC3F FFBFFFFC7FFFFEFF FFDFFFFC7FFFFFFF
+FFCFFFFC7FFFFFFF FFE7FFFC7FFFFFFF FFE3FFFC7FFFFFFF FFF3FFFC7FFFFFFF
+FFF1FFFC7FFFFFFF FFF1FFFC7FFFFFFF FFF80000000003FF FFF80000000003FF
+FFFC7FFC7FFC07FF FFFC7FFC7FFE0FFF FFFC3FFC7FFF1FFF FFFE3FFC7FFFFFFF
+FFFE1FFC7FFFFFFF FFFE1FFC7FFFFFFF FFFE0FFC7FFFFFFF FFFE03F87FFFFFFF
+FFFF03F87FFFFFFF FFFF0FF83FFFFFFF FFFF7FF81FFFFFFF FFFFFFF81FFFFFFF
+FFFFFFF81FFFFFFF FFFFFFF3FFFFFFFF FFFFFFFFFFFFFFFF FFFFFFFFFFFFFFFF
+/datastream exch def
+
+<<
+    /PatternType 2
+    /Shading <<
+                 /ShadingType 2
+                 /ColorSpace /DeviceRGB
+                 /Background [ 0 1 1 ]
+                 /Coords [ 0 0 8.5 inch 11 inch ]
+                 /Domain [ 0 1 ]
+                 /Function <<
+                               /FunctionType 2
+                               /Domain [ 0 1 ]
+                               /C0 [ 1 0.25 0 ]
+                               /C1 [ 0.25 0.5 1 ]
+                               /N 1
+                               
+                               matrix makepattern /shader exch def
+                               shader setpattern
+                               0.25 inch 0.5 inch translate % set origin
+                               
+                               /ImageDict 7 dict def % start image dictionary
+                               ImageDict begin
+                               /ImageType 1 def % required
+                               /Width 64 def % bits per scan line
+                               /Height 64 def % number of scan lines
+                               /BitsPerComponent 1 def % depth of image
+                               /ImageMatrix [ 64 0 0 64 0 0 ] def % image matrix
+                               /DataSource datastream def
+                               /Decode [ 0 1 ] def % transfer function
+                               end % end image dictionary
+
+%0 1 9 {
+0 1 1 {
+% 0 1 7 {
+0 1 1 {
+gsave
+1 inch mul 1 index 1 inch mul translate
+1 inch 1 inch scale
+datastream resetfile
+ImageDict imagemask
+grestore
+} for
+pop
+} for
+pstack
+
+showpage % display page
+
+0 1 9 {
+0 1 7 {
+0 1 1 {
+gsave
+1 inch mul 1 index 1 inch mul translate
+1 inch 1 inch scale
+datastream resetfile
+ImageDict imagemask
+grestore
+} for
+pop
+} for
+pstack
+
+showpage
