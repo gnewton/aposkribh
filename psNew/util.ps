@@ -13,7 +13,9 @@ github_com_gnewton_aposkribh_util# begin
     github_com_gnewton_aposkribh__DEBUG{
         (Starting) =
         =
-    }if
+    }{
+        pop
+    }ifelse
 }def
 
 /assertMinStackSize{ % procName num
@@ -46,14 +48,12 @@ github_com_gnewton_aposkribh_util# begin
 %% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
 /concatstrings % (a) (b) -> (ab)  
 {
-    count =
     count 2 lt{
         (Error: base.ps: concatstrings: needs two args) =
         (Filename:) =
         github_com_gnewton_aposkribh__FILENAME =
         quit
     }if
-
     0 index type /stringtype ne{
         (Error: /concatstrings) =
         (0 stack not string) =
