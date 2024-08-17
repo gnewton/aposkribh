@@ -1,0 +1,147 @@
+%% This filename
+/github_com_gnewton_aposkribh__FILENAME (util.ps) def
+%%
+
+%% Nothing in util can have any state
+
+
+/github_com_gnewton_aposkribh_util# 50 dict def
+
+github_com_gnewton_aposkribh_util# begin
+
+/debug{
+    github_com_gnewton_aposkribh__DEBUG{
+        (Starting) =
+        =
+    }if
+}def
+
+/assertMinStackSize{ % procName num
+    1 add count ge{
+        (Error: assertMinStackSize) =
+        =
+        github_com_gnewton_aposkribh__FILENAME =
+        stop
+    }{
+        pop
+    }ifelse
+}bind def
+
+%%%%%%%%%%% Types
+/isIntegerRealStringBool{
+    /isIntegerRealStringBool 1 assertMinStackSize
+    
+    10 dict begin
+    /v exch def
+    v isInt?
+    v isReal?
+    v isString?
+    v isBoolean?
+    or
+    or
+    or
+    end
+}bind def
+
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    count =
+    count 2 lt{
+        (Error: base.ps: concatstrings: needs two args) =
+        (Filename:) =
+        github_com_gnewton_aposkribh__FILENAME =
+        quit
+    }if
+
+    0 index type /stringtype ne{
+        (Error: /concatstrings) =
+        (0 stack not string) =
+        (Filename:) =
+        github_com_gnewton_aposkribh__FILENAME =
+        quit
+    }if
+
+    1 index type /stringtype ne{
+        (Error: /concatstrings) =
+        (1 stack not string) =
+        (Filename:) =
+        github_com_gnewton_aposkribh__FILENAME =
+        quit
+    }if
+
+    %%%%%%%%%
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} def
+
+
+% Type tests
+/isInt?{
+    /isInt? 1 assertMinStackSize
+    type /integertype eq
+}bind def
+
+
+/isReal?{
+    /isReal? 1 assertMinStackSize
+    type /realtype eq
+}bind def
+
+
+/isString?{
+    /isString? 1 assertMinStackSize
+    type /stringtype eq
+}bind def
+
+
+/isBoolean?{
+    /isBoolean? 1 assertMinStackSize
+    type /booleantype eq 
+}bind def
+
+
+/isArray?{
+    /isArray? 1 assertMinStackSize
+    type /arraytype eq
+} def
+
+
+/isNameType?{
+    /isNameType? 1 assertMinStackSize
+    type /nametype eq
+}bind def
+
+
+/isNull?{
+    type /nulltype eq
+}bind def
+
+
+/isDict?{
+    type /dicttype eq
+}bind def
+
+
+/isNumber?{ % real or int
+    dup
+    isInt? exch isReal? or
+}bind def
+end % END github_com_gnewton_aposkribh_util#
+
+
+/
+% Short form
+/util{
+    /p exch def
+
+    github_com_gnewton_aposkribh_util# begin
+    p debug
+    end
+
+    github_com_gnewton_aposkribh_util# p get exec =
+}bind def
+
+

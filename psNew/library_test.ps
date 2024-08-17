@@ -1,0 +1,88 @@
+%% This filename
+/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
+%%
+
+(load.ps) run
+
+(library.ps) fileRun
+(library.ps) fileRun
+(util.ps) fileRun 
+
+%% Reset: this filename
+/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
+%%
+
+
+
+github_com_gnewton_aposkribh_Library# begin
+
+/baseLibrary# newLibrary def
+
+
+/foo {
+    (This is foo) =
+}bind def
+
+/bar {
+    (This is bar) =
+}def
+
+
+
+
+baseLibrary# /foo /foo procAdd
+baseLibrary# /bar /bar  procAdd
+
+/foo{
+    (Hello) =
+}def
+
+
+% Test drun
+baseLibrary# begin
+
+
+(Test lrun) =
+/bar lrun
+(2) =
+/foo lrun
+end
+
+(Test lrun dict) =
+/bar baseLibrary# lrun
+/foo baseLibrary# lrun
+
+
+baseLibrary# begin
+/bar lrun
+/foo lrun
+end
+
+
+/github_com_gnewton_aposkribh__DEBUG true def
+
+(&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&) =
+
+(A) (bbb) /concatstrings util
+
+
+github_com_gnewton_aposkribh_util# begin
+(&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&) =
+(fii) =
+clear
+concatstrings =
+(fii) =
+(A) (bbb) concatstrings =
+clear
+(A) concatstrings =
+(&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&) =
+end
+
+
+github_com_gnewton_aposkribh_util# begin
+clear
+/foo 1 assertMinStackSize
+
+end
+
+

@@ -1,8 +1,12 @@
+(util.ps) run
 
+%% This filename
+/github_com_gnewton_aposkribh__FILENAME (library.ps) def
+%%
 
-/Library# 50 dict def
+/github_com_gnewton_aposkribh_Library# 50 dict def
 
-Library# begin
+github_com_gnewton_aposkribh_Library# begin
 
 /emptyDict{
     <<
@@ -10,104 +14,56 @@ Library# begin
 }def
 
 
-
 /newLibrary{
     <<
-        /Test emptyDict
-        /Params emptyDict
-        /Code emptyDict
+        /Docs# emptyDict 
+        /Test# emptyDict
+        /Params# emptyDict
+        /Code# emptyDict
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        /drun{
-            2 dict begin
-            /proc exch def
-            /#dict exch def
-
-            #dict /Code get proc get exec
-            end
-        }def
-
-
-        /prun{
-            2 dict begin
-            /proc exch def
-
-            Code proc get exec
-            end
-        }def
+        /lrun{
+            /github_com_gnewton_aposkribh__DEBUG where{
+                /github_com_gnewton_aposkribh__DEBUG get{
+                    (lrun START) =
+                }if
+            }if
         
+            /_dict# currentdict def
+            
+            2 dict begin
+            0 index type /dicttype eq{
+                /_dict# exch def
+            }if
+            
+            /_proc exch def
+
+            /github_com_gnewton_aposkribh__DEBUG where{
+                /github_com_gnewton_aposkribh__DEBUG get{
+                    ( lrun starting) =
+                    _proc =
+                }if
+            }if
+
+            
+            _dict# /Code# get _proc get exec
+            end
+        }def
+
+
         /procAdd{ % key proc
             load
-            /proc exch def
+            /_proc exch def
             
-            /key exch def
-            /library exch def
+            /_key exch def
+            /_library# exch def
             
-            library begin
-            Code key /proc load put
+            _library# begin
+            Code# _key /_proc load put
             end
         }def
     >>
 }bind def
 end
 
-Library# begin
 
-/baseLibrary# newLibrary def
-
-
-baseLibrary#  ===
-
-baseLibrary# /Test get /value 42 put
-baseLibrary#   ===
-
-
-/foo {
-    (This is foo) =
-}bind def
-
-/bar {
-    (This is bar) =
-}def
-
-
-
-
-baseLibrary# /foo /foo procAdd
-baseLibrary# /bar /bar  procAdd
-
-(------------MMMMMMMMMMM RUN /foo)=
-
-baseLibrary# /Code get /foo get  exec
-
-(MMMMMMMMMMM Run /bar)=
-baseLibrary# /Code get /bar get  exec
-baseLibrary# /Code get /bar get  ===
-
-(-------------------------) =
-baseLibrary#   ===
-
-
-realtime =
-
-realtime =
-
-usertime =
-usertime =
-%status
-
-
-baseLibrary# begin
-baseLibrary# /bar drun
-baseLibrary# /foo drun
-
-(#####################################) =
-/bar prun
-/foo prun
-end
-
-baseLibrary# begin
-/bar prun
-/foo prun
-end
-end % Library
