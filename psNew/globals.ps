@@ -1,0 +1,112 @@
+%% This filename
+/github_com_gnewton_aposkribh__FILENAME (globals.ps) def
+%%
+
+/github_com_gnewton_aposkribh__DEBUG where not{
+    /github_com_gnewton_aposkribh__DEBUG true def
+}{
+    pop
+}ifelse
+
+/github_com_gnewton_aposkribh_Library__LoadedFiles# where not{
+    /github_com_gnewton_aposkribh_Library__LoadedFiles# 50 dict def
+}{
+    pop
+}ifelse
+
+
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)  
+{
+    count 2 lt{
+        (Error: base.ps: concatstrings: needs two args) =
+        (Filename:) =
+        github_com_gnewton_aposkribh__FILENAME =
+        quit
+    }if
+    0 1 1{
+        /i exch def
+        i index type /stringtype ne{
+            (Error: /concatstrings) =
+            i =
+            (stack not string) =
+            i index =
+            (Filename:) =
+            github_com_gnewton_aposkribh__FILENAME =
+            quit
+        }if
+    }for
+    % End Args
+    %%%%%%%%%
+    
+    exch dup length    
+    2 index length add string    
+    dup dup 4 2 roll copy length
+    4 -1 roll putinterval
+} def
+
+/github_com_gnewton_aposkribh_util_debug{
+    /github_com_gnewton_aposkribh__DEBUG where{
+        /github_com_gnewton_aposkribh__DEBUG get{
+            2 dict begin
+            /msg exch def
+            %
+            (% Debug: ) github_com_gnewton_aposkribh__FILENAME concatstrings (: ) concatstrings msg concatstrings =
+            end
+        }{
+            pop
+        }ifelse
+    }{
+        pop
+    }ifelse
+}bind def
+
+/github_com_gnewton_aposkribh_util_loading{
+    true eq{
+        /msg (: aposkribh_util_loading: Start loading library: ) def
+    }{
+        /msg (: aposkribh_util_loading: End loading library: ) def
+    }ifelse
+
+    /github_com_gnewton_aposkribh__DEBUG where{
+        /github_com_gnewton_aposkribh__DEBUG get{
+            2 dict begin
+            /libname exch def
+            msg libname concatstrings github_com_gnewton_aposkribh_util_debug
+            end
+        }if
+    }if
+}bind def
+
+/github_com_gnewton_aposkribh_util_loading_start{
+    true github_com_gnewton_aposkribh_util_loading
+}bind def
+
+/github_com_gnewton_aposkribh_util_loading_end{
+    false github_com_gnewton_aposkribh_util_loading
+}bind def
+
+/github_com_gnewton_aposkribh_Running_File{
+    2 dict begin
+    /msg exch def
+    (Running file:) github_com_gnewton_aposkribh__FILENAME concatstrings (: ) concatstrings msg concatstrings github_com_gnewton_aposkribh_util_debug
+    end
+}bind def
+
+/github_com_gnewton_aposkribh_File_Load{
+    /_filename null def
+    2 dict begin
+    /_filename exch store
+    end
+    
+    github_com_gnewton_aposkribh_Library__LoadedFiles# _filename known not{
+        (aposkribh_Library_Load: ) (Loading file: ) concatstrings _filename concatstrings github_com_gnewton_aposkribh_util_debug
+        _filename run
+        github_com_gnewton_aposkribh_Library__LoadedFiles# _filename true put
+    }{
+        (aposkribh_Library_Load: ) (Already loaded: ) concatstrings _filename concatstrings github_com_gnewton_aposkribh_util_debug
+    }ifelse
+
+}bind def
+
+

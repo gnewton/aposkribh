@@ -2,20 +2,23 @@
 /github_com_gnewton_aposkribh__FILENAME (util.ps) def
 %%
 
+(globals.ps) run
+
+% Reset this filename
+/github_com_gnewton_aposkribh__FILENAME (util.ps) def
 %% Nothing in util can have any state
 
 
 /github_com_gnewton_aposkribh_util# 50 dict def
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 github_com_gnewton_aposkribh_util# begin
 
+
 /debug{
-    github_com_gnewton_aposkribh__DEBUG{
-        (Starting) =
-        =
-    }{
-        pop
-    }ifelse
+    github_com_gnewton_aposkribh_util_debug
 }def
 
 /assertMinStackSize{ % procName num
@@ -54,23 +57,20 @@ github_com_gnewton_aposkribh_util# begin
         github_com_gnewton_aposkribh__FILENAME =
         quit
     }if
-    0 index type /stringtype ne{
-        (Error: /concatstrings) =
-        (0 stack not string) =
-        (Filename:) =
-        github_com_gnewton_aposkribh__FILENAME =
-        quit
-    }if
-
-    1 index type /stringtype ne{
-        (Error: /concatstrings) =
-        (1 stack not string) =
-        (Filename:) =
-        github_com_gnewton_aposkribh__FILENAME =
-        quit
-    }if
-
+    0 1 1{
+        /i exch def
+        i index type /stringtype ne{
+            (Error: /concatstrings) =
+            i =
+            (stack not string) =
+            (Filename:) =
+            github_com_gnewton_aposkribh__FILENAME =
+            quit
+        }if
+    }for
+    % End Args
     %%%%%%%%%
+    
     exch dup length    
     2 index length add string    
     dup dup 4 2 roll copy length
@@ -129,19 +129,21 @@ github_com_gnewton_aposkribh_util# begin
     dup
     isInt? exch isReal? or
 }bind def
+
 end % END github_com_gnewton_aposkribh_util#
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-/
 % Short form
 /util{
-    /p exch def
+    /_proc exch def
 
     github_com_gnewton_aposkribh_util# begin
-    p debug
+    _proc debug
     end
 
-    github_com_gnewton_aposkribh_util# p get exec =
+    github_com_gnewton_aposkribh_util# _proc get exec =
 }bind def
 
 

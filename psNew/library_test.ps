@@ -1,20 +1,27 @@
 %% This filename
 /github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
 %%
+/github_com_gnewton_aposkribh__DEBUG true def
+(globals.ps) run
 
-(load.ps) run
+% Reset
+/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
 
-(library.ps) fileRun
-(library.ps) fileRun
-(util.ps) fileRun 
+(Loading libaries) github_com_gnewton_aposkribh_Running_File
+
+(library.ps) github_com_gnewton_aposkribh_File_Load
+(library.ps) github_com_gnewton_aposkribh_File_Load
+(util.ps) github_com_gnewton_aposkribh_File_Load
 
 %% Reset: this filename
 /github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
 %%
 
+(Running self) github_com_gnewton_aposkribh_Running_File
 
 
 github_com_gnewton_aposkribh_Library# begin
+
 
 /baseLibrary# newLibrary def
 
@@ -63,7 +70,7 @@ end
 
 (concat A bbb -> Abbb) =
 (A) (bbb) /concatstrings util
-quit
+
 
 github_com_gnewton_aposkribh_util# begin
 clear

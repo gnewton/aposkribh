@@ -1,12 +1,21 @@
-(util.ps) run
-
 %% This filename
 /github_com_gnewton_aposkribh__FILENAME (library.ps) def
 %%
 
+(globals.ps) run
+% Reset
+/github_com_gnewton_aposkribh__FILENAME (library.ps) def
+(util.ps) github_com_gnewton_aposkribh_File_Load
+% Reset/github_com_gnewton_aposkribh__FILENAME (library.ps) def
+
+
 /github_com_gnewton_aposkribh_Library# 50 dict def
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 github_com_gnewton_aposkribh_Library# begin
+%(github_com_gnewton_aposkribh_Library) github_com_gnewton_aposkribh_util_loading_start
 
 /emptyDict{
     <<
@@ -64,6 +73,9 @@ github_com_gnewton_aposkribh_Library# begin
         }def
     >>
 }bind def
-end
+%(github_com_gnewton_aposkribh_Library#) github_com_gnewton_aposkribh_util_loading_end
+end % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
