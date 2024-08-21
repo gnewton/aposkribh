@@ -3,7 +3,7 @@
 %%
 
 /github_com_gnewton_aposkribh__DEBUG where not{
-    /github_com_gnewton_aposkribh__DEBUG true def
+    /github_com_gnewton_aposkribh__DEBUG false def
 }{
     pop
 }ifelse
@@ -14,48 +14,72 @@
     pop
 }ifelse
 
-
-%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
-/concatstrings % (a) (b) -> (ab)   OR [(a) (b) (c)...] -> (abc...)
-{
+/aposkribh_Library_concatstrings{ % (1)(B) (sp)  -> 1spB
+    2 dict begin
+    /_sep exch def
+    % array of N strings on stack
     0 index type /arraytype eq{
         2 dict begin
         /_a exch def
         /str () def
-        _a{
-            /s exch def
-            
-            /str s str concatstrings store
-        }forall
+        /first true def
+        0 1 _a length 1 sub{
+            /i exch def
+            /s _a i get def
+
+             first{
+                 /first false store
+             }{
+                 /str str _sep concatstrings store
+             }ifelse
+
+             /str str s concatstrings store
+        }for
         str
         end
     }{
-    count 2 lt{
-        (Error: base.ps: concatstrings: needs two args) =
-        (Filename:) =
-        github_com_gnewton_aposkribh__FILENAME =
-        quit
-    }if
-    0 1 1{
-        /i exch def
-        i index type /stringtype ne{
-            (Error: globals.ps/concatstrings) =
-            i =
-            (stack not string) =
-            i index =
+        % 2 strings on stack
+        count 2 lt{
+            (Error: base.ps: concatstrings: needs two args) =
             (Filename:) =
             github_com_gnewton_aposkribh__FILENAME =
             quit
         }if
-    }for
-    % End Args
-    %%%%%%%%%
-    
-    exch dup length    
-    2 index length add string    
-    dup dup 4 2 roll copy length
-    4 -1 roll putinterval
+        0 1 1{
+            /i exch def
+            i index type /stringtype ne{
+                (Error: globals.ps/concatstrings) =
+                i =
+                (stack not string) =
+                i index =
+                (Filename:) =
+                github_com_gnewton_aposkribh__FILENAME =
+                quit
+            }if
+        }for
+        % End Args
+        %%%%%%%%%
+        
+        exch dup length    
+        2 index length add string    
+        dup dup 4 2 roll copy length
+        4 -1 roll putinterval
     }ifelse
+    end
+}bind def
+
+/concatstringsSep{ % (a) (b) (Z)-> (a b)   OR [(a) (b) (c)...] -> (abc...)
+    aposkribh_Library_concatstrings
+}def
+
+/concatstringsSpc{ % (a) (b) -> (a b)   OR [(a) (b) (c)...] -> (abc...)
+   ( ) aposkribh_Library_concatstrings
+}def
+
+%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
+/concatstrings % (a) (b) -> (ab)   OR [(a) (b) (c)...] -> (abc...)
+{
+    () aposkribh_Library_concatstrings
 } def
 
 /github_com_gnewton_aposkribh_util_debug{
@@ -64,7 +88,7 @@
             2 dict begin
             /msg exch def
             %
-            (% Debug: ) github_com_gnewton_aposkribh__FILENAME concatstrings (: ) concatstrings msg concatstrings =
+            (% Debug:Z ) github_com_gnewton_aposkribh__FILENAME concatstrings (: ) concatstrings msg concatstrings =
             end
         }{
             pop
@@ -106,7 +130,7 @@
     end
 }bind def
 
-/github_com_gnewton_aposkribh_File_Load{
+/aposkribh_File_Load{
     /_filename null def
     2 dict begin
     /_filename exch store
@@ -119,6 +143,21 @@
     }{
         (aposkribh_Library_Load: ) (Already loaded: ) concatstrings _filename concatstrings github_com_gnewton_aposkribh_util_debug
     }ifelse
+
+}bind def
+
+/aposkribh_Files_Load{
+    0 index type /arraytype eq not{
+        (aposkribh_Files_Load: arg is not array) github_com_gnewton_aposkribh_util_debug
+    }if
+    /_filenames null def
+    2 dict begin
+    /_filenames exch store
+    end
+    
+    _filenames{
+        aposkribh_File_Load
+    }forall
 
 }bind def
 

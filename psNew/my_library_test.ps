@@ -1,7 +1,9 @@
 %% This filename
 /github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
 %%
-/github_com_gnewton_aposkribh__DEBUG true def
+
+/github_com_gnewton_aposkribh__DEBUG false def
+
 (globals.ps) run
 
 % Reset
@@ -9,9 +11,12 @@
 
 (Loading libaries) github_com_gnewton_aposkribh_Running_File
 
-(library.ps) github_com_gnewton_aposkribh_File_Load
-(library.ps) github_com_gnewton_aposkribh_File_Load
-(util.ps) github_com_gnewton_aposkribh_File_Load
+% (library.ps) aposkribh_File_Load
+% (library.ps) aposkribh_File_Load
+% (util.ps) aposkribh_File_Load
+
+
+[(library.ps) (util.ps)] aposkribh_Files_Load
 
 %% Reset: this filename
 /github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
@@ -23,7 +28,7 @@
 github_com_gnewton_aposkribh_Library# begin
 github_com_gnewton_aposkribh_util# begin 
 
-/baseLibrary# /baseLibrary# newLibrary def
+/myLibrary# /myLibrary# newLibrary def
 
 
 /foo {
@@ -37,8 +42,8 @@ github_com_gnewton_aposkribh_util# begin
 
 
 
-baseLibrary# /foo /foo procAdd
-baseLibrary# /bar /bar  procAdd
+myLibrary# /foo /foo procAdd
+myLibrary# /bar /bar  procAdd
 
 /foo{
     (Hello) debug
@@ -46,7 +51,7 @@ baseLibrary# /bar /bar  procAdd
 
 
 % Test drun
-baseLibrary# begin
+myLibrary# begin
 
 
 (Test lrun) =
@@ -56,11 +61,11 @@ baseLibrary# begin
 end
 
 (Test lrun dict) =
-/bar baseLibrary# lrun
-/foo baseLibrary# lrun
+/bar myLibrary# lrun
+/foo myLibrary# lrun
 
 
-baseLibrary# begin
+myLibrary# begin
 /bar lrun
 /foo lrun
 end
@@ -74,14 +79,21 @@ end
 
 [(A) (bbb)] concatstrings  =
 [(A) ( ) (bb)] concatstrings  =
-quit
+
 
 github_com_gnewton_aposkribh_util# begin
 clear
 (A) (bbb) concatstrings =
 clear
-
 end
+
+[(A)(B)(C)] concatstrings =
+
+[(A)(B)(C)] concatstringsSpc =
+
+[(A)(B)(C)] (--) concatstringsSep =
+
+quit
 
 
 github_com_gnewton_aposkribh_util# begin
