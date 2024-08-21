@@ -24,7 +24,13 @@ github_com_gnewton_aposkribh_Library# begin
 
 
 /newLibrary{
+    /_libName null def
+    2 dict begin
+    /_libName exch store
+    end
+
     <<
+        /LibName _libName
         /Docs# emptyDict 
         /Test# emptyDict
         /Params# emptyDict
@@ -32,11 +38,7 @@ github_com_gnewton_aposkribh_Library# begin
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         /lrun{
-            /github_com_gnewton_aposkribh__DEBUG where{
-                /github_com_gnewton_aposkribh__DEBUG get{
-                    (lrun START) =
-                }if
-            }if
+            (lrun START) debug
         
             /_dict# currentdict def
             
@@ -47,17 +49,16 @@ github_com_gnewton_aposkribh_Library# begin
             
             /_proc exch def
 
-            /github_com_gnewton_aposkribh__DEBUG where{
-                /github_com_gnewton_aposkribh__DEBUG get{
-                    ( lrun starting) =
-                    _proc =
-                }if
-            }if
-
-            
+            %( lrun starting proc: ) _proc concatstrings debug
+            ( lrun starting proc: ) debug
+            % Run procedure
+            /str 128 string def
+            /msg 256 string def
+            _dict# /LibName get str cvs 
+            _proc str cvs debug
             _dict# /Code# get _proc get exec
             end
-        }def
+        }bind def
 
 
         /procAdd{ % key proc

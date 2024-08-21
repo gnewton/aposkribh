@@ -21,17 +21,17 @@
 
 
 github_com_gnewton_aposkribh_Library# begin
+github_com_gnewton_aposkribh_util# begin 
 
-
-/baseLibrary# newLibrary def
+/baseLibrary# /baseLibrary# newLibrary def
 
 
 /foo {
-    (This is foo) =
+    (This is foo) debug
 }bind def
 
 /bar {
-    (This is bar) =
+    (This is bar) debug
 }def
 
 
@@ -41,7 +41,7 @@ baseLibrary# /foo /foo procAdd
 baseLibrary# /bar /bar  procAdd
 
 /foo{
-    (Hello) =
+    (Hello) debug
 }def
 
 
@@ -66,11 +66,15 @@ baseLibrary# begin
 end
 
 
-/github_com_gnewton_aposkribh__DEBUG false store
 
-(concat A bbb -> Abbb) =
-(A) (bbb) /concatstrings util
 
+
+(concat A bbb -> Abbb (should work)) debug
+(A) (bbb) concatstrings  =
+
+[(A) (bbb)] concatstrings  =
+[(A) ( ) (bb)] concatstrings  =
+quit
 
 github_com_gnewton_aposkribh_util# begin
 clear

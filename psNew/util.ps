@@ -48,34 +48,6 @@ github_com_gnewton_aposkribh_util# begin
     end
 }bind def
 
-%% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
-/concatstrings % (a) (b) -> (ab)  
-{
-    count 2 lt{
-        (Error: base.ps: concatstrings: needs two args) =
-        (Filename:) =
-        github_com_gnewton_aposkribh__FILENAME =
-        quit
-    }if
-    0 1 1{
-        /i exch def
-        i index type /stringtype ne{
-            (Error: /concatstrings) =
-            i =
-            (stack not string) =
-            (Filename:) =
-            github_com_gnewton_aposkribh__FILENAME =
-            quit
-        }if
-    }for
-    % End Args
-    %%%%%%%%%
-    
-    exch dup length    
-    2 index length add string    
-    dup dup 4 2 roll copy length
-    4 -1 roll putinterval
-} def
 
 
 % Type tests

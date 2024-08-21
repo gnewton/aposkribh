@@ -16,8 +16,20 @@
 
 
 %% https://stackoverflow.com/questions/12378904/postscript-concatenate-two-strings
-/concatstrings % (a) (b) -> (ab)  
+/concatstrings % (a) (b) -> (ab)   OR [(a) (b) (c)...] -> (abc...)
 {
+    0 index type /arraytype eq{
+        2 dict begin
+        /_a exch def
+        /str () def
+        _a{
+            /s exch def
+            
+            /str s str concatstrings store
+        }forall
+        str
+        end
+    }{
     count 2 lt{
         (Error: base.ps: concatstrings: needs two args) =
         (Filename:) =
@@ -27,7 +39,7 @@
     0 1 1{
         /i exch def
         i index type /stringtype ne{
-            (Error: /concatstrings) =
+            (Error: globals.ps/concatstrings) =
             i =
             (stack not string) =
             i index =
@@ -43,6 +55,7 @@
     2 index length add string    
     dup dup 4 2 roll copy length
     4 -1 roll putinterval
+    }ifelse
 } def
 
 /github_com_gnewton_aposkribh_util_debug{
