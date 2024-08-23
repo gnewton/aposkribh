@@ -53,10 +53,13 @@ github_com_gnewton_aposkribh_Library# begin
             %( lrun starting proc: ) _proc concatstrings debug
             ( lrun starting proc: ) debug
             % Run procedure
-            /str 128 string def
-            /msg 256 string def
-            _dict# /LibName get str cvs 
-            _proc str cvs debug
+            /libName  _dict# /LibName get length string def
+            /procName _proc length string def
+            _dict# /LibName get libName cvs
+            _proc procName cvs
+            [(lrun: execing: ) libName (:) procName] concatstrings debug
+            
+            % Exec proc
             _dict# /Code# get _proc get exec
             end
         }bind def

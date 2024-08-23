@@ -1,0 +1,41 @@
+%% This filename
+/github_com_gnewton_aposkribh__FILENAME (my_library.ps) def
+%%
+
+(globals.ps) run
+
+% Reset
+/github_com_gnewton_aposkribh__FILENAME (my_library.ps) def
+
+(Loading libaries) github_com_gnewton_aposkribh_Running_File
+
+[(library.ps) (util.ps)] aposkribh_Files_Load
+
+%% Reset: this filename
+/github_com_gnewton_aposkribh__FILENAME (my_library_test.ps) def
+%%
+
+(Running self) github_com_gnewton_aposkribh_Running_File
+
+
+github_com_gnewton_aposkribh_Library# begin
+github_com_gnewton_aposkribh_util# begin 
+
+/myLibrary# /myLibrary# newLibrary def
+
+
+% Temporary dict; Just to define procs
+10 dict begin
+/foo {
+    (This is /foo) =
+}bind def
+
+/bar {
+    (This is /bar) =
+}def
+
+myLibrary# /foo /foo procAdd
+myLibrary# /bar /bar  procAdd
+end
+
+

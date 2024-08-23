@@ -1,5 +1,5 @@
 %% This filename
-/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
+/github_com_gnewton_aposkribh__FILENAME (my_library_test.ps) def
 %%
 
 /github_com_gnewton_aposkribh__DEBUG false def
@@ -7,19 +7,14 @@
 (globals.ps) run
 
 % Reset
-/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
+/github_com_gnewton_aposkribh__FILENAME (my_library_test.ps) def
 
 (Loading libaries) github_com_gnewton_aposkribh_Running_File
 
-% (library.ps) aposkribh_File_Load
-% (library.ps) aposkribh_File_Load
-% (util.ps) aposkribh_File_Load
-
-
-[(library.ps) (util.ps)] aposkribh_Files_Load
+[(my_library.ps)] aposkribh_Files_Load
 
 %% Reset: this filename
-/github_com_gnewton_aposkribh__FILENAME (library_test.ps) def
+/github_com_gnewton_aposkribh__FILENAME (my_library_test.ps) def
 %%
 
 (Running self) github_com_gnewton_aposkribh_Running_File
@@ -28,22 +23,6 @@
 github_com_gnewton_aposkribh_Library# begin
 github_com_gnewton_aposkribh_util# begin 
 
-/myLibrary# /myLibrary# newLibrary def
-
-
-/foo {
-    (This is foo) debug
-}bind def
-
-/bar {
-    (This is bar) debug
-}def
-
-
-
-
-myLibrary# /foo /foo procAdd
-myLibrary# /bar /bar  procAdd
 
 /foo{
     (Hello) debug
@@ -52,25 +31,16 @@ myLibrary# /bar /bar  procAdd
 
 % Test drun
 myLibrary# begin
-
-
-(Test lrun) =
-/bar lrun
-(2) =
-/foo lrun
-end
+github_com_gnewton_aposkribh_util# begin
 
 (Test lrun dict) =
 /bar myLibrary# lrun
 /foo myLibrary# lrun
 
-
-myLibrary# begin
-/bar lrun
-/foo lrun
+/foo myLibrary# lrun
 end
-
-
+end
+quit
 
 
 
@@ -93,6 +63,10 @@ end
 
 [(A)(B)(C)] (--) concatstringsSep =
 
+myLibrary# ===
+
+
+mark 2 3 add counttomark =
 quit
 
 
