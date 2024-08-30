@@ -4,22 +4,50 @@
 
 (globals.ps) run
 
+[(library.ps) ] aposkribh_Files_Load
+
 % Reset this filename
 /github_com_gnewton_aposkribh__FILENAME (util.ps) def
 %% Nothing in util can have any state
 
 
-/github_com_gnewton_aposkribh_util# 50 dict def
+
+github_com_gnewton_aposkribh_Library# begin
+/github_com_gnewton_aposkribh_util# /github_com_gnewton_aposkribh_util# newLibrary def
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Temporary dict scope; Just to define procs
+
+10 dict begin
+/assertMinStackSize{ % procName num
+    1 add count ge{
+        (Error: assertMinStackSize) =
+        =
+        github_com_gnewton_aposkribh__FILENAME =
+        stop
+    }{
+        pop
+    }ifelse
+}bind def
+
+github_com_gnewton_aposkribh_util#  ===
+
+($$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+
+github_com_gnewton_aposkribh_util# /assertMinStackSize /assertMinStackSize  github_com_gnewton_aposkribh_util#  /procAdd get exec
+
+end % Temporary dict scope
+github_com_gnewton_aposkribh_util# ===
+
+
 github_com_gnewton_aposkribh_util# begin
 
 
-/debug{
-    github_com_gnewton_aposkribh_util_debug
-}def
+
 
 /assertMinStackSize{ % procName num
     1 add count ge{
@@ -34,7 +62,8 @@ github_com_gnewton_aposkribh_util# begin
 
 %%%%%%%%%%% Types
 /isIntegerRealStringBool{
-    /isIntegerRealStringBool 1 assertMinStackSize
+    %/isIntegerRealStringBool 1 assertMinStackSize
+    /isIntegerRealStringBool 1 /assertMinStackSize github_com_gnewton_aposkribh_util# lrun
     
     10 dict begin
     /v exch def

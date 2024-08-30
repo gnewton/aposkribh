@@ -6,7 +6,7 @@
 % Reset
 /github_com_gnewton_aposkribh__FILENAME (library.ps) def
 
-[(util.ps)] aposkribh_Files_Load
+%[(util.ps)] aposkribh_Files_Load
 % Reset/github_com_gnewton_aposkribh__FILENAME (library.ps) def
 
 
@@ -18,18 +18,15 @@
 github_com_gnewton_aposkribh_Library# begin
 %(github_com_gnewton_aposkribh_Library) github_com_gnewton_aposkribh_util_loading_start
 
-/emptyDict{
-    <<
-    >>
-}def
+/LibName /github_com_gnewton_aposkribh_Library#  def
+
 
 
 /newLibrary{
-    /_libName null def
+%    /_libName null def
     2 dict begin
-    /_libName exch store
-    end
-
+    /_libName exch def
+    
     <<
         /LibName _libName
         /Docs# emptyDict 
@@ -60,27 +57,82 @@ github_com_gnewton_aposkribh_Library# begin
             [(lrun: execing: ) libName (:) procName] concatstrings debug
             
             % Exec proc
-            _dict# /Code# get _proc get exec
+            {
+                _dict# /Code# get _proc get exec
+            }
+            stopped{
+                (ERROR) debug
+                (A)=
+                $error begin
+                (newerror)=
+                newerror =
+                (B)=
+                (errorname=)=
+                errorname =
+                % (C)=
+                % (command=)=
+                % command =
+                ()=
+                % (D)=
+                % (command type=) =
+                % command type =
+                (E)=
+                (errorinfo=) =
+                errorinfo ===
+                (F)=
+                (ostack=) =
+                ostack ===
+                (G)=
+                (estack=)=
+                estack ===
+
+                (G)=
+                (dstack)=
+                dstack ==
+                dstack {
+                    /dd exch def
+                    dd =
+                    %0 1 dstack length 1 sub{
+                    dd /LibName where{
+                        dd eq{
+                            (true)=
+                            dd /LibName get =
+                        }if
+                    }{
+                        (false) =
+                    }ifelse
+                }forall
+                
+                (End $error) =
+                end
+                quit
+            }{
+                (DONE) debug
+            }ifelse
             end
         }bind def
 
-
         /procAdd{ % key proc
-            load
+            5 dict begin
             /_proc exch def
             
             /_key exch def
             /_library# exch def
-            
             _library# begin
-            Code# _key /_proc load put
+            _library# /Code# get
+            _key /_proc load put
             end
-        }def
+            end
+        }
+
     >>
+    end
 }bind def
 %(github_com_gnewton_aposkribh_Library#) github_com_gnewton_aposkribh_util_loading_end
+
+
 end % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 

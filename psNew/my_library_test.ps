@@ -2,7 +2,7 @@
 /github_com_gnewton_aposkribh__FILENAME (my_library_test.ps) def
 %%
 
-/github_com_gnewton_aposkribh__DEBUG false def
+/github_com_gnewton_aposkribh__DEBUG true def
 
 (globals.ps) run
 
@@ -40,9 +40,14 @@ github_com_gnewton_aposkribh_util# begin
 /foo myLibrary# lrun
 end
 end
+
+github_com_gnewton_aposkribh_util# ===
+%github_com_gnewton_aposkribh_Library# ===
+(XXXX) =
+
+
+/isIntegerRealStringBool github_com_gnewton_aposkribh_util# lrun =
 quit
-
-
 
 (concat A bbb -> Abbb (should work)) debug
 (A) (bbb) concatstrings  =

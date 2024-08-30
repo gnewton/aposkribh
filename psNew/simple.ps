@@ -1,0 +1,277 @@
+
+
+/strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
+      
+    2 dict begin
+    /_sep exch def
+    % array of N strings on stack
+    0 index type /arraytype eq{
+        2 dict begin
+        /_a exch def
+        /str () def
+        /first true def
+        0 1 _a length 1 sub{
+            /i exch def
+            /s _a i get def
+
+             first{
+                 /first false store
+             }{
+                 /str str _sep concatstrings store
+             }ifelse
+
+             /str str s concatstrings store
+        }for
+        str
+        end
+    }{
+        % 2 strings on stack
+        count 2 lt{
+            (Error: base.ps: concatstrings: needs two args) =
+            quit
+        }if
+        0 1 1{
+            /i exch def
+            i index type /stringtype ne{
+                (Error: globals.ps/concatstrings) =
+                i =
+                (stack not string) =
+                i index =
+                quit
+            }if
+        }for
+        % End Args
+        %%%%%%%%%
+        
+        exch dup length    
+        2 index length add string    
+        dup dup 4 2 roll copy length
+        4 -1 roll putinterval
+    }ifelse
+    end
+}bind def
+
+/spaces{
+    2 dict begin
+    /_n exch def
+    /str () def
+    0 1 _n{
+        pop
+        /str str ( ) () concatstrings def
+    }for
+    str
+    end
+}bind def
+
+(a) (BBBBB)  ( ) concatstrings =
+
+
+
+
+
+/printDict{
+    (printDict)=
+    2 dict begin
+    /depth exch def
+    /d exch def
+
+    depth =
+    /spc depth 4 mul spaces def
+    spc (<<) () concatstrings =
+    %1 0 d length 1 sub
+    d{
+        (BB) =
+        %1000 string cvs /value exch def
+        /value exch def
+        /key exch def
+
+        /key key key length string cvs def
+
+        spc key () concatstrings =
+        (A) =        
+        {value} type /dicttype eq =
+        (DD) =
+        {value} type /dicttype eq{
+            value type /dicttype eq =
+             value depth 1 add printDict 
+        }{
+            value type /dicttype eq =
+            spc (foo) () concatstrings =
+            value type =
+            spc value () concatstrings =
+        }ifelse
+        (CC) =
+    }forall
+
+    spc (>>) () concatstrings =
+    end
+}bind def
+
+
+
+/Base# 50 dict def
+
+Base# begin
+(A) =
+
+/new2{
+    2 dict begin
+    stack
+    (Z)=
+    /xname exch def
+    xname =
+    
+    (H) =
+    /tempD 50 dict def
+
+    tempD begin
+%    <<
+        /DictName xname def
+
+        /D# <<>> def
+        /foo (mmmm) def
+
+        /m{
+            (MM) =
+        }def
+        
+        /bill33{
+            (BILL##) =
+        }def
+        
+        /runner{
+            5 dict begin
+            /procName exch def
+            D# procName known{
+                D# procName get exec
+            }{
+                (ERROR) =
+                (Unknown proc:) =
+                procName =
+                quit
+            }ifelse
+            (/runner END) =
+            end
+        }def
+        
+        /procAdd{
+            (procAdd start) =
+            5 dict begin
+            /_proc exch def
+            /_key exch def
+            /_library# exch def
+
+            _library# begin
+            (Adding proc:) =
+            _key =
+            _library# /D# get _key _proc load put
+            end
+            (procAdd end) =
+            end
+        }def
+        %   >>
+        end
+
+    
+    (99) =
+    stack
+    0 index type =
+    (99) =
+    tempD
+    end
+    (989) =
+    stack
+    0 index type =
+    (989) =
+    (TTTT) =
+
+    (-TTTT) =
+}bind def
+
+(END BASE) =
+
+
+end % Base#
+
+
+(=== Base#) =
+Base# ===
+($$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+
+(WWWWWW) =
+%/T2# /T2# Base# /new2 get exec def
+/foobar /foobar Base# /new2 get exec def
+/T2# /T2# Base# /new2 get exec def
+%/T2# Base# /new2 get exec stack
+(WWWWWW) =
+
+
+(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Base# ===
+() =
+(T2# ------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+T2# ===
+foobar ===
+
+(MMM) =
+
+
+/Z{
+    (---Start Z) =
+    (Z) =
+    (---End Z) =
+}def
+
+(J)=
+Z
+(K)=
+
+/Add{
+    (ADD) =
+}def
+
+
+T2# /Z /Z T2# /procAdd get exec
+T2# /Z1 /Z T2# /procAdd get exec
+T2# /Add /Add T2# /procAdd get exec
+
+T2# type =
+
+T2# begin
+T2# ===
+%/Z runner exec
+/Z T2# /runner get exec
+%/FOOOOO T2# /runner get exec
+(K)=
+bill33 
+(MOOOOOOOOO) =
+end
+
+
+
+
+() =
+(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Base# ===
+
+(M) =
+(T2# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+T2# ===
+/_proc null def
+
+T2# /D# get  ===
+
+T2# /D# get /Z get exec
+%4 5 T2# /Add get exec
+() =
+(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Base# ===
+
+
+/T3#  /T3# Base# /new2 get exec def
+
+() =
+(T3# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+T3# ===
+
+

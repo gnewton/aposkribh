@@ -14,6 +14,12 @@
     pop
 }ifelse
 
+/emptyDict{
+    <<
+    >>
+}def
+
+
 /aposkribh_Library_concatstrings{ % (1)(B) (sp)  -> 1spB
     2 dict begin
     /_sep exch def
@@ -137,28 +143,34 @@
     end
     
     github_com_gnewton_aposkribh_Library__LoadedFiles# _filename known not{
-        (aposkribh_Library_Load: ) (Loading file: ) concatstrings _filename concatstrings github_com_gnewton_aposkribh_util_debug
+        [(aposkribh_Library_Load: ) (Loading file: ) _filename] concatstrings github_com_gnewton_aposkribh_util_debug
         _filename run
         github_com_gnewton_aposkribh_Library__LoadedFiles# _filename true put
     }{
-        (aposkribh_Library_Load: ) (Already loaded: ) concatstrings _filename concatstrings github_com_gnewton_aposkribh_util_debug
+        [ (aposkribh_Library_Load: ) (Already loaded: ) _filename] concatstrings github_com_gnewton_aposkribh_util_debug
     }ifelse
 
 }bind def
 
 /aposkribh_Files_Load{
+
     0 index type /arraytype eq not{
         (aposkribh_Files_Load: arg is not array) github_com_gnewton_aposkribh_util_debug
     }if
+
+
     /_filenames null def
     2 dict begin
     /_filenames exch store
     end
-    
+
     _filenames{
         aposkribh_File_Load
     }forall
 
 }bind def
 
+/debug{ % Can
+    github_com_gnewton_aposkribh_util_debug
+}bind def
 

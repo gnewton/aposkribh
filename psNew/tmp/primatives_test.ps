@@ -1,0 +1,52 @@
+
+
+(primatives.ps) run
+
+/checkArgs_Tests{
+    (% START checkArgsTests) =
+    (%% Negative tests) =
+    
+    clear
+    checkArgs {
+        (Fail: Error: no args) =
+        =
+        quit
+    }{
+        (OK: no args) =
+        =
+    }ifelse
+
+    clear
+    (foo) checkArgs{
+        (Fail: Error: one arg) =
+        quit
+    }{
+        (OK: one arg) =
+        =
+    }ifelse
+
+
+    clear
+    <<>> <<>> checkArgs {
+        (Fail: Error: one arg) =
+        quit
+    }{
+        (OK: Two wrong args) =
+        =
+    }ifelse
+
+
+    <<>> [] checkArgs {
+        (Fail: Error: one arg not stringtype) =
+        quit
+    }{
+        (OK: Two wrong args) =
+        =
+    }ifelse
+
+    (% END checkArgsTests) =
+
+}def
+
+
+checkArgs_Tests
