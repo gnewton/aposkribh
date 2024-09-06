@@ -1,27 +1,19 @@
 
-(a) (BBBBB)  ( ) concatstrings =
-
 (primatives.ps) run
 
 
-/Base# 50 dict def
+/Libs# 50 dict def
 
 
 
-Base# begin
-(A) =
+Libs# begin
 
-
-/new2{
-    (new2) [/nametype] checkArgs not{
+/newLib{
+    (newLib) [/nametype] checkArgs not{
         =
         quit
     }if
 
-    
-    (-MMMMMMMMMMMMMMMM) =
-    stack
-    (-MMMMMMMMMMMMMMMM) =
     2 dict begin
 
     /_thisDictName  exch def
@@ -31,179 +23,47 @@ Base# begin
     /$newDict# 50 dict def
 
     $newDict# begin
-%    <<
-        /ThisDictName _thisDictName def
+    /ThisDictName _thisDictName def
 
-        /D# <<>> def
+    /D# <<>> def
 
-        /foo (mmmm) def
-
-        /m{
-            (MM) =
-        }def
-        
-        /bill33{
-            (BILL##) =
-        }def
-        
-        /runner{
-            5 dict begin
-            /procName exch def
-            D# procName known{
-                D# procName get exec
-            }{
-                (ERROR) =
-                (Unknown proc:) =
-                procName =
-                quit
-            }ifelse
-            (/runner END) =
-            end
-        }def
-        
-        /procAdd{
-            (procAdd start) =
-            5 dict begin
-            /_proc exch def
-            /_key exch def
-            /_library# exch def
-
-            _library# begin
-            (Adding proc:) =
-            _key =
-            _library# /D# get _key _proc load put
-            end
-            (procAdd end) =
-            end
-        }def
-        %   >>
+    
+    /runner{
+        5 dict begin
+        /procName exch def
+        D# procName known{
+            D# procName get exec
+        }{
+            (ERROR) =
+            (Unknown proc:) =
+            procName =
+            quit
+        }ifelse
+        (/runner END) =
         end
-        % Leave on stack
-        $newDict#
+    }def
+    
+    /procAdd{
+        (procAdd start) =
+        5 dict begin
+        /_proc exch def
+        /_key exch def
+        /_library# exch def
+
+        _library# begin
+        (Adding proc:) =
+        _key =
+        _library# /D# get _key _proc load put
+        end
+        (procAdd end) =
+        end
+    }def
+    %   >>
+    end
+    % Leave on stack
+    $newDict#
     end
 }bind def
 
-(END BASE) =
-
-
-end % Base#
-
-
-(=== Base#) =
-Base# ===
-($$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-
-(WWWWWW) =
-%/T2# /T2# Base# /new2 get exec def
-(***) =
-/foobar Base# /new2 get exec
-/foobar exch def
-
-/T2# Base# /new2 get exec
-/T2# exch def
-
-
-
-
-%/T2# Base# /new2 get exec stack
-(WWWWWW) =
-
-
-(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-Base# ===
-() =
-(T2# ------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-T2# ===
-foobar ===
-
-(MMM) =
-
-
-/Z{
-    (---Start Z) =
-    (Z) =
-    (---End Z) =
-}def
-
-(J)=
-Z
-(K)=
-
-/Add{
-    (ADD) =
-}def
-
-
-
-T2# /Z /Z T2# /procAdd get exec
-T2# /Z1 /Z T2# /procAdd get exec
-T2# /Add /Add T2# /procAdd get exec
-
-T2# type =
-
-T2# begin
-T2# ===
-%/Z runner exec
-/Z T2# /runner get exec
-%/FOOOOO T2# /runner get exec
-(K)=
-bill33 
-(MOOOOOOOOO) =
-end
-
-
-
-
-() =
-(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-Base# ===
-
-(M) =
-(T2# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-
-T2# ===
-
-
-/_proc null def
-
-T2# /D# get  ===
-
-T2# /D# get /Z get exec
-%4 5 T2# /Add get exec
-() =
-(Base# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-Base# ===
-
-
-/T3# Base# /new2 get exec /T3#  exch def
-
-
-() =
-(T3# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
-T3# ===
-
-
-/newDict{
-    (Start newdicr) =
-     /name exch def
-     name =
-     name Base# /new2 get exec
-     (end0 newdicr) =
-     0 index ===
-     (end1 newdicr) =
- }def
-
-/Foo# /Foo# newDict def
-
-Foo# ===
-
-/MMM /MMM newDict def
-
-(M) =
-
-MMM ===
-
-
-
-
+end % Libs#
 

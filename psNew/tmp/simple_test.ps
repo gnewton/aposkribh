@@ -1,0 +1,120 @@
+
+(primatives.ps) run
+(simple.ps) run
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+/foobar Libs# /newLib get exec
+/foobar exch def
+
+
+/T2# Libs# /newLib get exec
+/T2# exch def
+
+
+
+
+%/T2# Libs# /newLib get exec stack
+(WWWWWW) =
+
+
+(Libs# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Libs# ===
+() =
+(T2# ------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+T2# ===
+foobar ===
+
+(MMM) =
+
+
+/Z{
+    (---Start Z) =
+    (Z) =
+    (---End Z) =
+}def
+
+(J)=
+Z
+(K)=
+
+/Add{
+    (ADD) =
+}def
+
+
+
+T2# /Z /Z T2# /procAdd get exec
+T2# /Z1 /Z T2# /procAdd get exec
+T2# /Add /Add T2# /procAdd get exec
+
+T2# type =
+
+T2# begin
+T2# ===
+%/Z runner exec
+/Z T2# /runner get exec
+%/FOOOOO T2# /runner get exec
+(K)=
+end
+
+
+
+
+() =
+(Libs# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Libs# ===
+
+(M) =
+(T2# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+
+T2# ===
+
+
+/_proc null def
+
+T2# /D# get  ===
+
+T2# /D# get /Z get exec
+%4 5 T2# /Add get exec
+() =
+(Libs# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+Libs# ===
+
+
+/T3# Libs# /newLib get exec /T3#  exch def
+
+
+() =
+(T3# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$) =
+T3# ===
+
+
+/newDict{
+    (Start newdicr) =
+     /name exch def
+     name =
+     name Libs# /newLib get exec
+     (end0 newdicr) =
+     0 index ===
+     (end1 newdicr) =
+ }def
+
+/Foo# /Foo# newDict def
+
+Foo# ===
+
+/MMM /MMM newDict def
+
+(M) =
+
+MMM ===
+
+
+
+
+
+

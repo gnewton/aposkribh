@@ -2,37 +2,89 @@
 
 (primatives.ps) run
 
+/assertError{% {stuff-to-exec} (msg)
+    {
+        1 2 roll
+        exec
+    }stopped{
+        % OK
+        (% AssertError)( OK) verbose
+    }{
+        (assertError: should be an error) =
+        =
+    }ifelse
+}bind def
+
+/assertNoError{
+    {
+        exec
+    }stopped{
+        (assertError: should NOT be an error) =
+        =
+    }{
+        % OK
+    }ifelse
+}bind def
+
+
+/assertTrue{ % (fail-false-message) true|false (msg)
+    (H) =
+    (/assertTrue) [/stringtype /booleantype /stringtype] checkArgs% not{
+
+%    }if
+
+    2 1 roll
+
+    not{
+        exch (: ) concatstrings exch concatstrings =
+    }{
+        (OK: ) exch concatstrings =
+        pop
+    }ifelse
+}bind def
+
+/assertFalse{ % (fail-true-message) true|false (msg)
+    2 1 roll
+
+    {
+        exch (: ) concatstrings exch concatstrings =
+    }{
+
+        (OK: ) exch concatstrings =
+    }ifelse
+}bind def
+
+/foo{
+
+}def
+
 /checkArgs_Tests{
     (% START checkArgsTests) =
     (%% Negative tests) =
     
     clear
-    checkArgs {
-        (Fail: Error: no args) =
-        =
-        quit
-    }{
-        (OK: no args) =
-        =
-    }ifelse
+    {
+        checkArgs (Fail: Error: no args) 
+    }assertError
+    (Pass) =
 
     clear
-    (foo) checkArgs{
-        (Fail: Error: one arg) =
-        quit
-    }{
-        (OK: one arg) =
-        =
-    }ifelse
+    {
+        (foo) checkArgs (Fail: Should be error: one arg; needs 2) 
+    }assertError
+    (Pass) =    
+
+    quit
+
 
 
     clear
     <<>> <<>> checkArgs {
-        (Fail: Error: one arg) =
+        (Fail: Error: ) =
         quit
     }{
         (OK: Two wrong args) =
-        =
+        pop
     }ifelse
 
 
@@ -41,12 +93,32 @@
         quit
     }{
         (OK: Two wrong args) =
-        =
+        pop
     }ifelse
+
+    clear
+    (foo) (foo)   (procName) [/integertype /stringtype] checkArgs {
+        (Fail: MMMError: one arg not stringtype) =
+        quit
+    }{
+        (OK: Second arg (string) does not match type (/integertype)) =
+        pop
+    }ifelse
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    (foo) (foo)   (procName) [/integertype /stringtype] checkArgs (/checkArgs) assertFalse
+    
+    (%% Positive tests) =
+    clear
+    (foo) 32   (procName) [/integertype /stringtype] checkArgs (/checkArgs) assertTrue
 
     (% END checkArgsTests) =
 
 }def
 
 
-checkArgs_Tests
+%checkArgs_Tests
+
+mark (A) (BB) (CC) verbose2 
+
+

@@ -1,97 +1,157 @@
-/checkArgs{ % true | false errorMessage
-    count 2 lt{
-        (ERROR: /checkArgs: Needs 2 args) false
-    }{
-        2 dict begin
 
-        0 index type /arraytype ne{
-            (ERROR: /checkArgs: 0 stack not /arraytype) false
+/aposkribh_primatives_LOADED where not{
+
+    /aposkribh_primatives_LOADED true def
+    /aposkribh_VERBOSE false def
+
+    /verbose2{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
+        % Needs a mark
+        {
+            counttomark
+        }stopped{
+            (/verbose2: Missing 'mark') /unmatchedmark signalerror
+        }if
+        pop
+        
+        (------------------------------------) =
+        stack
+        (------------------------------------) =
+        /str () def
+        counttomark 1 sub -1 0 {
+            /i exch def
+            (ZZ)=
+            i =
+            i index =
+            ()=
+            /str str i index concatstrings store
+        }for
+        cleartomark
+        (M)=
+        str =
+        (M)=
+    }bind def
+
+    /verbose{
+        
+        aposkribh_VERBOSE{
+            () =
+            (%Verbose start) =
+            =
+            =
+            (%Verbose END) =
+            () =
         }{
+            pop
+            pop
+        }ifelse
+    }bind def
+    
+    /checkArgs{ % argn  arg0 (procName) [n types] --> true 
+        count 2 lt{
+            (/checkargs: Needs 2 arguments) /stackunderflow signalerror
+        }{
+            2 dict begin
 
-            1 index type /stringtype ne{
-                (ERROR: /checkArgs: 1 stack not /stringtype) false
+            0 index type /arraytype ne{
+                (/checkargs: 0 stack not /arraytype) /typecheck signalerror
             }{
 
-                % end args
+                1 index type /stringtype ne{
+                    (/checkargs: 1 stack not /stringtype) /typecheck signalerror
+                }{
+                    % end args
 
-                2 dict begin
-                /_argsArray exch def
-                /_procName exch def
+                    2 dict begin
+                    /_argsArray exch def
+                    /_procName exch def
 
-                0 1 _argsArray length 1 sub{
-                    /i exch def
-                    _argsArray i get i index type ne{
-                        (ERROR) =
-                        quit
-                    }if
-                }for
-                end
-                true
+                    % TODO: Need to check if length(_argsArray) is greater stack count
+                    _argsArray length count ge{
+                        (/checkArgs: Number of args in type array greater than number of args in stack) /stackunderflow signalerror
+                    }{
+                        % TODO: Need to check if _argsArray is made up of type types
+
+                        % See if types match
+                        0 1 _argsArray length 1 sub{
+                            /i exch def
+                            i (/checkArgs: i ) verbose 
+                            i index type (/checkArgs: i index type) verbose
+                            _argsArray i get (/checkArgs: _argsArray i get) verbose
+                            
+                            i index type _argsArray i get ne{
+                                (/checkArgs: arg does not match type: ) i 10 string cvs concatstrings /typecheck signalerror
+                            }if
+                        }for
+                    }ifelse
+                    end
+                }ifelse
             }ifelse
         }ifelse
-    }ifelse
-}def
+    }bind def
 
 
 
-/strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
-    2 dict begin
-    /_sep exch def
-    % array of N strings on stack
-    0 index type /arraytype eq{
+    /strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
         2 dict begin
-        /_a exch def
+        /_sep exch def
+        % array of N strings on stack
+        0 index type /arraytype eq{
+            2 dict begin
+            /_a exch def
+            /str () def
+            /first true def
+            0 1 _a length 1 sub{
+                /i exch def
+                /s _a i get def
+
+                first{
+                    /first false store
+                }{
+                    /str str _sep concatstrings store
+                }ifelse
+
+                /str str s concatstrings store
+            }for
+            str
+            end
+        }{
+            % 2 strings on stack
+            count 2 lt{
+                (Error: base.ps: concatstrings: needs two args) =
+                quit
+            }if
+            0 1 1{
+                /i exch def
+                i index type /stringtype ne{
+                    (Error: globals.ps/concatstrings) =
+                    i =
+                    (stack not string) =
+                    i index =
+                    quit
+                }if
+            }for
+            % End Args
+            %%%%%%%%%
+            
+            exch dup length    
+            2 index length add string    
+            dup dup 4 2 roll copy length
+            4 -1 roll putinterval
+        }ifelse
+        end
+    }bind def
+
+    /spaces{
+        2 dict begin
+        /_n exch def
         /str () def
-        /first true def
-        0 1 _a length 1 sub{
-            /i exch def
-            /s _a i get def
-
-             first{
-                 /first false store
-             }{
-                 /str str _sep concatstrings store
-             }ifelse
-
-             /str str s concatstrings store
+        0 1 _n{
+            pop
+            /str str ( ) () concatstrings store
         }for
         str
         end
-    }{
-        % 2 strings on stack
-        count 2 lt{
-            (Error: base.ps: concatstrings: needs two args) =
-            quit
-        }if
-        0 1 1{
-            /i exch def
-            i index type /stringtype ne{
-                (Error: globals.ps/concatstrings) =
-                i =
-                (stack not string) =
-                i index =
-                quit
-            }if
-        }for
-        % End Args
-        %%%%%%%%%
-        
-        exch dup length    
-        2 index length add string    
-        dup dup 4 2 roll copy length
-        4 -1 roll putinterval
-    }ifelse
-    end
-}bind def
+    }bind def
 
-/spaces{
-    2 dict begin
-    /_n exch def
-    /str () def
-    0 1 _n{
-        pop
-        /str str ( ) () concatstrings store
-    }for
-    str
-    end
-}bind def
+}if
+
