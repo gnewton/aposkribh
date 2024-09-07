@@ -1,0 +1,26 @@
+
+/aposkribh_test# where not{
+
+    /aposkribh_test# 20 dict def
+
+
+    aposkribh_test# begin
+
+    /runTest{
+        2 dict begin
+        
+        /_testName exch def
+        {
+            mark (Pass: ) _testName strcatmark =
+        }
+        {
+            mark (Fail: ) _testName strcatmark =
+        }ifelse
+        end
+}bind def
+
+
+    end  % aposkribh_test# 
+
+
+}if

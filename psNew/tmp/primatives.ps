@@ -1,85 +1,109 @@
 
-/aposkribh_primatives_LOADED where not{
+(globals.ps) run
 
-    /aposkribh_primatives_LOADED true def
-    /aposkribh_VERBOSE false def
+/aposkribh_primatives# where not{
 
-    /verbose2{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
-        % Needs a mark
+    /aposkribh_primatives# 50 dict def
+
+    aposkribh_primatives# begin
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /strcatmark{ % mark (s1) (s2)...(sn) -> (s1s2....sn)
         {
             counttomark
         }stopped{
+            % No mark
             (/verbose2: Missing 'mark') /unmatchedmark signalerror
         }if
-        pop
+        pop %
         
-        (------------------------------------) =
-        stack
-        (------------------------------------) =
-        /str () def
-        counttomark 1 sub -1 0 {
-            /i exch def
-            (ZZ)=
-            i =
-            i index =
-            ()=
-            /str str i index concatstrings store
+        2 dict begin
+        
+        /$str () def
+        0 1 counttomark 3 sub {
+            index $str concatstrings /$str exch store
         }for
         cleartomark
-        (M)=
-        str =
-        (M)=
-    }bind def
-
-    /verbose{
-        
-        aposkribh_VERBOSE{
-            () =
-            (%Verbose start) =
-            =
-            =
-            (%Verbose END) =
-            () =
-        }{
-            pop
-            pop
-        }ifelse
+        $str 
+        end
     }bind def
     
+    /verbose2{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
+        aposkribh_VERBOSE{
+            strcatmark =
+        }{
+            cleartomark
+        }ifelse
+    }bind def
+
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /r2s{
+        (r2s) [/realtype] checkArgs
+        24 string cvs
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /n2s{ % /nametype to string /nametype --> (nametype)
+        (n2s) [/nametype] checkArgs
+
+        dup length string cvs
+    }bind def
+    
+    /i2s{ % int to string int --> (int)
+        (i2s start) =
+        (i2s) [/integertype] checkArgs
+        
+        /i exch def
+        /orig i def
+        
+        /digits 1 def
+
+        {
+            i 10 lt{
+                exit
+            }if
+            /i i 10 div store
+            /digits digits 1 add store
+        }loop
+        
+        orig digits string cvs
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /checkArgs{ % argn  arg0 (procName) [n types] --> true 
         count 2 lt{
-            (/checkargs: Needs 2 arguments) /stackunderflow signalerror
+            mark (/checkargs: ) _procName (: Needs 2 arguments) strcatmark /stackunderflow signalerror
         }{
             2 dict begin
 
             0 index type /arraytype ne{
-                (/checkargs: 0 stack not /arraytype) /typecheck signalerror
+                mark (/checkargs: ) _procName (: 0 stack not /arraytype) strcatmark /typecheck signalerror
             }{
-
                 1 index type /stringtype ne{
-                    (/checkargs: 1 stack not /stringtype) /typecheck signalerror
+                    mark (/checkargs: ) _procName (: 1 stack not /stringtype) strcatmark /typecheck signalerror
                 }{
                     % end args
-
                     2 dict begin
                     /_argsArray exch def
                     /_procName exch def
 
                     % TODO: Need to check if length(_argsArray) is greater stack count
                     _argsArray length count ge{
-                        (/checkArgs: Number of args in type array greater than number of args in stack) /stackunderflow signalerror
+                        mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
                     }{
                         % TODO: Need to check if _argsArray is made up of type types
 
                         % See if types match
                         0 1 _argsArray length 1 sub{
                             /i exch def
-                            i (/checkArgs: i ) verbose 
-                            i index type (/checkArgs: i index type) verbose
-                            _argsArray i get (/checkArgs: _argsArray i get) verbose
-                            
-                            i index type _argsArray i get ne{
-                                (/checkArgs: arg does not match type: ) i 10 string cvs concatstrings /typecheck signalerror
+                            mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _argsArray i get dup length string cvs verbose2
+                            _argsArray i get /anytype ne{
+                                i index type _argsArray i get ne{ % Bad arg: error
+                                    mark (/checkArgs: ) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _argsArray i get dup length string cvs strcatmark /typecheck signalerror
+                                }if
                             }if
                         }for
                     }ifelse
@@ -89,8 +113,7 @@
         }ifelse
     }bind def
 
-
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
         2 dict begin
         /_sep exch def
@@ -117,17 +140,12 @@
         }{
             % 2 strings on stack
             count 2 lt{
-                (Error: base.ps: concatstrings: needs two args) =
-                quit
+                (/strcat) /stackunderflow signalerror
             }if
             0 1 1{
                 /i exch def
                 i index type /stringtype ne{
-                    (Error: globals.ps/concatstrings) =
-                    i =
-                    (stack not string) =
-                    i index =
-                    quit
+                    (/strcat: Not string) /stackunderflow signalerror
                 }if
             }for
             % End Args
@@ -141,7 +159,10 @@
         end
     }bind def
 
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /spaces{
+        (spaves) [/integertype] checkArgs
         2 dict begin
         /_n exch def
         /str () def
@@ -153,5 +174,125 @@
         end
     }bind def
 
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /switch{
+
+        % Needs 3 args:
+        % 2:any type: value to be switched on
+        % 1:dict: keys are the match; values are the return value
+        % 0: executable array {}: default fall through return value
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        (/switch) [/arraytype /dicttype /anytype] checkArgs
+
+        /default exch def
+        /#caseDict exch def    
+        
+        % value being checked can be anything
+        /v exch def
+
+
+        % body
+        #caseDict v known not{
+            {default} (/switch: default) execClean
+        }{
+            #caseDict v get (/switch: case) execClean
+        }ifelse
+        
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /execClean{
+        /procName exch def
+        {
+            (running)=
+            exec
+            (running DONE)=
+        }stopped{
+            mark (/execClean: ) procName strcatmark /undefined signalerror
+        }if
+
+    }bind def
+
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /assertError{% {stuff-to-exec} (msg)
+        {
+            exec
+        }stopped{
+            % OK
+            mark (OK) (% AssertError) verbose2
+            true
+        }{
+            (assertError: should be an error) =
+            false
+        }ifelse
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /assertNoError{
+        {
+            exec
+        }stopped{
+            (assertError: should NOT be an error) =
+            false
+        }{
+            mark (OK) (% AssertNotError) verbose2
+            true
+        }ifelse
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /memoize# 20 dict def
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /memoize{ % 1arg {proc} /dictname
+        (memoize) [/nametype /arraytype /anytype] checkArgs        
+        count 3 lt{
+            (/memoize: Need 3 args) /stackunderflow signalerror
+        }if 
+        0 index type /nametype eq not{
+            (/memoize: 0 arg not /nametype) /typecheck signalerror
+        }if
+        1 index type /arraytype eq not{
+            (/memoize: 1 arg not /arraytype) /typecheck signalerror
+        }if
+
+        % args
+        
+        10 dict begin
+        /_dictName exch def
+        /_proc exch def
+        /_arg exch def
+
+
+        memoize# _dictName known{
+            /dict# memoize# _dictName get def
+        }{
+            /dict# 20 dict def
+            memoize# _dictName dict# put
+        }ifelse
+
+        dict# _arg known{
+            mark (momoize HIT: ) _dictName n2s verbose2
+            dict# _arg get % $
+
+        }{
+
+            /$value _arg _proc exec def
+            dict# _arg $value put
+            $value
+            mark (memoize MISS: ) verbose2
+        }ifelse
+        end
+    }def
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end % aposkribh_Libs#
 }if
+
+
 

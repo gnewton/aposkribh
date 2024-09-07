@@ -2,111 +2,61 @@
 
 (primatives.ps) run
 
-/assertError{% {stuff-to-exec} (msg)
-    {
-        1 2 roll
-        exec
-    }stopped{
-        % OK
-        (% AssertError)( OK) verbose
-    }{
-        (assertError: should be an error) =
-        =
-    }ifelse
-}bind def
+(test.ps) run
 
-/assertNoError{
-    {
-        exec
-    }stopped{
-        (assertError: should NOT be an error) =
-        =
-    }{
-        % OK
-    }ifelse
-}bind def
+aposkribh_primatives# begin
+aposkribh_test# begin
 
-
-/assertTrue{ % (fail-false-message) true|false (msg)
-    (H) =
-    (/assertTrue) [/stringtype /booleantype /stringtype] checkArgs% not{
-
-%    }if
-
-    2 1 roll
-
-    not{
-        exch (: ) concatstrings exch concatstrings =
-    }{
-        (OK: ) exch concatstrings =
-        pop
-    }ifelse
-}bind def
-
-/assertFalse{ % (fail-true-message) true|false (msg)
-    2 1 roll
-
-    {
-        exch (: ) concatstrings exch concatstrings =
-    }{
-
-        (OK: ) exch concatstrings =
-    }ifelse
-}bind def
-
-/foo{
-
-}def
 
 /checkArgs_Tests{
     (% START checkArgsTests) =
     (%% Negative tests) =
+
+
+
+    clear
+
+    {
+        32.2 (checkArgs) [/integertype] checkArgs
+    }assertError
+    (/checkArgs: /real instead of /integertype) runTest
+
+
+    clear
+    {
+        (checkArgs) [/integertype] checkArgs
+    }assertError
+    (/checkArgs: Empty array) runTest
+
+
+
+    clear
+    {
+        %<<>> <<>> checkArgs
+        (foo) (checkArgs) <<>> checkArgs 
+    }assertError
+    (/checkArgs: 0 arg not array) runTest
+
+    clear
+    {
+        <<>> (checkArgs) [] checkArgs
+    }assertError
+    (/checkArgs: 1 arg not string) runTest
+
     
     clear
     {
-        checkArgs (Fail: Error: no args) 
+        (foo)   (checkArgs)  [/integertype] checkArgs
     }assertError
-    (Pass) =
+    (/checkArgs: Actual 1 arg not integer) runTest
 
     clear
     {
-        (foo) checkArgs (Fail: Should be error: one arg; needs 2) 
+        (foo) (foo)   (procName) [/integertype /stringtype] checkArgs
     }assertError
-    (Pass) =    
+    (/checkArgs: Actual 1 arg not integer) runTest
 
     quit
-
-
-
-    clear
-    <<>> <<>> checkArgs {
-        (Fail: Error: ) =
-        quit
-    }{
-        (OK: Two wrong args) =
-        pop
-    }ifelse
-
-
-    <<>> [] checkArgs {
-        (Fail: Error: one arg not stringtype) =
-        quit
-    }{
-        (OK: Two wrong args) =
-        pop
-    }ifelse
-
-    clear
-    (foo) (foo)   (procName) [/integertype /stringtype] checkArgs {
-        (Fail: MMMError: one arg not stringtype) =
-        quit
-    }{
-        (OK: Second arg (string) does not match type (/integertype)) =
-        pop
-    }ifelse
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    (foo) (foo)   (procName) [/integertype /stringtype] checkArgs (/checkArgs) assertFalse
     
     (%% Positive tests) =
     clear
@@ -117,8 +67,69 @@
 }def
 
 
-%checkArgs_Tests
+/double{
+    2 mul
+}def
 
-mark (A) (BB) (CC) verbose2 
+/triple{
+    3 mul
+}def
 
 
+/doubleM{
+    {double} /doubleDict# memoize
+}def
+
+/tripleM{
+    {triple} /tripleDict# memoize
+}def
+
+
+ 2 doubleM  =
+ 3 doubleM =
+ 4 doubleM =
+ 5 tripleM =
+ 2 doubleM  =
+ 3 doubleM =
+ 5 doubleM =
+
+
+
+
+
+
+(A) =
+ /n .47777777777777777777777777777 def
+ (m) =
+n r2s =
+
+clear
+345
+ <<
+      45 {10 23 add}
+%     45 {mmm}
+     55 {(fiftey-five)}
+ >>
+ {(Unknown)}
+% {Unknown}
+switch =
+
+checkArgs_Tests
+
+
+clear
+
+mark (A) (BB) (CCC) strcatmark =
+
+mark (A) (BB) (DDD) verbose2
+
+
+
+100 i2s =
+10 i2s =
+1 i2s =
+0 i2s =
+
+
+end % aposkribh_test#
+end % aposkribh_primatives# 

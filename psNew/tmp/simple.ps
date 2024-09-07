@@ -2,68 +2,58 @@
 (primatives.ps) run
 
 
-/Libs# 50 dict def
+/aposkribh_Libs# where not{
 
-
-
-Libs# begin
-
-/newLib{
-    (newLib) [/nametype] checkArgs not{
-        =
-        quit
-    }if
-
-    2 dict begin
-
-    /_thisDictName  exch def
-    _thisDictName =
-    (MMMMMMMMMMMMMMMM) =
-    (H) =
-    /$newDict# 50 dict def
-
-    $newDict# begin
-    /ThisDictName _thisDictName def
-
-    /D# <<>> def
-
+    /aposkribh_Libs# 50 dict def
     
-    /runner{
-        5 dict begin
-        /procName exch def
-        D# procName known{
-            D# procName get exec
-        }{
-            (ERROR) =
-            (Unknown proc:) =
-            procName =
-            quit
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    aposkribh_Libs# begin
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /newLib{
+        (newLib) [/nametype] checkArgs
+
+        2 dict begin
+
+        /_thisDictName  exch def
+        /$newDict# 50 dict def
+
+        $newDict# begin
+        /ThisDictName _thisDictName def
+
+        /D# <<>> def
+
+        
+        /runner{
+            5 dict begin
+            /procName exch def
+            D# procName known{
+                D# procName get exec
+            }{
+                mark (newLib/runner: unknown procedure: [) procName n2s "]" strcatmark /undefined signalerror
         }ifelse
-        (/runner END) =
         end
     }def
-    
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /procAdd{
-        (procAdd start) =
         5 dict begin
         /_proc exch def
         /_key exch def
         /_library# exch def
 
         _library# begin
-        (Adding proc:) =
-        _key =
         _library# /D# get _key _proc load put
         end
-        (procAdd end) =
         end
     }def
-    %   >>
     end
     % Leave on stack
     $newDict#
     end
 }bind def
 
-end % Libs#
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end % aposkribh_Libs#
 
+}if
