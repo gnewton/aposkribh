@@ -6,6 +6,7 @@
 
     aposkribh_test# begin
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /runTest{
         2 dict begin
         
@@ -17,7 +18,36 @@
             mark (Fail: ) _testName strcatmark =
         }ifelse
         end
-}bind def
+    }bind def
+
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /assertError{% {stuff-to-exec} (msg)
+        {
+            exec
+        }stopped{
+            % OK
+            mark (OK) (% AssertError) verbose2
+            true
+        }{
+            (assertError: should be an error) =
+            false
+        }ifelse
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /assertNotError{
+        {
+            exec
+        }stopped{
+            mark (assertNotError: should NOT be an error) verbose2
+            false
+        }{
+            mark (OK) (% AssertNotError) verbose2
+            true
+        }ifelse
+    }bind def
 
 
     end  % aposkribh_test# 

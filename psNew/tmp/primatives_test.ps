@@ -37,18 +37,14 @@ aposkribh_test# begin
     }assertError
     (/checkArgs: 0 arg not array) runTest
 
-    clear
-    {
-        <<>> (checkArgs) [] checkArgs
-    }assertError
-    (/checkArgs: 1 arg not string) runTest
 
-    
+
+
     clear
     {
         (foo)   (checkArgs)  [/integertype] checkArgs
     }assertError
-    (/checkArgs: Actual 1 arg not integer) runTest
+    (/checkArgs: Actual arg 1 not integer) runTest
 
     clear
     {
@@ -56,12 +52,24 @@ aposkribh_test# begin
     }assertError
     (/checkArgs: Actual 1 arg not integer) runTest
 
-    quit
+    
     
     (%% Positive tests) =
-    clear
-    (foo) 32   (procName) [/integertype /stringtype] checkArgs (/checkArgs) assertTrue
 
+    clear
+    {
+        (foo) 32   (procName) [/integertype /stringtype] checkArgs
+    }assertNotError
+    (/checkArgs: mmmm Actual 1 arg not integer) runTest
+
+    clear
+    {
+        (checkArgs) [] checkArgs
+    }assertNotError
+    (/checkArgs: No args in args type array) runTest
+
+
+    
     (% END checkArgsTests) =
 
 }def
