@@ -107,20 +107,25 @@ aposkribh_test# begin
 
 
 (A) =
- /n .47777777777777777777777777777 def
+ /zn .47777777777777777777777777777 def
  (m) =
-n r2s =
+zn r2s =
 
 clear
-345
- <<
-      45 {10 23 add}
-%     45 {mmm}
-     55 {(fiftey-five)}
- >>
- {(Unknown)}
-% {Unknown}
-switch =
+
+/switchDict#{
+    <<
+        45 {10 23 add}
+        %     45 {mmm}
+        55 {(fiftey-five)}
+    >>
+}bind def
+
+345 switchDict#  {(Unknown)} switch =
+
+[345] switchDict#  {(Unknown)} nswitch =
+
+
 
 checkArgs_Tests
 
@@ -137,6 +142,11 @@ mark (A) (BB) (DDD) verbose2
 10 i2s =
 1 i2s =
 0 i2s =
+
+clear
+stack
+(7777777777777) =
+(A) (B)  <<>>  3 stack2array
 
 
 end % aposkribh_test#
