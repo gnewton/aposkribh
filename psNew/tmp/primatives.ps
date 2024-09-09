@@ -221,7 +221,7 @@
         % Needs 3 args:
         % 2:any type: value to be switched on
         % 1:dict: keys are the match; values are the return value
-        % 0: executable array {}: default fall through return value
+        % 0: executable array {} in []: default fall through return value
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         (/switch) [/arraytype /dicttype /anytype] checkArgs
 
@@ -233,7 +233,7 @@
 
         % body
         _caseDict# _v known not{
-            {_default} (/switch: default) execClean
+            _default 0 get (/switch: default) execClean
         }{
             _caseDict# _v get (/switch: case) execClean
         }ifelse
@@ -244,7 +244,7 @@
         % Needs 3 args:
         % 2:[any type]: value to be switched on
         % 1:dict: keys are the match; values are the return value
-        % 0: executable array {}: default fall through return value
+        % 0: executable array {} in []: default fall through return value
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         (/nswitch) [/arraytype /dicttype /arraytype] checkArgs
 
@@ -258,12 +258,12 @@
         /_a exch def
         
         % body
+        (======================================================) =
         _a{
             () =
             (BODY) =
             /v exch def
-            v =
-            v _caseDict# {_default} switch =
+            v _caseDict# _default switch =
             (GGGG) =
         }forall
         (END nswitch)
@@ -274,9 +274,8 @@
     /execClean{
         /procName exch def
         {
-            (running)=
+            %0 get
             exec
-            (running DONE)=
         }stopped{
             mark (/execClean: ) procName strcatmark /undefined signalerror
         }if
