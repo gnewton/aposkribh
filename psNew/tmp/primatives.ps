@@ -46,6 +46,7 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /stack2array{
+        (    /stack2array{) =
          count 0 eq{
              (/stack2Array: Needs at one arg) /stackunderflow signalerror
          }if
@@ -66,13 +67,11 @@
          /$a _n array def
          0 1 _n 1 sub{
              /i exch def
-             0 index =
-             0 index /vv exch def
-             $a i  vv put
-             $a i get =
+             $a i  0 index put
              pop
          }for
          end
+         (--------mmmmmmm) =
          %%%
     }bind def
     
@@ -129,9 +128,6 @@
                         2 dict begin
                         /_typesArray exch def
                         /_procName exch def
-
-                        
-                        
 
                         % TODO: Need to check if length(_typesArray) is greater stack count
                         _typesArray length count ge{
@@ -239,7 +235,7 @@
         _caseDict# _v known not{
             {_default} (/switch: default) execClean
         }{
-            _caseDict _v get (/switch: case) execClean
+            _caseDict# _v get (/switch: case) execClean
         }ifelse
         
     }bind def
@@ -263,7 +259,12 @@
         
         % body
         _a{
-            =
+            () =
+            (BODY) =
+            /v exch def
+            v =
+            v _caseDict# {_default} switch =
+            (GGGG) =
         }forall
         (END nswitch)
     }bind def
@@ -289,7 +290,7 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /memoize{ % 1arg {proc} /dictname
-        (memoize) [/nametype /arraytype /anytype] checkArgs        
+
         count 3 lt{
             (/memoize: Need 3 args) /stackunderflow signalerror
         }if 
@@ -299,6 +300,11 @@
         1 index type /arraytype eq not{
             (/memoize: 1 arg not /arraytype) /typecheck signalerror
         }if
+        (EEEEEEEEEEEEEE)=
+        stack
+        (EEEEEEEEEEEEEE)=
+
+        (memoize) [/nametype /arraytype /anytype] checkArgs        
 
         % args
         

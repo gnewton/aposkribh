@@ -75,6 +75,34 @@ aposkribh_test# begin
 }def
 
 
+
+ /ff { z 3 add} def
+ /z 54 def
+ ff =
+
+ [{ff}] 0 get exec ===
+
+/ref [{ff}] def
+
+ /e{
+     0 get exec
+ }def
+
+/ee{
+     e
+ }def
+
+ref e =
+
+ref ee =
+
+ 
+
+ 
+ quit
+
+
+
 /double{
     2 mul
 }def
@@ -93,16 +121,16 @@ aposkribh_test# begin
 }def
 
 
- 2 doubleM  =
+clear
+2 doubleM =
+
+
  3 doubleM =
  4 doubleM =
  5 tripleM =
  2 doubleM  =
  3 doubleM =
  5 doubleM =
-
-
-
 
 
 
@@ -121,10 +149,11 @@ clear
     >>
 }bind def
 
-345 switchDict#  {(Unknown)} switch =
+%345 switchDict#  {(Unknown)} switch =
 
-[345] switchDict#  {(Unknown)} nswitch =
+[45 345 55] switchDict#  {(Unknown)} nswitch =
 
+quit
 
 
 checkArgs_Tests
