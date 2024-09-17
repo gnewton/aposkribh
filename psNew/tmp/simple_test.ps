@@ -10,15 +10,9 @@ aposkribh_primatives# begin
 
 aposkribh_Libs# begin
 
-/foobar aposkribh_Libs# /newLib get exec
-/foobar exch def
+/foobar aposkribh_Libs# /New get exec  /foobar exch def
 
-
-/T2# aposkribh_Libs# /newLib get exec
-/T2# exch def
-
-
-
+/T2Lib# aposkribh_Libs# /New get exec  /T2Lib# exch def
 
 /Z{
     (---Start Z) =
@@ -36,31 +30,94 @@ Z
 
 
 
-T2# /Z /Z T2# /procAdd get exec
-T2# /Z1 /Z T2# /procAdd get exec
-T2# /Add /Add T2# /procAdd get exec
+T2Lib# /Z /Z T2Lib# /Add get exec
 
-T2# begin
+T2Lib# /Z1 /Z T2Lib# /Add get exec
+T2Lib# /Add /Add T2Lib# /Add get exec
+
+T2Lib# begin
 %/Z runner exec
-/Z T2# /runner get exec
+/Z T2Lib# /runner get exec
 end
 
+
+aposkribh_run#  begin
+/Z T2Lib# exe
+end
+
+quit
 
 /_proc null def
 
-T2# /D# get /Z get exec
+T2Lib# /Code# get /Z get exec
 
-/T3# aposkribh_Libs# /newLib get exec /T3#  exch def
+/T3# aposkribh_Libs# /New get exec /T3#  exch def
 
-/newDict{
+/NewDict{
      /name exch def
 
-     name aposkribh_Libs# /newLib get exec
+     name aposkribh_Libs# /New get exec
  }def
 
-/Foo# /Foo# newDict def
+/Foo# /Foo# NewDict def
 
 
-/MMM /MMM newDict def
+/MMM /MMM NewDict def
 
+
+
+/T4# /T4# New def
+
+T4# ===
+
+(----000000000000000000000000000000000000000-------) =
+T4#{
+    cvlit /value exch def
+    /key exch def
+    mark ( /) key n2s strcatmark =
+    value ===
+    value length =
+    value type /arraytype eq{
+        value 0 get =
+        value 0 type /integertype eq{
+
+        }if
+    }if
+    () =
+}forall
 end
+
+ /x2s{
+     2 dict begin
+     /v exch def
+
+     /vtype v type cvlit  def
+     
+     vtype
+     <<
+         /arraytype      {(arraytype)}
+         /booleantype   {(boolean)}
+         /dicttype      {(dict)} 
+         /integertype   {v i2s} % no change
+         /marktype      {(marktype)}
+         /nametype      {(nametype)} % no change
+         /nulltype      {(null)}
+         /operatortype  {(operator)}
+         /realtype      {(realtype)}
+         /stringtype    {v} % no change
+     >>
+     [{(Unknown)}]
+     switch
+     end
+ }bind def
+
+ (foo) x2s =
+ /foo x2s =
+ () =
+ 22 x2s  =
+ <<>> x2s  =
+ 22.5 x2s  =
+ true x2s  =
+  [ x2s  =
+ (A) =
+

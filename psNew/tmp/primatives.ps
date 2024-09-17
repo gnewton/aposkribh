@@ -38,11 +38,11 @@
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /verbose{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
-        aposkribh_VERBOSE{
-            ===
-        }if
-    }bind def
+    % /verbose{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
+    %     aposkribh_VERBOSE{
+    %         ===
+    %     }if
+    % }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /stack2array{
@@ -77,22 +77,21 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /r2s{
-        (r2s) [/realtype] checkArgs
+        [/realtype] (r2s) checkArgs
         24 string cvs
     }bind def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /n2s{ % /nametype to string /nametype --> (nametype)
-        (n2s) [/nametype] checkArgs
+        [/nametype] (n2s) checkArgs
 
         dup length string cvs
     }bind def
     
     /i2s{ % int to string int --> (int)
-        (i2s start) =
-        (i2s) [/integertype] checkArgs
-        
+        [/integertype] (i2s) checkArgs
+
         /i exch def
         /orig i def
         
@@ -118,16 +117,18 @@
             }{
                 2 dict begin
 
-                0 index type /arraytype ne{
-                    mark (/checkargs: ) _procName (: 0 stack not /arraytype) strcatmark /typecheck signalerror
+
+                1 index type /arraytype ne{
+                    mark (/checkargs: ) _procName (: 1 stack not /arraytype) strcatmark /typecheck signalerror
                 }{
-                    1 index type /stringtype ne{
-                        mark (/checkargs: ) _procName (: 1 stack not /stringtype) strcatmark /typecheck signalerror
+                    0 index type /stringtype ne{
+                        mark (/checkargs: ) _procName (: 0 stack not /stringtype) strcatmark /typecheck signalerror
                     }{
                         % end args
                         2 dict begin
-                        /_typesArray exch def
                         /_procName exch def
+                        /_typesArray exch def
+
 
                         % TODO: Need to check if length(_typesArray) is greater stack count
                         _typesArray length count ge{
@@ -139,7 +140,7 @@
                             0 1 _typesArray length 1 sub{
                                 /i exch def
                                 mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
-                                i index verbose
+
                                 _typesArray i get /anytype ne{
                                     i index type _typesArray i get ne{ % Bad arg: error
                                         mark (/checkArgs: ) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark /typecheck signalerror
@@ -203,7 +204,7 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /spaces{
-        (spaves) [/integertype] checkArgs
+        [/integertype] (spaves)  checkArgs
         2 dict begin
         /_n exch def
         /str () def
@@ -223,7 +224,7 @@
         % 1:dict: keys are the match; values are the return value
         % 0: executable array {} in []: default fall through return value
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        (/switch) [/arraytype /dicttype /anytype] checkArgs
+        [/arraytype /dicttype /anytype] (/switch)  checkArgs
 
         /_default exch def
         /_caseDict# exch def    
@@ -246,7 +247,7 @@
         % 1:dict: keys are the match; values are the return value
         % 0: executable array {} in []: default fall through return value
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        (/nswitch) [/arraytype /dicttype /arraytype] checkArgs
+         [/arraytype /dicttype /arraytype] (/nswitch) checkArgs
 
         (HELLO) =
         
@@ -303,7 +304,7 @@
         stack
         (EEEEEEEEEEEEEE)=
 
-        (memoize) [/nametype /arraytype /anytype] checkArgs        
+        [/nametype /arraytype /anytype] (memoize) checkArgs        
 
         % args
         

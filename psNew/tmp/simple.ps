@@ -1,6 +1,35 @@
 
 (primatives.ps) run
 
+/aposkribh_base# where not{
+    /aposkribh_run# 50 dict def
+
+   aposkribh_run# begin
+    /exe{
+        (runner2 START) =
+        5 dict begin
+        /_dict# exch def
+        /_procName exch def
+
+        _dict# /Code# known not{
+            (FOOOO) undefined signalerror
+        }if
+
+        /code# _dict# /Code# get def
+        
+        code# _procName known{
+            code# _procName get exec
+        }{
+            mark (newLib/runner: unknown procedure: [) procName n2s "]" strcatmark /undefined signalerror
+        }ifelse
+        end
+        (runner2 END) =
+    }def
+
+    
+    end % aposkribh_base# 
+}if
+
 
 /aposkribh_Libs# where not{
 
@@ -8,11 +37,11 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     aposkribh_Libs# begin
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /newLib{
-        (newLib) [/nametype] checkArgs
-
+    /New{
+        [/nametype] (New) checkArgs
+        
         2 dict begin
 
         /_thisDictName  exch def
@@ -21,39 +50,44 @@
         $newDict# begin
         /ThisDictName _thisDictName def
 
-        /D# <<>> def
+        /Code# <<>> def
+        /BeforeCode# <<>> def
+        /AfterCode# <<>> def
 
-        
+
         /runner{
             5 dict begin
             /procName exch def
-            D# procName known{
-                D# procName get exec
+            Code# procName known{
+                Code# procName get exec
             }{
                 mark (newLib/runner: unknown procedure: [) procName n2s "]" strcatmark /undefined signalerror
-        }ifelse
-        end
-    }def
+            }ifelse
+            end
+        }def
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        /Add{
+            5 dict begin
+            /_proc exch def
+            /_key exch def
+            /_library# exch def
+            
+            _library# begin
+            _library# /Code# get _key _proc load put
+            end
+            end
+        }def % Add
+        
+        end % $newDict# 
+        % Leave on stack
+        ($newDict#) ===
+        $newDict# ===
+        ($newDict#----------) ===
+        $newDict#
+        end % top
+    }bind def % New
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /procAdd{
-        5 dict begin
-        /_proc exch def
-        /_key exch def
-        /_library# exch def
-
-        _library# begin
-        _library# /D# get _key _proc load put
-        end
-        end
-    }def
-    end
-    % Leave on stack
-    $newDict#
-    end
-}bind def
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-end % aposkribh_Libs#
-
+    end % aposkribh_Libs#
 }if

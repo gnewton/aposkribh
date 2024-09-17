@@ -17,14 +17,14 @@ aposkribh_test# begin
     clear
 
     {
-        32.2 (checkArgs) [/integertype] checkArgs
+        32.2 [/integertype] (checkArgs)  checkArgs
     }assertError
     (/checkArgs: /real instead of /integertype) runTest
 
 
     clear
     {
-        (checkArgs) [/integertype] checkArgs
+        [/integertype] (checkArgs) checkArgs
     }assertError
     (/checkArgs: Empty array) runTest
 
@@ -33,7 +33,7 @@ aposkribh_test# begin
     clear
     {
         %<<>> <<>> checkArgs
-        (foo) (checkArgs) <<>> checkArgs 
+        (foo)  <<>> (checkArgs) checkArgs 
     }assertError
     (/checkArgs: 0 arg not array) runTest
 
@@ -42,13 +42,13 @@ aposkribh_test# begin
 
     clear
     {
-        (foo)   (checkArgs)  [/integertype] checkArgs
+        (foo)     [/integertype] (checkArgs) checkArgs
     }assertError
     (/checkArgs: Actual arg 1 not integer) runTest
 
     clear
     {
-        (foo) (foo)   (procName) [/integertype /stringtype] checkArgs
+        (foo) (foo) [/integertype /stringtype] (procName) checkArgs
     }assertError
     (/checkArgs: Actual 1 arg not integer) runTest
 
@@ -58,13 +58,13 @@ aposkribh_test# begin
 
     clear
     {
-        (foo) 32   (procName) [/integertype /stringtype] checkArgs
+        (foo) 32   [/integertype /stringtype] (procName) checkArgs
     }assertNotError
     (/checkArgs: mmmm Actual 1 arg not integer) runTest
 
     clear
     {
-        (checkArgs) [] checkArgs
+         [] (checkArgs) checkArgs
     }assertNotError
     (/checkArgs: No args in args type array) runTest
 
