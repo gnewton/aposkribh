@@ -80,6 +80,36 @@ clear
     >>
 }bind def
 
+
+
+/equalat { % x y l
+    /_l exch def
+    /_y exch def
+    /_x exch def
+
+    /h _l _l mul dup add sqrt def
+    _l =
+    h =
+
+    gsave
+    newpath
+    _x _y translate
+    -135 rotate
+   % 45 rotate
+    0 0 moveto
+    0 _l   rlineto
+     _l -1 _l mul rlineto
+%    _l  0 rlineto
+ 
+    closepath
+    stroke
+    grestore
+}def
+
+300 300 100 equalat
+
+quit
+
 /tangent{% x y r a
     /_a exch def
     /_r exch def
@@ -161,9 +191,13 @@ clear
     x y 410 a tangent lineto
     stroke
 }for
+
+
     
 
 (mmmmmmmmmmmmmm) =
+
+
 
 quit
 
