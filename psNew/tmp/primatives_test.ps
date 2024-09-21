@@ -4,78 +4,102 @@
 
 (test.ps) run
 
-aposkribh_primatives# begin
-aposkribh_test# begin
+aposkribh.primatives# begin
+aposkribh.test# begin
 
+/test.primatives# 20 dict def
 
-/checkArgs_Tests{
-    (% START checkArgsTests) =
+test.primatives# begin
+/checkArgs.Tests{
     (%% Negative tests) =
+    [
+        { {32.2 [/integertype] (checkArgs)  checkArgs}  (/checkArgs: /real instead of /integertype) }
+        { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) }
+        { {1 [/stringtype] (procName) checkArgs      }  (/checkArgs: Actual 1 arg not string)}
+        { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) }
+        { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer)}
+    ] runTests.Errors
 
-
-
-    clear
-
-    {
-        32.2 [/integertype] (checkArgs)  checkArgs
-    }assertError
-    (/checkArgs: /real instead of /integertype) runTest
-
-
-    clear
-    {
-        [/integertype] (checkArgs) checkArgs
-    }assertError
-    (/checkArgs: Empty array) runTest
-
-
-
-    clear
-    {
-        %<<>> <<>> checkArgs
-        (foo)  <<>> (checkArgs) checkArgs 
-    }assertError
-    (/checkArgs: 0 arg not array) runTest
-
-
-
-
-    clear
-    {
-        (foo)     [/integertype] (checkArgs) checkArgs
-    }assertError
-    (/checkArgs: Actual arg 1 not integer) runTest
-
-    clear
-    {
-        (foo) (foo) [/integertype /stringtype] (procName) checkArgs
-    }assertError
-    (/checkArgs: Actual 1 arg not integer) runTest
-
-    
-    
     (%% Positive tests) =
-
-    clear
-    {
-        (foo) 32   [/integertype /stringtype] (procName) checkArgs
-    }assertNotError
-    (/checkArgs: mmmm Actual 1 arg not integer) runTest
-
-    clear
-    {
-         [] (checkArgs) checkArgs
-    }assertNotError
-    (/checkArgs: No args in args type array) runTest
+    [
+        { {(foo) 32   [/integertype /stringtype] (procName) checkArgs} (/checkArgs: mmmm Actual 1 arg not integer) }
+        { {[] (checkArgs) checkArgs                                   } (/checkArgs: No args in args type array)   }
+    ] runTests.NoErrors
 
 
     
-    (% END checkArgsTests) =
+    (% END) =
+}def % checkArgs.Tests
+
+
+
+
+/strcatmark.Tests{
+    
+    clear
+    {
+        mark (a) (b) [/NStrings /marktype ] (strcatmark) checkArgs
+    }assertNotError
+    (/strcatmark: Handle marks) runTest
 
 }def
 
-checkArgs_Tests
+/verbose2.Tests{
+
+}def
+
+/stack2array{
+
+}def
+
+/r2s.Tests{
+
+}def
+
+/n2s.Tests{
+
+}def
+
+/i2s.Tests{
+
+}def
+
+/strcat.Tests{
+
+}def
+
+/spaces.Test{
+
+}def
+
+/switch.Tests{
+
+}def
+
+/nswitch.Tests{
+
+}def
+
+/execClean.Tests{
+
+}def
+
+/memoize.Tests{
+
+}def
+
+
+end % test.primatives# begin
+
+
+test.primatives# {
+    exch =
+    exec
+
+}forall
 
 
 end % aposkribh_test#
 end % aposkribh_primatives# 
+
+

@@ -2,7 +2,7 @@
 
 (test.ps) run
 
-aposkribh_primatives# begin
+aposkribh.primatives# begin
 
 
 
@@ -80,6 +80,93 @@ clear
     >>
 }bind def
 
+/tangent{% x y r a
+    /_a exch def
+    /_r exch def
+    /_y exch def
+    /_x exch def
+
+    _r _a sin mul _y add 
+    _r _a cos mul _x add 
+}def
+
+/dot{
+    newpath
+    moveto
+    3 3 rlineto
+    0 -3 rlineto
+    closepath
+    stroke
+}def
+
+/x 300 def
+/y 300 def
+
+(mmmmmmmmmmmmmm) =
+0 10 360{
+    /a exch def
+    
+    x y 85.0 a tangent moveto
+    x y 150.0 a tangent lineto
+    stroke
+}for
+
+
+(mmmmmmmmmmmmmm) =
+0 20 360{
+    /a exch def
+    %x y 50.0 0 tangent dot
+    newpath
+    x y 20 a tangent moveto
+    x y 85 a tangent lineto
+    stroke
+}for
+
+(mmmmmmmmmmmmmm) =
+0 5 360{
+    /a exch def
+    %x y 50.0 0 tangent dot
+    newpath
+    x y 150 a tangent moveto
+    x y 215 a tangent lineto
+    stroke
+}for
+
+(mmmmmmmmmmmmmm) =
+0 2.5 360{
+    /a exch def
+    %x y 50.0 0 tangent dot
+    newpath
+    x y 215 a tangent moveto
+    x y 280 a tangent lineto
+    stroke
+}for
+
+(mmmmmmmmmmmmmm) =
+0 1.25 360{
+    /a exch def
+    %x y 50.0 0 tangent dot
+    newpath
+    x y 280 a tangent moveto
+    x y 345 a tangent lineto
+    stroke
+}for
+
+(mmmmmmmmmmmmmm) =
+0 .625 360{
+    /a exch def
+    %x y 50.0 0 tangent dot
+    newpath
+    x y 345 a tangent moveto
+    x y 410 a tangent lineto
+    stroke
+}for
+    
+
+(mmmmmmmmmmmmmm) =
+
+quit
+
 %345 switchDict#  [{(Unknown)}] switch =
 
 %45 switchDict#  [{(Unknown)}] switch =
@@ -89,12 +176,12 @@ clear
 {zn} {zn} eq =
 
 
-quit
+
 [45 345 55] switchDict#  [{(Unknown)}] nswitch =
 
 [45 345 55] [45 345 55] eq =
 
-quit
+
 
 
 
@@ -119,3 +206,6 @@ stack
 (A) (B)  <<>>  3 stack2array
 
 end % aposkribh_primatives# 
+
+
+

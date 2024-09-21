@@ -1,14 +1,51 @@
 
 (primatives.ps) run
 (simple.ps) run
-
+(test.ps) run
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 aposkribh_primatives# begin
-
 aposkribh_Libs# begin
+aposkribh_test# begin
+
+/test.simple# 20 dict def
+
+test.simple# begin
+
+/New.tests{
+
+}def
+
+
+/New.runner.tests{
+
+}def
+
+/New.Add.tests{
+
+}def
+
+
+end % test.simple#
+
+test.simple# {
+    exch =
+    exec
+
+}forall
+
+
+
+end % aposkribh_test# 
+end % aposkribh_Libs# 
+end % aposkribh_primatives# 
+
+quit
+
+
+
 
 /foobar aposkribh_Libs# /New get exec  /foobar exch def
 

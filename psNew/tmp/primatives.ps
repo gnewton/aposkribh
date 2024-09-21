@@ -1,11 +1,11 @@
 
 (globals.ps) run
 
-/aposkribh_primatives# where not{
+/aposkribh.primatives# where not{
 
-    /aposkribh_primatives# 50 dict def
+    /aposkribh.primatives# 50 dict def
 
-    aposkribh_primatives# begin
+    aposkribh.primatives# begin
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /strcatmark{ % mark (s1) (s2)...(sn) -> (s1s2....sn)
@@ -110,7 +110,7 @@
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /checkArgs{ % (procName) [n types]
+    /checkArgs{ % (procName) [n types]; also supports 'mark'
         aposkribh_CHECK_ARGS{
             count 2 lt{
                 mark (/checkargs: ) _procName (: Needs 2 arguments) strcatmark /stackunderflow signalerror
@@ -134,7 +134,7 @@
                         _typesArray length count ge{
                             mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
                         }{
-                            % TODO: Need to check if _typesArray is made up of type types
+                            % TODO: Need to check if _typesArray is made up of type types or mark
 
                             % See if types match
                             0 1 _typesArray length 1 sub{
@@ -143,7 +143,8 @@
 
                                 _typesArray i get /anytype ne{
                                     i index type _typesArray i get ne{ % Bad arg: error
-                                        mark (/checkArgs: ) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark /typecheck signalerror
+                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark verbose2
+                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark /typecheck signalerror
                                     }if
                                 }if
                             }for
@@ -336,7 +337,7 @@
     }def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    end % aposkribh_Libs#
+    end % 
 }if
 
 

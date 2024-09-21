@@ -1,10 +1,12 @@
 
-/aposkribh_test# where not{
+/aposkribh.test# where not{
 
-    /aposkribh_test# 20 dict def
+    /aposkribh.test# 20 dict def
 
 
-    aposkribh_test# begin
+    aposkribh.test# begin
+
+    /StopOnFail false def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /runTest{
@@ -16,10 +18,17 @@
         }
         {
             mark (Fail: ) _testName strcatmark =
+            StopOnFail{
+                quit
+            }if
         }ifelse
         end
     }bind def
 
+
+    /assertStack{% args {proc} [ expected stack values] (msg)
+
+    }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /assertError{% {stuff-to-exec} (msg)
@@ -30,7 +39,7 @@
             mark (OK) (% AssertError) verbose2
             true
         }{
-            (assertError: should be an error) =
+            mark (assertError: should be an error) verbose2
             false
         }ifelse
     }bind def
@@ -49,6 +58,54 @@
         }ifelse
     }bind def
 
+
+
+    
+    /runTests.Errors{ % array of {{proc test} msg}
+        5 dict begin
+        /_a exch def
+        _a{
+            exec
+            /msg exch def
+            /tproc exch def
+            {
+                clear
+                tproc
+            }assertError msg runTest
+        }forall
+    end
+    }bind def
+
+    /runTests.NoErrors{ % array of '{{proc test} msg}'
+        5 dict begin
+        /_a exch def
+        _a{
+            exec
+            /msg exch def
+            /tproc exch def
+            {
+                clear
+                tproc
+            }assertNotError msg runTest
+        }forall
+        end
+    }def
+
+    /runTests.StackReturn{ % array of '{{proc test} [expected stack] msg}'
+        5 dict begin
+        /_a exch def
+        _a{
+            exec
+            /msg exch def
+            /expectedStack exch def
+            /tproc exch def
+            {
+                clear
+                tproc
+            }assertNotError msg runTest
+        }forall
+        end
+    }def
 
     end  % aposkribh_test# 
 }if

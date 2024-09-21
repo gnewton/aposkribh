@@ -1,0 +1,11 @@
+
+* PS procedures
+** tangent
+   - Given a circles centre and radius, produce the x,y location of a
+     point on circles circumference, d degrees counterclockwise,
+     assuming 0 degrees is east
+   - From: https://stackoverflow.com/questions/14829621/formula-to-find-points-on-the-circumference-of-a-circle-given-the-center-of-the
+     For a circle with origin (j, k) and radius r:
+        x(t) = r cos(t) + j
+        y(t) = r sin(t) + k
+   - See also: http://www.math.com/tables/geometry/circles.htm
