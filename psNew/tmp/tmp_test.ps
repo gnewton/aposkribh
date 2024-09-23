@@ -108,6 +108,32 @@ clear
 
 300 300 100 equalat
 
+/circleLine { % x0,y0,x1,y1, cx,cy,r
+    /r exch def
+    /cy exch def
+    /cx exch def
+
+    /y1 exch def
+    /x1 exch def
+
+    /y0 exch def
+    /x0 exch def
+
+    newpath
+    x0 y0 moveto
+    x1 y1 lineto
+    stroke
+    newpath
+
+    cx cy r  0 360 arc closepath
+    stroke
+
+}def
+
+
+
+100 110 300 300   150 150 75 circleLine
+
 quit
 
 /tangent{% x y r a
