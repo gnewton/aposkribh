@@ -1,0 +1,183 @@
+(primatives.ps) run
+
+/aposkribh.geometry# where not{
+
+    /aposkribh.geometry# 50 dict def
+
+
+    aposkribh.geometry#  begin
+
+    /distanceBetween2Points{ % ax ay bx by
+        5 dict begin
+        /by exch def
+        /bx exch def
+
+        /ay exch def
+        /ax exch def
+        bx ax sub dup mul
+        by ay sub dup mul
+        add
+        sqrt
+        end
+    }def
+
+    /linesIntersection{% p0x p0y p1x p1y p2x p2y p3x p3y -> false | true ix iy
+        % Derived from C code at  https://stackoverflow.com/a/14795484
+        10 dict begin
+        /p3_y exch def
+        /p3_x exch def
+        /p2_y exch def
+        /p2_x exch def
+        /p1_y exch def
+        /p1_x exch def
+        /p0_y exch def
+        /p0_x exch def
+        
+        newpath
+        p0_x p0_y moveto
+        p1_x p1_y lineto
+        p2_x p2_y moveto
+        p3_x p3_y lineto
+        .3 .5 .4 setrgbcolor
+        stroke
+        
+        /s10_x p1_x p0_x sub def
+        /s10_y p1_y p0_y sub def
+        /s32_x p3_x p2_x sub def
+        /s32_y p3_y p2_y sub def
+        
+        /denom s10_x s32_y mul  s32_x s10_y mul sub def
+        denom 0 eq{
+            false % colinear
+        }{
+            /denomPositive denom 0 gt def
+            
+            /s02_x p0_x p2_x sub def
+            /s02_y p0_y p2_y sub def
+            /s_numer s10_x s02_y mul  s10_y s02_x mul sub def
+            s_numer 0 lt  denomPositive eq{
+                false
+            }{
+                /t_numer s32_x s02_y mul s32_y s02_x mul sub def
+                t_numer 0  lt denomPositive eq{
+                    false
+                }{
+                    s_numer denom gt denomPositive eq
+                    t_numer denom gt denomPositive eq
+                    or{
+                        false
+                    }{
+                        /t t_numer denom div def
+                        t s10_x mul p0_x add
+                        t s10_y mul p0_y add
+                        true
+                    }ifelse
+                }ifelse
+            }ifelse
+        }ifelse
+        end
+    }bind def
+    
+    /pointOnCircleAtAngle{% x y r a -> xt,yt
+        % Given centre of circle, radius and angle, produce point on
+        % circle circumference at angle 
+        /_a exch def
+        /_r exch def
+        /_y exch def
+        /_x exch def
+
+        _r _a sin mul _x add 
+        _r _a cos mul _y add 
+
+    }def
+
+    /dot{
+        newpath
+        2 0 360 arc
+        closepath
+        fill
+    }bind def
+
+    /pointAlongLine{ % from: https://math.stackexchange.com/a/1630886
+        (pointAlongLine) =
+        /dt exch def
+        /y1 exch def
+        /x1 exch def
+        /y0 exch def
+        /x0 exch def
+
+        gsave
+        newpath
+        x0 y0 moveto
+        x1 y1 lineto
+        stroke
+        grestore
+
+        /t dt x0 y0 x1 y1 distanceBetween2Points div def
+
+        t 0 lt
+        t 1 gt
+        or{
+            false
+        }{
+            /xt 1 t sub x0 mul t x1 mul add def
+            /yt 1 t sub y0 mul t y1 mul add def
+            xt yt true
+        }ifelse
+
+    }bind def
+
+    /storePath{
+        flattenpath
+        % {moveto}
+        % {lineto 20 0 rlineto}
+        % {}
+        % {closepath}
+        % pathforall
+        [
+            { /move 3 array astore cvx }
+            { /line  3 array astore cvx }
+            { }
+            { /close  1 array astore cvx }
+            pathforall
+        ]
+    }bind def
+
+
+
+    /mirror{
+        10 dict begin
+        /pp exch def
+        /mscale exch def
+        /yb exch def
+        newpath
+        pp{
+            /a exch def
+            a ===
+            a /move eq{
+                /y exch def
+                /x exch def
+                /y y y yb sub 2 mul sub def
+                x y moveto
+            }{
+                a /line eq{
+                    /y exch def
+                    /x exch def
+                    %/mirrory y y yb sub mscale mul 2 mul  sub def
+                    /h y yb sub  mscale mul def
+                    /mirrory yb h sub def
+                    % mscale 0 ne   y yb eq not  and{
+                    %      /mirrory mirrory mscale sub def
+                    %  }if
+                    
+                    x  mirrory  lineto
+                }{
+                    closepath
+                }ifelse
+            }ifelse
+        }forall
+        end
+    }def
+
+    end %aposkribh.geometry#
+}if
