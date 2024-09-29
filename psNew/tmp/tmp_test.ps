@@ -246,9 +246,12 @@ newpath
 170 0 rlineto
 stroke
 
+clear
+currentpagedevice /PageSize  get ===
 
+                        
 
-quit
+showpage
 
 
 
@@ -300,7 +303,7 @@ closepath
     grestore
 }for
 
-quit
+
 
 110 100 510 500   200 10 200 200 linesIntersection
 {
@@ -351,7 +354,7 @@ newpath
 
 grestore
 
-quit
+
 
 /circleLine { % ax ay bx by cx,cy,r
     % https://stackoverflow.com/a/49395750
@@ -367,7 +370,7 @@ quit
     /ax exch def
 
     (DISTANCE) =
-    /d ax ay bx by distanceBetween2Point def
+    /d ax ay bx by distanceBetween2Points def
     d =
 
     newpath
@@ -390,7 +393,7 @@ quit
 
 
 
-quit
+
 
 /x 300 def
 /y 300 def
@@ -462,7 +465,7 @@ quit
 
 
 
-quit
+
 
 %345 switchDict#  [{(Unknown)}] switch =
 
@@ -506,3 +509,41 @@ end % aposkribh_primatives#
 
 
 
+showpage
+
+/dd 0 def
+0 10 360{
+    /a exch def
+    %x y 50.0 0 pointOnCircleAtAngle dot
+
+    50 15 300{
+        /r exch def
+        newpath
+        310 380 r a dd add pointOnCircleAtAngle 
+        3 0 360 arc closepath
+        %r 15 div 0 360 arc closepath
+        stroke
+        /dd dd 2 add def
+    }for
+
+}for
+
+showpage
+
+/dd 0 def
+0 11 3000{
+    /r exch def
+    305 380 r 0 360 arc
+%    stroke
+
+    dd 15 dd 360 add{
+        /a exch def
+        newpath
+        305 380 r a  pointOnCircleAtAngle 
+        3 0 360 arc closepath
+        stroke
+    }for
+    /dd dd -2 add def
+}for
+
+showpage
