@@ -1,5 +1,6 @@
 
-
+test:
+	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY  -dDOINTERPOLATE  primatives_test.ps
 
 all: primatives simple tmp
 #	gs -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dSAFER -sDEVICE=pdfwrite  -dDOINTERPOLATE -dNOSAFER -o speckles.pdf speckles.ps

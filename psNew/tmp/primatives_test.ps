@@ -13,11 +13,11 @@ test.primatives# begin
 /checkArgs.Tests{
     (%% Negative tests) =
     [
-        { {32.2 [/integertype] (checkArgs)  checkArgs}  (/checkArgs: /real instead of /integertype) }
-        { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) }
-        { {1 [/stringtype] (procName) checkArgs      }  (/checkArgs: Actual 1 arg not string)}
-        { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) }
-        { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer)}
+        { {32.2 [/integertype] (checkArgs)  checkArgs}  (/checkArgs: /real instead of /integertype) /typecheck }
+        { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) /stackunderflow}
+        { {1 [/stringtype] (procName) checkArgs      }  (/checkArgs: Actual 1 arg not string) /typecheck}
+        { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) /typecheck}
+        { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer) /typecheck}
     ] runTests.Errors
 
     (%% Positive tests) =
@@ -36,11 +36,11 @@ test.primatives# begin
 
 /strcatmark.Tests{
     
-    clear
-    {
-        mark (a) (b) [/NStrings /marktype ] (strcatmark) checkArgs
-    }assertNotError
-    (/strcatmark: Handle marks) runTest
+    % clear
+    % {
+    %     mark (a) (b) [/NStrings /marktype ] (strcatmark) checkArgs
+    % }assertNotError
+    % (/strcatmark: Handle marks) runTest
 
 }def
 

@@ -6,7 +6,9 @@
 
     aposkribh.test# begin
 
-    /StopOnFail false def
+    /aposkribh.StopOnFail where not{
+        /aposkribh.StopOnFail true def
+    }if
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /runTest{
@@ -18,7 +20,7 @@
         }
         {
             mark (Fail: ) _testName strcatmark =
-            StopOnFail{
+            aposkribh.StopOnFail{
                 quit
             }if
         }ifelse
@@ -31,17 +33,31 @@
     }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertError{% {stuff-to-exec} (msg)
+    /assertError{% expectedError {stuff-to-exec} (msg) -> bool
+        2 dict begin
+        /expectedError exch def
         {
             exec
         }stopped{
-            % OK
-            mark (OK) (% AssertError) verbose2
-            true
+            /actualError $error /errorname get def
+
+            expectedError actualError eq{
+                mark (OK) (% AssertError) verbose2
+                true
+            }{
+                mark (actualError does not match expected error) =
+                actualError =
+                expectedError =
+                false
+                aposkribh.StopOnFail{
+                    quit
+                }if
+            }ifelse
         }{
             mark (assertError: should be an error) verbose2
             false
         }ifelse
+        end
     }bind def
 
 
@@ -66,12 +82,13 @@
         /_a exch def
         _a{
             exec
+            /expectedError exch def
             /msg exch def
             /tproc exch def
             {
                 clear
                 tproc
-            }assertError msg runTest
+            } expectedError assertError msg  runTest
         }forall
     end
     }bind def

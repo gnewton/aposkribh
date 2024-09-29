@@ -139,12 +139,13 @@
                             % See if types match
                             0 1 _typesArray length 1 sub{
                                 /i exch def
+
                                 mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
 
                                 _typesArray i get /anytype ne{
                                     i index type _typesArray i get ne{ % Bad arg: error
-                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark verbose2
-                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs strcatmark /typecheck signalerror
+                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
+                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs /typecheck signalerror
                                     }if
                                 }if
                             }for
@@ -154,6 +155,7 @@
                 }ifelse
             }ifelse
         }if
+
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
