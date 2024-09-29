@@ -1,0 +1,42 @@
+
+(test.ps) run
+(primatives.ps) run
+
+
+aposkribh.test# begin
+
+/True{
+    /v exch def
+    v not{
+        (ERROR) =
+        quit
+    }{
+        (OK) =
+    }ifelse
+}bind def
+
+% negative
+clear
+{5}  (push on stack) [4]  assertValues false eq True
+clear
+{2 3 add}  (2+3) [4]  assertValues false eq True
+
+
+% positive -------------------------------
+clear
+{2 3 add}   [5]  assertValues =
+{2 3 add}   [5]  assertValues true eq True
+
+clear
+{2 3 add}   [5]  assertValues true eq True
+
+clear
+{2 3 add 6} [6 5]  assertValues true eq True
+clear
+{(foo) 2 3 add 6}  [6 5 (foo)]  assertValues true eq True
+
+
+
+
+
+end % aposkribh.test# 

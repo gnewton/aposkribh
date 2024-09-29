@@ -28,11 +28,8 @@
     }bind def
 
 
-    /assertStack{% args {proc} [ expected stack values] (msg)
 
-    }bind def
-
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /assertError{% expectedError {stuff-to-exec} (msg) -> bool
         2 dict begin
         /expectedError exch def
@@ -62,15 +59,34 @@
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertNotError{
+    /assertNotError{ % {stuff-to-exec} (msg) -> bool
         {
             exec
         }stopped{
             mark (assertNotError: should NOT be an error) verbose2
+            (ERROR=) =
+            $error /errorname get =
             false
         }{
             mark (OK) (% AssertNotError) verbose2
             true
+        }ifelse
+    }bind def
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /assertValues{ % {stuff-to-exec} [array of expected values on stack] (msg) -> bool
+        /_expectedValuesArray exch def
+        %/_procName exch def
+        {
+            exec
+        }stopped{
+            _procName =
+            (FAIL) =
+            false
+        }{
+            aposkribh.primatives# begin
+            _expectedValuesArray arrayEqualsStack % results left on stack (bool)
+            end
         }ifelse
     }bind def
 
@@ -88,7 +104,8 @@
             {
                 clear
                 tproc
-            } expectedError assertError msg  runTest
+            } expectedError assertError
+            msg  runTest
         }forall
     end
     }bind def
@@ -104,6 +121,24 @@
                 clear
                 tproc
             }assertNotError msg runTest
+        }forall
+        end
+    }def
+
+
+    /runTests.NoErrorsWithValues{ % array of '{{proc test} msg}'
+        5 dict begin
+        /_a exch def
+        _a{
+            exec % pushes array entry items onto stack
+            /msg exch def
+            /expectedValuesArray exch def
+            
+            /tproc exch def
+            {
+                clear
+                tproc
+            }  expectedValuesArray assertValues msg runTest
         }forall
         end
     }def
