@@ -2,33 +2,84 @@
 (test.ps) run
 (primatives.ps) run
 
-
+aposkribh.primatives# begin
 aposkribh.test# begin
 
+/aposkribh.Testing true store
+
+/counter 0 def
+% Simple tester
 /True{
-    /v exch def
-    v not{
+    /counter 1 counter add store
+    not{
         (ERROR) =
+        counter =
         quit
+    }if
+}bind def
+
+/ShouldError{
+    /expectedError exch def
+    dup cvlit /procString exch def
+    
+    /proc exch def
+    clear
+    /counter 1 counter add store
+    {
+        proc 
+    }stopped{
+        $error /errorname get expectedError ne{
+            (FAIL - wrong error returned) =
+            ( Expected error:) =
+            expectedError =
+            ( Actual error:) =
+            $error /errorname get =
+            ( Command:) =
+            $error /command get =
+            ( Test:) =
+            procString ===
+            quit
+        }{
+            % Error expected: Good
+        }ifelse
     }{
-        (OK) =
+        (FAIL - This should evoke an error but does not) =
+        procString ===
+        counter =
+        % $error /command get =
+        % $error /errorname get =
+        quit
     }ifelse
 }bind def
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Error
+
+{runTest } /stackunderflow ShouldError
+{[] runTest } /stackunderflow ShouldError
+{(foo) true runTest} /typecheck ShouldError
+{[] [] runTest } /typecheck ShouldError
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % negative
 clear
-{5}  (push on stack) [4]  assertValues false eq True
+{5}   [4]  assertValues false eq True
 clear
-{2 3 add}  (2+3) [4]  assertValues false eq True
+{2 3 add}  [4]  assertValues false eq True
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % positive -------------------------------
 clear
-{2 3 add}   [5]  assertValues =
 {2 3 add}   [5]  assertValues true eq True
 
 clear
-{2 3 add}   [5]  assertValues true eq True
+{2 3 add 87}   [87 5]  assertValues true eq True
 
 clear
 {2 3 add 6} [6 5]  assertValues true eq True

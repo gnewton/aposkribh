@@ -3,15 +3,34 @@
 
     /aposkribh.test# 20 dict def
 
-
     aposkribh.test# begin
 
     /aposkribh.StopOnFail where not{
         /aposkribh.StopOnFail true def
     }if
 
+    /aposkribh.Testing where not{
+        /aposkribh.Testing true def
+    }if
+
+
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /runTest{
+    /runTest{ % bool testName ->. (nothing)
+        count 2 lt{
+            (/runTest less than 2 args) /stackunderflow signalerror
+        }if
+        
+        0 index type /stringtype ne{
+            (/runTest first arg not string) /typecheck signalerror
+        }if
+
+        1 index type /booleantype ne{
+            (/runTest second arg not boolean) /typecheck signalerror
+        }if
+
+        %%%%%%%%%%%%%%
         2 dict begin
         
         /_testName exch def
@@ -31,7 +50,19 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /assertError{% expectedError {stuff-to-exec} (msg) -> bool
-        2 dict begin
+        count 2 lt{
+            (/assertError less than 2 args) /stackunderflow signalerror
+        }if
+        0 index type /nametype ne{
+            (/assertError: First arg not nametype) /typecheck signalerror
+        }if
+
+        1 index type /arraytype ne{
+            (/assertError: Second arg not array) /typecheck signalerror
+        }if
+
+        %%%%%
+        3 dict begin
         /expectedError exch def
         {
             exec
@@ -60,6 +91,9 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /assertNotError{ % {stuff-to-exec} (msg) -> bool
+        count 2 lt{
+            (/assertNotError less than 2 args) /stackunderflow signalerror
+        }if
         {
             exec
         }stopped{
@@ -74,14 +108,27 @@
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertValues{ % {stuff-to-exec} [array of expected values on stack] (msg) -> bool
+    /assertValues{ % {stuff-to-exec} [array of expected values on stack] -> bool
+        count 2 lt{
+            (/assertValues less than 3 args) /stackunderflow signalerror
+        }if
+        0 index type /arraytype ne{
+            (/assertValues first arg not array) /typecheck signalerror
+        }if
+
+        1 index type /arraytype ne{
+            (/assertValues Second arg not array) /typecheck signalerror
+        }if
+        
         /_expectedValuesArray exch def
+        dup cvlit /procString exch def
         %/_procName exch def
         {
             exec
         }stopped{
-            _procName =
             (FAIL) =
+            _procName =
+            procString ===
             false
         }{
             aposkribh.primatives# begin
@@ -159,5 +206,5 @@
         end
     }def
 
-    end  % aposkribh_test# 
+    end  % aposkribh_test#
 }if
