@@ -4,9 +4,9 @@
 
 (test.ps) run
 
-() =
-(----------------------------------------------------------------------------------) =
-(TEST primatives_test.ps START) =
+%() =
+%(----------------------------------------------------------------------------------) =
+%(TEST primatives_test.ps START) =
 
 aposkribh.primatives# begin
 aposkribh.test# begin
@@ -16,36 +16,42 @@ aposkribh.test# begin
 /test.primatives# 20 dict def
 
 test.primatives# begin
+
 /checkArgs.Tests{
+    /TestingProc (/checkArgs) def
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Negative tests) =
+    %(%% ExpectErrors tests) =
     [
         { {32.2 [/integertype] (checkArgs)  checkArgs}  (/checkArgs: /real instead of /integertype) /typecheck }
         { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) /stackunderflow}
         { {1 [/stringtype] (procName) checkArgs      }  (/checkArgs: Actual 1 arg not string) /typecheck}
         { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) /typecheck}
         { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer) /typecheck}
-    ] runTests.Errors
 
-    (% END) =
+    ] runTests.ExpectErrors
+
+    %(% END) =
 }def % checkArgs.Tests
 
 
 /arrayEqualsStack.Tests{
+    /TestingProc (/arrayEqualsStack) def
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Negative tests) =
+%    (%% ExpectErrors tests) =
     [
 
         { { 3  arrayEqualsStack  }  (/arrayEqualsStack: First arg not array) /typecheck}
-    ] runTests.Errors
+        { { [43]  arrayEqualsStack  }  (/arrayEqualsStack: First arg not array) /stackunderflow}
+    ] runTests.ExpectErrors
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Positive tests with values) =
+    %(%% ExpectedValues tests) =
     [
         { {3 2 1  [1 2 3]  arrayEqualsStack  }  [true]  (/arrayEqualsStack: All the same ints) }
         { {4 2 1  [1 2 9]  arrayEqualsStack  }  [false] (/arrayEqualsStack: Same # items; last one different) }
+        { {  []  arrayEqualsStack  }  [true] (/arrayEqualsStack: Empty stack) }
         { {4  [4]  arrayEqualsStack  }          [true]  (/arrayEqualsStack: single value, 4) }
-    ] runTests.NoErrorsWithValues
+    ] runTests.ExpectedValues
 
     
 }bind def
@@ -53,7 +59,7 @@ test.primatives# begin
 
 /strcatmark.Tests{
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Negative tests) =
+ %   (%% ExpectErrors tests) =
     [
         {{(32.2) (strcatmark)  strcatmark}
             (/strcatmark: Missing mark)
@@ -66,7 +72,7 @@ test.primatives# begin
         {{mark /foo  (strcatmark)  strcatmark}
          (/strcatmark: integer wrong type)
          /typecheck}
-    ] runTests.Errors
+    ] runTests.ExpectErrors
 
 }def
 
@@ -119,7 +125,7 @@ end % test.primatives# begin
 
 
 test.primatives# {
-    exch =
+    exch pop
     exec
 }forall
 
@@ -129,6 +135,6 @@ end % aposkribh_primatives#
 
 
 
-(TEST primatives_test.ps END) =
-(----------------------------------------------------------------------------------) =
-() =
+% (TEST primatives_test.ps END) =
+% (----------------------------------------------------------------------------------) =
+% () =

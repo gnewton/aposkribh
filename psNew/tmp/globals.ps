@@ -1,17 +1,18 @@
 
-/aposkribh.globals where not{
-
+/aposkribh.GLOBALS where not{
     
     /aposkribh.VERBOSE false def
     /aposkribh.CHECK_ARGS true def
 
-
+    /aposkribh.TEST_SHOW_PASSES false def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DO NOT EDIT BELOW THIS LINE%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /aposkribh.globals true def
+    /aposkribh.GLOBALS true def
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-}if
+}{
+    pop % get rid of found dict 
+}ifelse

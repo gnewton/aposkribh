@@ -1,4 +1,6 @@
 
+(globals.ps) run
+
 /aposkribh.test# where not{
 
     /aposkribh.test# 20 dict def
@@ -34,8 +36,12 @@
         2 dict begin
         
         /_testName exch def
-        {
-            mark (Pass: ) _testName strcatmark =
+        /_passedTest exch def
+        
+        _passedTest{
+            aposkribh.TEST_SHOW_PASSES{
+                mark (Pass: ) _testName strcatmark =
+            }if
         }
         {
             mark (Fail: ) _testName strcatmark =
@@ -126,12 +132,12 @@
 
 
     
-    /runTests.Errors{ % array of {{proc test} msg}
+    /runTests.ExpectErrors{ % array of {{proc test} msg}
         count 0 eq{
-            (/runTests.Errors less than 1 arg) /stackunderflow signalerror
+            (/runTests.ExpectErrors less than 1 arg) /stackunderflow signalerror
         }if
         0 index type /arraytype ne{
-            (/runTests.Errors first arg not array) /typecheck signalerror
+            (/runTests.ExpectErrors first arg not array) /typecheck signalerror
         }if
         
         5 dict begin
@@ -140,11 +146,11 @@
             exec
             /expectedError exch def
             expectedError type /nametype ne{
-                (/runTests.Errors expectedError not nametype) /typecheck signalerror
+                (/runTests.ExpectErrors expectedError not nametype) /typecheck signalerror
             }if
             /msg exch def
             msg type /stringtype ne{
-                (/runTests.Errors msg not stringtype) /typecheck signalerror
+                (/runTests.ExpectErrors msg not stringtype) /typecheck signalerror
             }if
             /tproc exch def
             {
@@ -156,7 +162,7 @@
     end
     }bind def
 
-    /runTests.NoErrorsWithValues{ % array of '{{proc test} msg}'
+    /runTests.ExpectedValues{ % array of '{{proc test} msg}'
         5 dict begin
         /_a exch def
         _a{
@@ -175,4 +181,6 @@
 
 
     end  % aposkribh_test#
-}if
+}{
+    pop % get rid of found dict 
+}ifelse

@@ -74,14 +74,14 @@ aposkribh.test# begin
 {23 [] assertValues} /typecheck ShouldError
 {{23} 43 assertValues} /typecheck ShouldError
 
-% runTests.Errors
-{runTests.Errors} /stackunderflow ShouldError
+% runTests.ExpectErrors
+{runTests.ExpectErrors} /stackunderflow ShouldError
 
 
-% runTests.NoErrorsWithValues
-{runTests.NoErrorsWithValues} /stackunderflow ShouldError
-{23 runTests.NoErrorsWithValues} /typecheck ShouldError
-{[34] runTests.NoErrorsWithValues} /stackunderflow ShouldError
+% runTests.ExpectedValues
+{runTests.ExpectedValues} /stackunderflow ShouldError
+{23 runTests.ExpectedValues} /typecheck ShouldError
+{[34] runTests.ExpectedValues} /stackunderflow ShouldError
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
