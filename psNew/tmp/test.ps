@@ -49,7 +49,7 @@
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertError{% expectedError {stuff-to-exec} (msg) -> bool
+    /assertError{% expectedError {stuff-to-exec}  -> bool
         count 2 lt{
             (/assertError less than 2 args) /stackunderflow signalerror
         }if
@@ -89,23 +89,6 @@
     }bind def
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertNotError{ % {stuff-to-exec} (msg) -> bool
-        count 2 lt{
-            (/assertNotError less than 2 args) /stackunderflow signalerror
-        }if
-        {
-            exec
-        }stopped{
-            mark (assertNotError: should NOT be an error) verbose2
-            (ERROR=) =
-            $error /errorname get =
-            false
-        }{
-            mark (OK) (% AssertNotError) verbose2
-            true
-        }ifelse
-    }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /assertValues{ % {stuff-to-exec} [array of expected values on stack] -> bool
@@ -119,7 +102,9 @@
         1 index type /arraytype ne{
             (/assertValues Second arg not array) /typecheck signalerror
         }if
-        
+
+        %%%%%
+        3 dict begin 
         /_expectedValuesArray exch def
         dup cvlit /procString exch def
         %/_procName exch def
@@ -135,18 +120,32 @@
             _expectedValuesArray arrayEqualsStack % results left on stack (bool)
             end
         }ifelse
+        end
     }bind def
 
 
 
     
     /runTests.Errors{ % array of {{proc test} msg}
+        count 0 eq{
+            (/runTests.Errors less than 1 arg) /stackunderflow signalerror
+        }if
+        0 index type /arraytype ne{
+            (/runTests.Errors first arg not array) /typecheck signalerror
+        }if
+        
         5 dict begin
         /_a exch def
         _a{
             exec
             /expectedError exch def
+            expectedError type /nametype ne{
+                (/runTests.Errors expectedError not nametype) /typecheck signalerror
+            }if
             /msg exch def
+            msg type /stringtype ne{
+                (/runTests.Errors msg not stringtype) /typecheck signalerror
+            }if
             /tproc exch def
             {
                 clear
@@ -156,22 +155,6 @@
         }forall
     end
     }bind def
-
-    /runTests.NoErrors{ % array of '{{proc test} msg}'
-        5 dict begin
-        /_a exch def
-        _a{
-            exec
-            /msg exch def
-            /tproc exch def
-            {
-                clear
-                tproc
-            }assertNotError msg runTest
-        }forall
-        end
-    }def
-
 
     /runTests.NoErrorsWithValues{ % array of '{{proc test} msg}'
         5 dict begin
@@ -190,21 +173,6 @@
         end
     }def
 
-    /runTests.StackReturn{ % array of '{{proc test} [expected stack] msg}'
-        5 dict begin
-        /_a exch def
-        _a{
-            exec
-            /msg exch def
-            /expectedStack exch def
-            /tproc exch def
-            {
-                clear
-                tproc
-            }assertNotError msg runTest
-        }forall
-        end
-    }def
 
     end  % aposkribh_test#
 }if

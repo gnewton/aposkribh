@@ -56,11 +56,32 @@ aposkribh.test# begin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Error
 
+% runTest
 {runTest } /stackunderflow ShouldError
 {[] runTest } /stackunderflow ShouldError
 {(foo) true runTest} /typecheck ShouldError
 {[] [] runTest } /typecheck ShouldError
 
+% assertError
+{assertError} /stackunderflow ShouldError
+{23 assertError} /stackunderflow ShouldError
+{23 13 assertError} /typecheck ShouldError
+{foobar [] / assertError} /undefined ShouldError
+
+% assertValues
+{assertValues} /stackunderflow ShouldError
+{23 23 assertValues} /typecheck ShouldError
+{23 [] assertValues} /typecheck ShouldError
+{{23} 43 assertValues} /typecheck ShouldError
+
+% runTests.Errors
+{runTests.Errors} /stackunderflow ShouldError
+
+
+% runTests.NoErrorsWithValues
+{runTests.NoErrorsWithValues} /stackunderflow ShouldError
+{23 runTests.NoErrorsWithValues} /typecheck ShouldError
+{[34] runTests.NoErrorsWithValues} /stackunderflow ShouldError
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,6 +90,10 @@ clear
 {5}   [4]  assertValues false eq True
 clear
 {2 3 add}  [4]  assertValues false eq True
+
+{2 3 addd}  /undefined assertError true eq True
+{2 (foo) add}  /typecheck assertError true eq True
+
 
 
 

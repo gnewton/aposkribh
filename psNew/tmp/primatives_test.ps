@@ -27,13 +27,6 @@ test.primatives# begin
         { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer) /typecheck}
     ] runTests.Errors
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Positive tests) =
-    [
-        { {(foo) 32   [/integertype /stringtype] (procName) checkArgs} (/checkArgs: mmmm Actual 1 arg not integer) }
-        { {[] (checkArgs) checkArgs                                   } (/checkArgs: No args in args type array)   }
-    ] runTests.NoErrors
-    
     (% END) =
 }def % checkArgs.Tests
 
@@ -47,13 +40,6 @@ test.primatives# begin
     ] runTests.Errors
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    (%% Positive tests) =
-    [
-        { {3 2 1  [1 2 3]  arrayEqualsStack  }  (/arrayEqualsStack: All the same ints) }
-        { {4 2 1  [1 2 9]  arrayEqualsStack  }  (/arrayEqualsStack: Same # items; last one different) }
-        { {4  [4]  arrayEqualsStack  }  (/arrayEqualsStack: single value, 4) }
-    ] runTests.NoErrors
-
     (%% Positive tests with values) =
     [
         { {3 2 1  [1 2 3]  arrayEqualsStack  }  [true]  (/arrayEqualsStack: All the same ints) }
@@ -66,6 +52,7 @@ test.primatives# begin
 
 
 /strcatmark.Tests{
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     (%% Negative tests) =
     [
         {{(32.2) (strcatmark)  strcatmark}
