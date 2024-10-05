@@ -38,13 +38,6 @@
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % /verbose{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
-    %     aposkribh.VERBOSE{
-    %         ===
-    %     }if
-    % }bind def
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /stack2array{
         (    /stack2array{) =
          count 0 eq{
@@ -139,7 +132,6 @@
                             % See if types match
                             0 1 _typesArray length 1 sub{
                                 /i exch def
-
                                 mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
 
                                 _typesArray i get /anytype ne{

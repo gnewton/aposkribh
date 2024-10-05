@@ -548,3 +548,63 @@ showpage
 
 showpage
 
+(*****************) =
+
+/foobar{
+    /proc exch def
+    /d exch def
+
+    (x) =
+    d /x get ===
+    (y) =
+    d /y get ===
+    (+++) =
+
+    /outer d /x get def
+    /inner d /y get def
+
+    outer /start get
+    outer /step get
+    outer /end get{
+        /xx exch def
+        inner /start get
+        inner /step get
+        inner /end get{
+            xx proc
+        }for % inner
+    }for % outer
+}def
+
+<<
+    /x
+    <<
+        /start 10
+        /end 20
+        /step 2
+    >>
+    /y
+    <<
+        /start 100
+        /end 170
+        /step 10
+    >>
+
+>>     {= =} foobar
+
+
+<<
+    /x
+    <<
+        /start /integertype
+        /end /integertype
+        /step /integertype
+    >>
+    /y
+    <<
+        /start /integertype
+        /end /integertype
+        /step /integertype
+    >>
+>>
+
+32.2 [/integertype] (checkArgs)  checkArgs

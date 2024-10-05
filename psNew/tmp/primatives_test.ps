@@ -23,12 +23,17 @@ test.primatives# begin
     %(%% ExpectErrors tests) =
     [
         { {32.2 [/integertype] (checkArgs)  checkArgs}  (/checkArgs: /real instead of /integertype) /typecheck }
-        { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) /stackunderflow}
-        { {1 [/stringtype] (procName) checkArgs      }  (/checkArgs: Actual 1 arg not string) /typecheck}
-        { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) /typecheck}
-        { {(o) [/integertype] (procName) checkArgs   }  (/checkArgs: Actual 1 arg not integer) /typecheck}
+         { {[/integertype] (checkArgs) checkArgs      }  (/checkArgs: Want 1 integer; stack empty) /stackunderflow}
+         { {1 [/stringtype] (checkArgs) checkArgs      }  (/checkArgs: Actual 1 arg not string) /typecheck}
+         { {(foo)  <<>> (checkArgs) checkArgs         }  (/checkArgs: 0 arg not array) /typecheck}
+         { {(o) [/integertype] (checkArgs) checkArgs   }  (/checkArgs: Actual 1 arg not integer) /typecheck}
 
-    ] runTests.ExpectErrors
+    ] (/checkArgs) runTests.ExpectErrors
+
+    
+     [
+         { {32 [/integertype] (checkArgs)  checkArgs } [32] (/checkArgs: should fail as is <<>>) }
+     ] (/checkArgs) runTests.ExpectedValues
 
     %(% END) =
 }def % checkArgs.Tests
@@ -42,16 +47,16 @@ test.primatives# begin
 
         { { 3  arrayEqualsStack  }  (/arrayEqualsStack: First arg not array) /typecheck}
         { { [43]  arrayEqualsStack  }  (/arrayEqualsStack: First arg not array) /stackunderflow}
-    ] runTests.ExpectErrors
+    ] (arrayEqualsStack.Tests) runTests.ExpectErrors
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %(%% ExpectedValues tests) =
+    % (%% ExpectedValues tests) =
     [
         { {3 2 1  [1 2 3]  arrayEqualsStack  }  [true]  (/arrayEqualsStack: All the same ints) }
         { {4 2 1  [1 2 9]  arrayEqualsStack  }  [false] (/arrayEqualsStack: Same # items; last one different) }
         { {  []  arrayEqualsStack  }  [true] (/arrayEqualsStack: Empty stack) }
         { {4  [4]  arrayEqualsStack  }          [true]  (/arrayEqualsStack: single value, 4) }
-    ] runTests.ExpectedValues
+    ] (/arrayEqualsStack) runTests.ExpectedValues
 
     
 }bind def
@@ -72,7 +77,7 @@ test.primatives# begin
         {{mark /foo  (strcatmark)  strcatmark}
          (/strcatmark: integer wrong type)
          /typecheck}
-    ] runTests.ExpectErrors
+    ] (/strcatmark) runTests.ExpectErrors
 
 }def
 
