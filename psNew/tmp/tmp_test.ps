@@ -550,47 +550,56 @@ showpage
 
 (*****************) =
 
-/foobar{
-    /proc exch def
-    /d exch def
-
-    (x) =
-    d /x get ===
-    (y) =
-    d /y get ===
-    (+++) =
-
-    /outer d /x get def
-    /inner d /y get def
-
-    outer /start get
-    outer /step get
-    outer /end get{
-        /xx exch def
-        inner /start get
-        inner /step get
-        inner /end get{
-            xx proc
-        }for % inner
-    }for % outer
-}def
-
-/valueDict2
+/forxy_Types#
 <<
     /x
     <<
-        /start true
-        /end (foo)
-        /stepdd 2
+        /start /integertype
+        /end /integertype
+        /step /integertype
     >>
     /y
     <<
-        /start false
+        /start /integertype
+        /end /integertype
+        /step /integertype
+    >>
+>>
+def
+
+/forxy_Values#
+<<
+    /x
+    <<
+        /start 0
+        /end 10
+        /step 2
+        /skip [4 6]
+    >>
+    /y
+    <<
+        /start 100
         /end 170
         /step 10
+        /skip [120]
     >>
 
 >> def
+
+
+
+
+
+forxy_Values# {=}  forxy
+
+() =
+(%%%%%%%%%%%%%%%%%%%%%%) =
+
+[3 4 (foo)] (foo) contains =
+(mm) =
+
+quit
+
 
 
 /typeDict2

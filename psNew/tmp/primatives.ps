@@ -323,7 +323,6 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /memoize{ % 1arg {proc} /dictname
-
         count 3 lt{
             (/memoize: Need 3 args) /stackunderflow signalerror
         }if 
@@ -370,6 +369,9 @@
 
 
     /a2s{ % anything to string
+        count 0 eq{
+            mark (/a2s: needs one argument) /undefined signalerror
+        }if
         2 dict begin
         /v exch def
 
@@ -390,8 +392,64 @@
     }bind def
 
 
+    /contains{ % v array _> bool
+        count 2 lt{
+            (/contains: Need 3 args) /stackunderflow signalerror
+        }if 
+        1 index type /arraytype eq not{
+            (/contains: 2nd arg not /arraytype) /typecheck signalerror
+        }if
+
+        %%%%
+        2 dict begin
+        /_v exch def
+        /_a exch def
+
+        /containsFlag false def
+        _a
+        {
+            _v eq{
+                /containsFlag true store
+                exit
+            }if
+        }forall
+
+        containsFlag
+        end
+    }bind def
+
+    /forxy{ % loops x outer, y inner and executes proc with x y on stack
+        0 index type /arraytype ne{
+            (/forxy: first arg not /arraytype) /typecheck signalerror
+        }if
+        1 index type /dicttype ne{
+            (/forxy: first arg not /dicttype) /typecheck signalerror
+        }if
+        2 dict begin
+
+        /proc exch def
+        /d# exch def
+        d# forxy_Types# validateTypeDict
+
+        /outer d# /x get def
+        /inner d# /y get def
+
+        outer /start get
+        outer /step get
+        outer /end get{
+            /xx exch def
+            inner /start get
+            inner /step get
+            inner /end get{
+                xx proc
+            }for % inner
+        }for % outer
+        end
+    }def
+
 
     /validateTypeDict{ % valueDict typeDict  --> error if fails; Validates a value dict has the 1) same keys; and 2) They key values have the types defined in the typeDict
+        (validateTypeDict START) =
         0 index type /dicttype ne{
             (/validateTypeDict: first arg not /dicttype) /typecheck signalerror
         }if
