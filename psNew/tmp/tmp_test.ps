@@ -575,36 +575,64 @@ showpage
     }for % outer
 }def
 
+/valueDict2
 <<
     /x
     <<
-        /start 10
-        /end 20
-        /step 2
+        /start true
+        /end (foo)
+        /stepdd 2
     >>
     /y
     <<
-        /start 100
+        /start false
         /end 170
         /step 10
     >>
 
->>     {= =} foobar
+>> def
 
 
+/typeDict2
 <<
     /x
     <<
-        /start /integertype
-        /end /integertype
+        /start /booleantype
+        /end /stringtype
         /step /integertype
     >>
     /y
     <<
-        /start /integertype
+        /start /booleantype
         /end /integertype
         /step /integertype
     >>
 >>
+def
+
+
+typeDict2 ===
+
+
+valueDict2 typeDict2 validateTypeDict
+
+quit
+
+
+(################################) =
+false a2s =
+43 a2s =
+43.4 a2s =
+(hello) a2s =
+/hello a2s =
+
+<<(a) 1>> a2s =
+[1 2 3] a2s =
+
+(################################) =
+
+quit
+
+
 
 32.2 [/integertype] (checkArgs)  checkArgs

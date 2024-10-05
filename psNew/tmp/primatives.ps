@@ -81,6 +81,17 @@
 
         dup length string cvs
     }bind def
+
+
+    /b2s{ % /nametype to string /nametype --> (nametype)
+        [/booleantype] (b2s) checkArgs
+        {
+            (true)
+        }{
+            (false)
+        }ifelse
+        
+    }bind def
     
     /i2s{ % int to string int --> (int)
         [/integertype] (i2s) checkArgs
@@ -240,6 +251,7 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /switch{
+        (SWITCH start) =
         % Needs 3 args:
         % 2:any type: value to be switched on
         % 1:dict: keys are the match; values are the return value
@@ -249,7 +261,7 @@
 
         /_default exch def
         /_caseDict# exch def    
-        
+
         % value being checked can be anything
         /_v exch def
 
@@ -259,7 +271,7 @@
         }{
             _caseDict# _v get (/switch: case) execClean
         }ifelse
-        
+
     }bind def
 
     /nswitch{ % Array of args; if empty does all; otherwise walks through, matches and runs
@@ -356,6 +368,88 @@
         end
     }def
 
+
+    /a2s{ % anything to string
+        2 dict begin
+        /v exch def
+
+        v type n2s
+        <<
+            (stringtype)  {v}
+            (nametype)  {v n2s}
+            (integertype) {v i2s}
+            (booleantype) {v b2s}
+            (realtype)    {v r2s}
+            (dicttype)    {(<<dict>>) }
+            (arraytype)   {(arraytype)}
+        >>
+        [{(Unknown)}]
+        switch
+
+        end
+    }bind def
+
+
+
+    /validateTypeDict{ % valueDict typeDict  --> error if fails; Validates a value dict has the 1) same keys; and 2) They key values have the types defined in the typeDict
+        0 index type /dicttype ne{
+            (/validateTypeDict: first arg not /dicttype) /typecheck signalerror
+        }if
+        1 index type /dicttype ne{
+            (/validateTypeDict: second arg not /dicttype) /typecheck signalerror
+        }if
+
+        %%%%
+        2 dict begin
+        /typeDict# exch def
+        /valueDict# exch def
+
+
+        % loop through type dict
+        typeDict#{
+            /types# exch def
+            /tkey exch def
+
+            valueDict# tkey known not{
+                mark (/validateTypeDict: key in types not in values: /) tkey n2s (  ) strcatmark /typecheck signalerror
+            }if
+
+            % Get values for this key
+            /values# valueDict# tkey get def
+
+            types#{
+                /valueType exch def
+                /valueKey exch def
+
+                % Does type key exist in value dict?
+                values# valueKey known not{
+                    mark (/validateTypeDict: value key in types not in values: /) tkey n2s (/) valueKey n2s strcatmark /typecheck signalerror
+                }if
+
+                % Does value key value type match type key type?
+                values# valueKey get type
+                types# valueKey get
+                ne{
+                    mark (/validateTypeDict: value does not match type: /)
+                    tkey n2s (/)
+                    valueKey n2s       (/)
+                    values# valueKey get type n2s
+                    (=[)
+                    values# valueKey get a2s 
+                    (])
+                    ( should be: /)
+                    types# valueKey get n2s
+                    strcatmark
+                    /typecheck signalerror
+                }if
+                
+            }forall
+        }forall
+        
+        end
+    }bind def
+
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % 
 }if
