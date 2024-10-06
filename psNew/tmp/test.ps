@@ -140,10 +140,10 @@
             (/runTests.ExpectErrors less than 2 args) /stackunderflow signalerror
         }if
         0 index type /stringtype ne{
-            (/runTests.ExpectErrors first arg not array) /typecheck signalerror
+            (/runTests.ExpectErrors first arg not /stringtype) /typecheck signalerror
         }if
         1 index type /arraytype ne{
-            (/runTests.ExpectErrors second arg not array) /typecheck signalerror
+            (/runTests.ExpectErrors second arg not /arraytype) /typecheck signalerror
         }if
         %%%%%
         
@@ -180,8 +180,19 @@
     }bind def
 
     /runTests.ExpectedValues{ % array of '{{proc test} msg}'
+        count 2 lt{
+            (/runTests.ExpectedValues less than 2 args) /stackunderflow signalerror
+        }if
+        0 index type /stringtype ne{
+            (/runTests.ExpectErrors first arg not /stringtype) /typecheck signalerror
+        }if
+        1 index type /arraytype ne{
+            (/runTests.ExpectedValues second arg not /arraytype) /typecheck signalerror
+        }if
+        
+        %%%%%
         5 dict begin
-        /_testProc exch def
+        /_testProcName exch def
         /_a exch def
         _a{
             exec % pushes array entry items onto stack

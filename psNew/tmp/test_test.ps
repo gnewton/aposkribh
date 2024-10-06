@@ -7,6 +7,8 @@ aposkribh.test# begin
 
 /aposkribh.Testing true store
 
+/aposkribh.Testing.Verbose false def
+
 /counter 0 def
 % Simple tester
 /True{
@@ -25,6 +27,13 @@ aposkribh.test# begin
     /proc exch def
     clear
     /counter 1 counter add store
+
+    aposkribh.Testing.Verbose{
+        () =
+        counter =
+        procString ===
+    }if
+    
     {
         proc 
     }stopped{
@@ -80,7 +89,7 @@ aposkribh.test# begin
 
 % runTests.ExpectedValues
 {runTests.ExpectedValues} /stackunderflow ShouldError
-{23 runTests.ExpectedValues} /typecheck ShouldError
+{23 runTests.ExpectedValues}  /stackunderflow ShouldError
 {[34] runTests.ExpectedValues} /stackunderflow ShouldError
 
 
