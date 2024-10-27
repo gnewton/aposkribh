@@ -14,6 +14,9 @@ test:
 primatives:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    primatives.ps
 
+types:
+	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    types.ps
+
 
 simple:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    simple.ps

@@ -1,0 +1,91 @@
+
+(globals.ps) run
+
+/aposkribh.types# where not{
+
+    /aposkribh.types# 50 dict def
+
+    aposkribh.types# begin
+    /newtypes# 30 dict def
+    
+    /isType{
+        [/nametype /anytype] (isType) checkArgs
+        2 dict begin
+        /_t exch def
+        /_v exch def
+
+        [
+            {_t /stringtype eq}
+            {_t /integertype eq}
+            {_t /nametype eq}
+            {_t /realtype eq}
+            {_t /booleantype eq}
+            {_t /dicttype eq}
+        ]orAll{
+            _v type _t eq
+        }{
+            _v ntype _t eq
+        }ifelse
+        end
+    }bind def
+
+    /ntype{
+        [/anytype] (/ntype) checkArgs
+        2 dict begin
+        /_t exch def
+
+        % First check if it is an added type
+        _t isAddedType{
+            % Return added type
+        }{
+            % Return native type
+        }if
+
+
+        (/ntype: Unimplemented)
+        end
+    }bind def
+
+    /isAddedType{
+        2 dict begin
+        /_v exch def
+
+        (_v=) =
+        _v =
+        /return false def
+        aposkribh.types# /newtypes# get {
+            /proc exch def
+            /n exch def
+
+            _v proc{
+                /return true store
+                exit
+            }if
+        }forall
+
+        return
+        end
+    }bind def
+
+
+
+    /addType{ %nametype {proc}
+        [/arraytype /stringtype] (/addedType) checkArgs
+        0 index xcheck not{
+            (/addType: First arg needs to be executable and return boolean) /stackunderflow signalerror
+        }if
+
+        /_typeTest exch def
+        /_typeName exch def
+
+
+        aposkribh.types# /newtypes# known not{
+            (NOOOOOOO) =
+            quit
+        }if
+
+        aposkribh.types# /newtypes# get _typeName {_typeTest} put
+    }bind def
+    
+    end % aposkribh.types#
+}if

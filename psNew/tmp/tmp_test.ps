@@ -1,5 +1,6 @@
 (primatives.ps) run
 (geometry.ps) run
+(types.ps) run
 
 (test.ps) run
 
@@ -598,34 +599,12 @@ forxy_Values# {=}  forxy
 [3 4 (foo)] (foo) contains =
 (mm) =
 
-quit
 
 
 
-/typeDict2
-<<
-    /x
-    <<
-        /start /booleantype
-        /end /stringtype
-        /step /integertype
-    >>
-    /y
-    <<
-        /start /booleantype
-        /end /integertype
-        /step /integertype
-    >>
->>
-def
 
 
-typeDict2 ===
 
-
-valueDict2 typeDict2 validateTypeDict
-
-quit
 
 
 (################################) =
@@ -640,8 +619,69 @@ false a2s =
 
 (################################) =
 
+42 isNumber =
+1.42 isNumber =
+(foo) isNumber =
+true isNumber =
+
+
+
+
+%32.2 [/integertype] (checkArgs)  checkArgs
+
+aposkribh.types# begin
+
+(888999) =
+clear
+
+32 ntype =
+(Stack-----) =
+stack
+(----Stack) =
+
+(*) =
 quit
 
+(numbertype) {isNumber{/numbertype true}{false}ifelse} addType
+
+clear
+45 ntype =
+33.3 ntype =
+(foo) ntype =
+end
+
+(************************) =
+32 xcheck =
+{add} xcheck =
+
+(#########################################################) =
+
+clear
+
+[{1 1 eq}] xcheck =
+[{1 1 ne} true {false}] orAll =
+
+<<(m) 22>> /dicttype isType =
+
+quit
+
+(******************) =
+33
+[
+    [ {1 eq} {30 =} ]
+    [ {2 ge} {(foo) =} ]
+]eswitch
 
 
-32.2 [/integertype] (checkArgs)  checkArgs
+/foobar{
+    (HELLO)
+}bind def
+
+25
+[
+    [ {30 3 sub eq} {foobar =} ]
+    [ {2 ge} {(foo) = 44 =} ]
+]eswitch
+
+
+

@@ -39,15 +39,7 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /stack2array{
-        (    /stack2array{) =
-         count 0 eq{
-             (/stack2Array: Needs at one arg) /stackunderflow signalerror
-         }if
-
-         0 index type /integertype ne{
-             (/stack2Array: Needs at one /integertype arg) /stackunderflow signalerror
-         }if
-
+        [/integertype] (/stack2array) checkArgs
 
          %%%
          2 dict begin
@@ -118,28 +110,39 @@
 
         aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
             count 2 lt{
-                mark (/checkargs: ) _procName (: Needs 2 arguments) strcatmark /stackunderflow signalerror
+                mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
             }{
                 2 dict begin
 
                 % First index must be array; list of types for args; array order is stack order
                 1 index type /arraytype ne{
-                    mark (/checkargs: ) _procName (: 1 stack not /arraytype) strcatmark /typecheck signalerror
+                    mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
                 }{
+
                     % Zeroth arg must be stringtype (name of proc being tested)
                     0 index type /stringtype ne{
-                        mark (/checkargs: ) _procName (: 0 stack not /stringtype) strcatmark /typecheck signalerror
+                        mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
                     }{
+
                         % end args
                         2 dict begin
                         /_procName exch def
                         /_typesArray exch def
+                        aposkribh.TRACE{
+                            () =
+                            (--------------- TRACE) =
+                            _procName =
+                            aposkribh.TRACE_COUNT =
+                            stack
+                            (---------------) =
+                            () =
+                            /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 add store                             
+                        }if
 
                         _typesArray length count ge{
                             mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
                         }{
                             % TODO: Need to check if _typesArray is made up of type types or mark
-
                             % See if types match
                             0 1 _typesArray length 1 sub{
                                 /i exch def
@@ -148,7 +151,14 @@
                                 _typesArray i get /anytype ne{
                                     i index type _typesArray i get ne{ % Bad arg: error
                                         mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
-                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs /typecheck signalerror
+                                        
+                                        mark
+                                        (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
+                                        i i2s (; type is /)
+                                        i 4 add index type dup length string cvs
+                                        (; should be /) _typesArray i get dup length string cvs
+                                        strcatmark
+                                        /typecheck signalerror
                                     }if
                                 }if
                             }for
@@ -158,7 +168,9 @@
                 }ifelse
             }ifelse
         }if
-
+        aposkribh.TRACE{
+            /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 sub store                             
+        }if
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -210,6 +222,7 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /arrayEqualsStack{ % [array of values] -> bool
         % Checks to see if values in array equal the values (remaining) on the stack
+        [/arraytype] (arrayEqualsStack) checkArgs
         0 index type /arraytype ne{
             (/arrayEqualsStack: First arg is not an array) /typecheck signalerror
         }if
@@ -359,7 +372,7 @@
 
         }{
 
-            /$value _arg _proc exec def
+            /$value _arg _proc (/memoize) execClean def
             dict# _arg $value put
             $value
             mark (memoize MISS: ) verbose2
@@ -369,6 +382,7 @@
 
 
     /a2s{ % anything to string
+        (a2s---------) =
         count 0 eq{
             mark (/a2s: needs one argument) /undefined signalerror
         }if
@@ -388,17 +402,13 @@
         [{(Unknown)}]
         switch
 
+
         end
     }bind def
 
 
     /contains{ % v array _> bool
-        count 2 lt{
-            (/contains: Need 3 args) /stackunderflow signalerror
-        }if 
-        1 index type /arraytype eq not{
-            (/contains: 2nd arg not /arraytype) /typecheck signalerror
-        }if
+        [/anytype /arraytype] (/contains) checkArgs
 
         %%%%
         2 dict begin
@@ -419,12 +429,8 @@
     }bind def
 
     /forxy{ % loops x outer, y inner and executes proc with x y on stack
-        0 index type /arraytype ne{
-            (/forxy: first arg not /arraytype) /typecheck signalerror
-        }if
-        1 index type /dicttype ne{
-            (/forxy: first arg not /dicttype) /typecheck signalerror
-        }if
+        [/arraytype /dicttype] (forxy) checkArgs
+
         2 dict begin
 
         /proc exch def
@@ -449,6 +455,7 @@
 
 
     /validateTypeDict{ % valueDict typeDict  --> error if fails; Validates a value dict has the 1) same keys; and 2) They key values have the types defined in the typeDict
+        [/dicttype /dicttype] (/validateTypeDict) checkArgs
         (validateTypeDict START) =
         0 index type /dicttype ne{
             (/validateTypeDict: first arg not /dicttype) /typecheck signalerror
@@ -507,10 +514,77 @@
         end
     }bind def
 
+    /isNumber{
+        [/anytype] (/isNumber) checkArgs
+        
+        /_v exch def
+
+        _v type /integertype eq
+        _v type /realtype eq
+        or
+    }bind def
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /orAll{ % [] -> bool
+        [/arraytype] (/orAll) checkArgs
+
+        0 index xcheck{
+            mark (/orAll: array should not be executable )                     strcatmark /typecheck signalerror
+        }if
+
+        %%%
+        2 dict begin
+        /_a exch def
+
+        %%%%
+        /flag false def
+
+        _a{
+            dup
+            xcheck{
+                (/orAll) execClean
+            }if
+            {
+                /flag true store
+                exit
+            }if
+        }forall
+
+        flag
+        end
+    }bind def
+
+
+    /eswitch{ % value, array of array pairs; each pair [ {} {} ]; first returns bool with val on stack; second executed if first is true; then exit; may or may not return value (depends on second in pair)
+        [/arraytype /anytype] (eswitch) checkArgs
+        
+        /_a exch def
+        /_v exch def
+        
+        _a{
+            /p exch def
+            % If the first one returns true with the value
+            _v p 0 get (/eswitch) execClean{
+                % Run the second and leave
+                p 1 get (/eswitch) execClean
+                exit
+            }if
+        }forall
+    }bind def
+
+
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % 
 }if
+
+
+
+
+
+
+
+
 
 
 
