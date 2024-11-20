@@ -1,6 +1,6 @@
 
 
-all: primatives simple test
+all: primatives simple test 2da
 #	gs -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dSAFER -sDEVICE=pdfwrite   -dNOSAFER -o speckles.pdf speckles.ps
 #	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    my_library_test.ps
 
@@ -10,6 +10,7 @@ test:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    test.ps
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    test_test.ps
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    simple_test.ps
+	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    2da_test.ps
 
 primatives:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    primatives.ps
@@ -20,6 +21,9 @@ types:
 
 simple:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    simple.ps
+
+2da:
+	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    2da.ps
 
 
 tmp:

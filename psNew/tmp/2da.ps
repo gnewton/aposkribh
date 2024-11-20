@@ -8,25 +8,71 @@
     /TwoDArrayTemplate# 50 dict def
 
     TwoDArrayTemplate# begin
+    % local variables
     /a null def
-    /get{} def % gets value at i,j
-    /set{} def % puts {} at i.j
     /nx null def % # x values
     /ny null def % # y values
+
+    % procedures
+    /getCell{
+        [/integertype /integertype] (getCell) checkArgs
+        10 dict begin
+        /j exch def
+        /i exch def
+
+        i 0 nx checkRange
+        j 0 ny checkRange
+        
+        i nx gt
+        j ny gt
+        or
+        i 0 lt
+        j 0 lt
+        or
+        or{
+            (BAD) =
+            (getCell: i or j too large or <0) /rangecheck signalerror
+        }if
+        
+        end %
+    } def % gets value at i,j
+
+    /setCell{
+        [/integertype /integertype /any'] (setCell) checkArgs
+        (getCell NOT IMPLEMENTED) =
+    } def % puts {} at i.j
     end
     
 
-    /new2da{
+    /new2da{ % int int -> dict (#tda)
+        [/integertype /integertype] (new2da) checkArgs
+        
+        10 dict begin
         /h exch def
         /w exch def
         % TODO check variables
+
+        
         aposkribh_2da# begin
+
         10 dict begin % Make tda# local, not in aposkribh_2da# 
         /tda# 50 dict def
         TwoDArrayTemplate# tda# copy
-        end
-        end
-        
+
+        tda# begin
+        /nx w store
+        /ny h store
+        /a h array store
+
+        0 1 a length 1 sub{
+            a exch w array put
+        }for
+
+        end % tda#
+        end % anonymous
+        end % aposkribh_2da#
+        end % anonymous
+        % tda# left on stgack
     }def
 
     end %aposkribh_2da# begin

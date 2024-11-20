@@ -572,6 +572,19 @@
         }forall
     }bind def
 
+    /checkRange{
+        [/anytype /anytype /anytype] (checkArgs) checkArgs
+        10 dict begin
+        /max exch def
+        /min exch def
+        /val exch def
+        val min lt
+        val max gt
+        or{
+           (/checkRange: out of range ) /rangecheck signalerror
+        }if
+        end
+    }def
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
