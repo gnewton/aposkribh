@@ -1,0 +1,34 @@
+(primatives.ps) run
+
+/aposkribh_2da# where not{
+    /aposkribh_2da# 50 dict def
+
+    aposkribh_2da# begin
+
+    /TwoDArrayTemplate# 50 dict def
+
+    TwoDArrayTemplate# begin
+    /a null def
+    /get{} def % gets value at i,j
+    /set{} def % puts {} at i.j
+    /nx null def % # x values
+    /ny null def % # y values
+    end
+    
+
+    /new2da{
+        /h exch def
+        /w exch def
+        % TODO check variables
+        aposkribh_2da# begin
+        10 dict begin % Make tda# local, not in aposkribh_2da# 
+        /tda# 50 dict def
+        TwoDArrayTemplate# tda# copy
+        end
+        end
+        
+    }def
+
+    end %aposkribh_2da# begin
+}if %
+
