@@ -17,17 +17,17 @@
     /getCell{
         [/integertype /integertype] (getCell) checkArgs
         10 dict begin
-        /j exch def
-        /i exch def
+        /_j exch def
+        /_i exch def
 
-        i 0 nx checkRange
-        j 0 ny checkRange
+        _i 0 nx checkRange
+        _j 0 ny checkRange
         
-        i nx gt
-        j ny gt
+        _i nx gt
+        _j ny gt
         or
-        i 0 lt
-        j 0 lt
+        _i 0 lt
+        _j 0 lt
         or
         or{
             (BAD) =
@@ -46,10 +46,9 @@
 
     /new2da{ % int int -> dict (#tda)
         [/integertype /integertype] (new2da) checkArgs
-        
         10 dict begin
-        /h exch def
-        /w exch def
+        /_h exch def
+        /_w exch def
         % TODO check variables
 
         
@@ -60,12 +59,12 @@
         TwoDArrayTemplate# tda# copy
 
         tda# begin
-        /nx w store
-        /ny h store
-        /a h array store
+        /nx _w store
+        /ny _h store
+        /a _h array store
 
         0 1 a length 1 sub{
-            a exch w array put
+            a exch _w array put
         }for
 
         end % tda#

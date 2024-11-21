@@ -6,7 +6,43 @@
     /aposkribh.types# 50 dict def
 
     aposkribh.types# begin
-    /newtypes# 30 dict def
+
+    /newtypes# <<%30 dict def % name {}returning bool
+                   /numbertype {type dup /integertype eq exch /realtype eq or} % int or real
+                   /numbertype2 {isNumberType} % int or real
+
+                   % /numberarraytype {
+                   %     5 dict begin
+                   %     type dup /integertype eq exch /realtype eq or
+                   %     end
+                   % } % int or real
+               >>def
+
+     /isNumberType{
+         type dup /integertype eq exch /realtype eq or % int or real
+     }def
+
+
+     /isNumberArrayType{
+         3 dict begin
+         /_v exch def
+         ( ) =
+         _v ===
+         _v type /arraytype ne{
+             false
+         }{
+             true
+             _v {
+                 isNumberType not{
+                     pop
+                     false
+                     exit
+                 }if
+             }forall
+
+         }ifelse
+         end
+     }def
     
     /isType{
         [/nametype /anytype] (isType) checkArgs
@@ -14,56 +50,43 @@
         /_t exch def
         /_v exch def
 
-        [
-            {_t /stringtype eq}
-            {_t /integertype eq}
-            {_t /nametype eq}
-            {_t /realtype eq}
-            {_t /booleantype eq}
-            {_t /dicttype eq}
-        ]orAll{
-            _v type _t eq
+        _v _t isAddedType{
+            true
         }{
-            _v ntype _t eq
+            [
+                {_t /stringtype eq}
+                {_t /integertype eq}
+                {_t /nametype eq}
+                {_t /realtype eq}
+                {_t /booleantype eq}
+                {_t /dicttype eq}
+            ]orAll
         }ifelse
         end
     }bind def
 
-    /ntype{
-        [/anytype] (/ntype) checkArgs
-        2 dict begin
-        /_t exch def
-
-        % First check if it is an added type
-        _t isAddedType{
-            % Return added type
-        }{
-            % Return native type
-        }if
-
-
-        (/ntype: Unimplemented)
-        end
-    }bind def
 
     /isAddedType{
         2 dict begin
+        /_t exch def
         /_v exch def
 
-        (_v=) =
+        _t =
         _v =
+        
         /return false def
-        aposkribh.types# /newtypes# get {
-            /proc exch def
-            /n exch def
 
-            _v proc{
-                /return true store
-                exit
-            }if
-        }forall
+        aposkribh.types# /newtypes# get ===
+        
+        aposkribh.types# /newtypes# get _t known{
+            (##) =
+            _v aposkribh.types# /newtypes# get _t get exec =
+            (##) =
+            true
+        }{
+            false
+        }ifelse
 
-        return
         end
     }bind def
 
