@@ -7,16 +7,22 @@ aposkribh.primatives# begin
 
 aposkribh.types# begin
 
-(  TYPES) =
-22 /numbertype2  isType =
+% true
+{22 /numbertype  isType} T
+{[22.5] /numberarraytype  isType} T
+{[22.5 44] /numberarraytype  isType} T
+{[(2.5)] /stringarraytype  isType} T
+{[()] /stringarraytype  isType} T
+{[() (22.5) (foo)] /stringarraytype  isType} T
+%false
+{[22.5] /stringarraytype  isType} F
+{[() 22.5 (foo)] /stringarraytype  isType} F
 
-%[22.5] /numberarraytype  isType =
-
-(  TYPES) =
-( ) =
-
-clear
-33 isNumberArrayType =
-[] isNumberArrayType =
+{[() () (foo)] /stringarraytype  isType} T
+{[] isNumberArrayType} T
+{[32] isNumberArrayType} T
+{[32 0.0] isNumberArrayType} T
+%false
+{33 isNumberArrayType} F
 
 end %aposkribh.primatives# 

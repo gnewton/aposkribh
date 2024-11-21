@@ -586,7 +586,28 @@
         end
     }def
 
-    
+
+    % SimpleTests
+    /F{ % first on stack Should be false
+        dup
+        exec
+        {
+            (ERROR: should be true) =
+            cvlit ===
+            (/simpleTest: FAIL ) /undefinedresult signalerror
+        }if
+    }bind def
+
+    /T{ % first on stack Should be true
+        dup
+        exec
+        not{
+            (ERROR: should be false) =
+            cvlit ===
+            (/simpleTest: FAIL ) /undefinedresult signalerror
+        }if
+    }bind def
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % 
 }if

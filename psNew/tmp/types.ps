@@ -8,8 +8,9 @@
     aposkribh.types# begin
 
     /newtypes# <<%30 dict def % name {}returning bool
-                   /numbertype {type dup /integertype eq exch /realtype eq or} % int or real
-                   /numbertype2 {isNumberType} % int or real
+                   /numbertype {isNumberType} % int or real
+                   /numberarraytype {isNumberArrayType} % int or real
+                   /stringarraytype {isStringArrayType} % int or real
 
                    % /numberarraytype {
                    %     5 dict begin
@@ -26,8 +27,6 @@
      /isNumberArrayType{
          3 dict begin
          /_v exch def
-         ( ) =
-         _v ===
          _v type /arraytype ne{
              false
          }{
@@ -39,7 +38,24 @@
                      exit
                  }if
              }forall
+         }ifelse
+         end
+     }def
 
+     /isStringArrayType{
+         3 dict begin
+         /_v exch def
+         _v type /arraytype ne{
+             false
+         }{
+             true
+             _v {
+                 type /stringtype eq not{
+                     pop
+                     false
+                     exit
+                 }if
+             }forall
          }ifelse
          end
      }def
@@ -70,19 +86,9 @@
         2 dict begin
         /_t exch def
         /_v exch def
-
-        _t =
-        _v =
-        
-        /return false def
-
-        aposkribh.types# /newtypes# get ===
         
         aposkribh.types# /newtypes# get _t known{
-            (##) =
-            _v aposkribh.types# /newtypes# get _t get exec =
-            (##) =
-            true
+            _v aposkribh.types# /newtypes# get _t get exec 
         }{
             false
         }ifelse
