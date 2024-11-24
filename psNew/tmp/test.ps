@@ -18,196 +18,78 @@
 
     
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /runTest{ % bool testName ->. (nothing)
-        count 2 lt{
-            (/runTest less than 2 args) /stackunderflow signalerror
-        }if
-        
-        0 index type /stringtype ne{
-            (/runTest first arg not string) /typecheck signalerror
-        }if
 
-        1 index type /booleantype ne{
-            (/runTest second arg not boolean) /typecheck signalerror
-        }if
 
-        %%%%%%%%%%%%%%
-        2 dict begin
+
+
+    % simple tests
+    /test.F{ % { }
+        [false] test.V
+    }bind def
+    
+    /test.T{ % { }
+        [true] test.V
+    }bind def
+    
+
+    /test.V{ % {} [expected values left on stack]
+        10 dict begin
+        /_expectedStack exch def
+        %
         
-        /_testName exch def
-        /_passedTest exch def
-        
-        _passedTest{
-            aposkribh.TEST_SHOW_PASSES{
-                mark (Pass: ) _testName strcatmark =
-            }if
-        }
+        dup /procAsString exch cvlit def
+
         {
-            mark (Fail: ) _testName strcatmark =
-            aposkribh.StopOnFail{
-                quit
+            /proc exch def
+            clear
+            {proc} exec
+            %exec
+        }stopped{
+            $error /errorname get
+            (Fail: Error: Should run OK and return results) =
+            procAsString ===
+            _expectedStack ===
+            (/V: FAIL ) exch signalerror
+        }{
+            _expectedStack arraySameAsStack not{
+                (Fail: V: Results stack does not match) =
+                procAsString ===
+                _expectedStack ===
             }if
         }ifelse
         end
+        clear
     }bind def
 
+    /test.E{ % { } /errortype
+        % Runs proc and expects particular error
+        10 dict begin
+        /_expectedError exch def
 
+        dup /procAsString exch cvlit def
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertError{% expectedError {stuff-to-exec}  -> bool
-        mark (assertErrors START) verbose2
-        count 2 lt{
-            (/assertError less than 2 args) /stackunderflow signalerror
-        }if
-        0 index type /nametype ne{
-            (/assertError: First arg not nametype) /typecheck signalerror
-        }if
-
-        1 index type /arraytype ne{
-            (/assertError: Second arg not array) /typecheck signalerror
-        }if
-
-        %%%%%
-        3 dict begin
-        /expectedError exch def
         {
-            exec
+            /d exch def
+            clear
+            {d} exec
         }stopped{
             /actualError $error /errorname get def
-
-            expectedError actualError eq{
-                mark (OK  % AssertError) verbose2
-                true
-            }{
-                mark (actualError does not match expected error) =
+            
+            actualError _expectedError ne{
+                (FAIL: Expected error but wrong error) =
+                procAsString ===
                 actualError =
-                expectedError =
-                false
-                aposkribh.StopOnFail{
-                    quit
-                }if
-            }ifelse
+                _expectedError =
+                quit
+            }if
         }{
-            mark (assertError: should be an error) verbose2
-            false
+            (FAIL: Expected error but no error) =
+            procAsString ===
+            _expectedError =
+            quit
         }ifelse
-        end
+        clear
     }bind def
-
-
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /assertValues{ % {stuff-to-exec} [array of expected values on stack] -> bool
-        mark (assertValues START) verbose2
-
-        count 2 lt{
-            (/assertValues less than 3 args) /stackunderflow signalerror
-        }if
-        0 index type /arraytype ne{
-            (/assertValues first arg not array) /typecheck signalerror
-        }if
-
-        1 index type /arraytype ne{
-            (/assertValues Second arg not array) /typecheck signalerror
-        }if
-
-        %%%%%
-        3 dict begin 
-        /_expectedValuesArray exch def
-        dup cvlit /procString exch def
-        %/_procName exch def
-        {
-            exec
-        }stopped{
-            (FAIL 1) =
-            _procName =
-            procString ===
-            false
-        }{
-            aposkribh.primatives# begin
-            _expectedValuesArray arrayEqualsStack % results left on stack (bool)
-            end
-        }ifelse
-        end
-    }bind def
-
-
-
-    
-    /runTests.ExpectErrors{ % array of {{proc test} msg}, test name
-        count 2 lt{
-            (/runTests.ExpectErrors less than 2 args) /stackunderflow signalerror
-        }if
-        0 index type /stringtype ne{
-            (/runTests.ExpectErrors first arg not /stringtype) /typecheck signalerror
-        }if
-        1 index type /arraytype ne{
-            (/runTests.ExpectErrors second arg not /arraytype) /typecheck signalerror
-        }if
-        %%%%%
-        
-        5 dict begin
-        /_testProcName exch def
-
-        mark () verbose2
-        mark (--------- Testing: ) _testProcName ( -----------) verbose2
-
-        0 index length 0 ne{
-            /_a exch def
-            _a{
-
-                exec
-                /expectedError exch def
-                expectedError type /nametype ne{
-                    (/runTests.ExpectErrors expectedError not nametype) /typecheck signalerror
-                }if
-                /msg exch def
-                msg type /stringtype ne{
-                    (/runTests.ExpectErrors msg not stringtype) /typecheck signalerror
-                }if
-                mark (+++++++++++++runTests.ExpectErrors: ) msg verbose2
-                /tproc exch def
-                {
-                    clear
-                    tproc
-                } expectedError assertError
-                msg  runTest
-            }forall
-        }if
-
-    end
-    }bind def
-
-    /runTests.ExpectedValues{ % array of '{{proc test} msg}'
-        count 2 lt{
-            (/runTests.ExpectedValues less than 2 args) /stackunderflow signalerror
-        }if
-        0 index type /stringtype ne{
-            (/runTests.ExpectErrors first arg not /stringtype) /typecheck signalerror
-        }if
-        1 index type /arraytype ne{
-            (/runTests.ExpectedValues second arg not /arraytype) /typecheck signalerror
-        }if
-        
-        %%%%%
-        5 dict begin
-        /_testProcName exch def
-        /_a exch def
-        _a{
-            exec % pushes array entry items onto stack
-            /msg exch def
-            /expectedValuesArray exch def
-
-            /tproc exch def
-            {
-                clear
-                tproc
-            }  expectedValuesArray assertValues msg runTest
-        }forall
-        end
-
-    }def
 
 
     end  % aposkribh_test#

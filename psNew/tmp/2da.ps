@@ -19,9 +19,8 @@
         10 dict begin
         /_j exch def
         /_i exch def
-
-        _i 0 nx checkRange
-        _j 0 ny checkRange
+        (getCell) _i 0 nx checkRange
+%        (getCell) _j 0 ny checkRange
         
         _i nx gt
         _j ny gt
@@ -33,7 +32,7 @@
             (BAD) =
             (getCell: i or j too large or <0) /rangecheck signalerror
         }if
-        
+        a _i get _j get 
         end %
     } def % gets value at i,j
 

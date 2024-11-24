@@ -92,7 +92,6 @@
         /orig i def
         
         /digits 1 def
-
         {
             i 10 lt{
                 exit
@@ -105,6 +104,11 @@
     }bind def
 
 
+    /number2s{
+        (--------- numberToS TODO ----------) =
+        quit
+    }bind def
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool
 
@@ -573,40 +577,64 @@
     }bind def
 
     /checkRange{
-        [/anytype /anytype /anytype] (checkArgs) checkArgs
+        stack
+        (S) =
+        0 index =
+        %[/anytype /anytype /anytype] (checkArgs) checkArgs
+        [/numbertype /numbertype /numbertype /stringtype] (checkArgs) checkArgs
+
         10 dict begin
-        /max exch def
-        /min exch def
-        /val exch def
-        val min lt
-        val max gt
+        /_max exch def
+        /_min exch def
+        /_val exch def
+        /_procName exch def
+        %
+        _val _min lt
+        _val _max gt
         or{
-           (/checkRange: out of range ) /rangecheck signalerror
+            mark (/checkRange: out of range in: [) _procName (]) (  val=) _val i2s ( min=) _min i2s ( max=) _max i2s ( )strcatmark /rangecheck signalerror
+            quit
         }if
         end
     }def
 
 
-    % SimpleTests
-    /F{ % first on stack Should be false
-        dup
-        exec
-        {
-            (ERROR: should be true) =
-            cvlit ===
-            (/simpleTest: FAIL ) /undefinedresult signalerror
-        }if
-    }bind def
+    /arraySameAsStack{
+        3 dict begin
+        /_array exch def
 
-    /T{ % first on stack Should be true
-        dup
-        exec
-        not{
-            (ERROR: should be false) =
-            cvlit ===
-            (/simpleTest: FAIL ) /undefinedresult signalerror
+        /returnValue true def
+        /msg () def
+
+        count /c exch def
+
+        
+        c _array length lt{
+            /returnValue false store
+            /msg (Length of stack less than expected:)
+            c 4 string cvs concatstrings
+            ( instead of ) concatstrings
+            _array length 4 string cvs concatstrings
+            store
+            return =
+        }{
+            0 1 _array length 1 sub{
+                /i exch def
+                i index _array i get ne{
+                    /returnValue false store
+                    /msg (At least one value is expected results array does not equal stack value: position: ) i 10 string cvs concatstrings
+                    store
+                    exit
+                }if
+            }for
+        }ifelse
+        returnValue not{
+            msg
         }if
-    }bind def
+        returnValue
+        end
+    }def
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % 

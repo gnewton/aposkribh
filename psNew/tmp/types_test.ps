@@ -1,28 +1,48 @@
 
 (primatives.ps) run
 (types.ps) run
+(test.ps) run
 
 aposkribh.primatives# begin
 
 
 aposkribh.types# begin
 
-% true
-{22 /numbertype  isType} T
-{[22.5] /numberarraytype  isType} T
-{[22.5 44] /numberarraytype  isType} T
-{[(2.5)] /stringarraytype  isType} T
-{[()] /stringarraytype  isType} T
-{[() (22.5) (foo)] /stringarraytype  isType} T
-%false
-{[22.5] /stringarraytype  isType} F
-{[() 22.5 (foo)] /stringarraytype  isType} F
+aposkribh.test#  begin
 
-{[() () (foo)] /stringarraytype  isType} T
-{[] isNumberArrayType} T
-{[32] isNumberArrayType} T
-{[32 0.0] isNumberArrayType} T
-%false
-{33 isNumberArrayType} F
 
-end %aposkribh.primatives# 
+{ 22 /numbertype  isType}             test.T
+{ [22.5] /numberarraytype  isType}    test.T
+{ [22.5 44] /numberarraytype  isType} test.T
+{ [(2.5)] /stringarraytype  isType}   test.T
+{ [()] /stringarraytype  isType}      test.T
+{ [ () (foo) ] /stringarraytype  isType}  test.T
+{ [() () (foo)] /stringarraytype  isType} test.T
+{ [() (22.5) (foo)] /stringarraytype  isType} test.T
+%
+{ [22.5] /stringarraytype  isType}            test.F
+{ [() 22.5 (foo)] /stringarraytype    isType} test.F
+{ [32 () (foo) ] /stringarraytype  isType}    test.F
+%
+{ /stringarraytype  isType}  /stackunderflow  test.E
+
+
+{ [] isNumberArrayType   }       test.T
+{ [32] isNumberArrayType }       test.T
+{ [22 32 0.0] isNumberArrayType} test.T
+%
+{ 33 isNumberArrayType}          test.F
+%
+{ isNumberArrayType} /stackunderflow  test.E
+
+
+
+{ 3 2 add  12 12 add } [24 5 ] test.V
+{ 3 2  add  12 12 add} [24 5 ] test.V
+%
+{ (k) 2  add  } /typecheck test.E
+
+
+end % #aposkribh.test#
+end % aposkribh.types#
+end % aposkribh.primatives# 
