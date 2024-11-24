@@ -108,6 +108,33 @@
         (--------- numberToS TODO ----------) =
         quit
     }bind def
+
+
+    /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
+        aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+            count 2 lt{
+                mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
+            }{
+                % Zeroth arg must be stringtype (name of proc being tested)
+                0 index type /stringtype ne{
+                    mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
+                }{
+                    % First index must be array; list of types for args; array order is stack order
+                    1 index type /arraytype ne{
+                        mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
+                    }{
+                        % end args
+                        2 dict begin
+                        /_procName exch def
+                        /_typesArray exch def
+
+                        stack
+                        end
+                    }ifelse
+                }ifelse
+            }ifelse
+        }if
+    }bind def
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool

@@ -26,6 +26,7 @@ test.primatives# begin
     
     
     { 32 [/integertype] (checkArgs)  checkArgs                 }   [32]      test.V
+%    { 32 [/numbertype] (checkArgs)  checkArgs                 }   [32]      test.V
     { 32 44 [/integertype /integertype]  (checkArgs) checkArgs }   [44 32]   test.V
 }bind def
 
@@ -36,6 +37,12 @@ test.primatives# begin
     { mark /foo  (strcatmark)  strcatmark }      /typecheck      test.E
 }bind def
 
+
+/checkArgs2.Tests{
+    { 32 [/numbertype] (checkArgs)  checkArgs2 }   [32]      test.V
+    { 32 [/integertype] (checkArgs)  checkArgs2 }   [32]      test.V
+    { 32 45 66 [/integertype /integertype /integertype] (checkArgs)  checkArgs2 }   [66 45 32]      test.V
+}def
 
 end % test.primatives# begin
 
