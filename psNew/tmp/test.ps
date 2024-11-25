@@ -1,6 +1,8 @@
 
 (globals.ps) run
 
+% Should not rely on any primative.ps
+%
 /aposkribh.test# where not{
 
     /aposkribh.test# 20 dict def
@@ -15,35 +17,50 @@
         /aposkribh.Testing true def
     }if
 
-
-    
-    
-
-
-
+    /isProc{
+        2 dict begin
+        /n exch  def
+        n count  ge{
+            (/isProc: Stack too small) /stackunderflow signalerror
+        }if
+        n index type /arraytype ne{
+            n  index cvlit  ===
+            n  index type =
+            (/isProc: Not executable proc) /typecheck signalerror
+        }if
+        end
+    }bind def
 
     % simple tests
-    /test.F{ % { }
+    /test.F{ % { } : proc should return true
+        0 isProc
         [false] test.V
     }bind def
     
-    /test.T{ % { }
+    /test.T{ % { } : proc should return false
+        0 isProc
         [true] test.V
     }bind def
     
 
-    /test.V{ % {} [expected values left on stack]
+    /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
+        1 isProc
         10 dict begin
         /_expectedStack exch def
         %
         
         dup /procAsString exch cvlit def
 
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.V) =
+            procAsString ===
+        }if
+        
         {
             /proc exch def
             clear
             {proc} exec
-            %exec
         }stopped{
             $error /errorname get
             (Fail: Error: Should run OK and return results) =
@@ -61,12 +78,18 @@
         clear
     }bind def
 
-    /test.E{ % { } /errortype
-        % Runs proc and expects particular error
+    /test.E{ % { } /errortype : Should run and throw a specific error
+        1 isProc
         10 dict begin
         /_expectedError exch def
 
         dup /procAsString exch cvlit def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.E) =
+            procAsString ===
+        }if
 
         {
             /d exch def
@@ -80,13 +103,13 @@
                 procAsString ===
                 actualError =
                 _expectedError =
-                quit
+                (/test.E: ) /invalidexit signalerror
             }if
         }{
             (FAIL: Expected error but no error) =
             procAsString ===
             _expectedError =
-            quit
+            (/test.E: ) /invalidexit signalerror
         }ifelse
         clear
     }bind def
@@ -96,3 +119,4 @@
 }{
     pop % get rid of found dict 
 }ifelse
+
