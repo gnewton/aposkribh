@@ -1,0 +1,44 @@
+(globals.ps) run
+
+% Should not rely on any primative.ps
+%
+/aposkribh.assert# where not{
+
+    /aposkribh.assert# 20 dict def
+
+    aposkribh.assert# begin
+
+    /assertInteger{
+        count 0 eq{
+            (/assertInteger: Empty stack: needs one integer) /stackunderflow signalerror
+        }if
+        
+        0 index type /integertype eq not{
+            (/assertInteger: Needs integer arg#0) /typecheck signalerror
+        }if
+        
+        begin
+        index type /integertype eq not{
+            (/assertInteger: Not integer) /typecheck signalerror
+        }if
+    }bind def
+    
+    /assertProc{
+        2 dict begin
+        /n exch  def
+        n count  ge{
+            (/assertIsProc: Stack too small) /stackunderflow signalerror
+        }if
+        n index type /arraytype ne{
+            n  index cvlit  ===
+            n  index type =
+            (/assertIsProc: Not executable proc) /typecheck signalerror
+        }if
+        end
+    }bind def
+
+
+    end  % aposkribh_assert#
+}{
+    pop % get rid of found dict 
+}ifelse

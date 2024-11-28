@@ -1,3 +1,26 @@
 
 (test.ps) run
-(primatives.ps) run
+
+/test.test# 20 dict def
+test.test#
+begin
+
+/assertIsProc.Tests{
+    
+}bind def
+
+test.test# {
+    aposkribh.VERBOSE_TEST{
+        () =
+        (------------------) =
+        exch ===
+    }{
+        exch pop
+    }ifelse
+
+    exec
+}forall
+
+
+%%%%%
+end % test.test# 

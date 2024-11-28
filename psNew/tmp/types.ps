@@ -1,10 +1,12 @@
 
 (globals.ps) run
+(assert.ps) run
 
 /aposkribh.types# where not{
 
     /aposkribh.types# 50 dict def
 
+    aposkribh.assert# begin
     aposkribh.types# begin
 
     
@@ -149,4 +151,6 @@
     }bind def
     
     end % aposkribh.types#
+
+    end  % aposkribh_test#
 }if

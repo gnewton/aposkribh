@@ -63,6 +63,32 @@
         (END nswitch)
     }bind def
 
+        /a2s{ % anything to string
+        (a2s---------) =
+        count 0 eq{
+            mark (/a2s: needs one argument) /undefined signalerror
+        }if
+        2 dict begin
+        /v exch def
+
+        v type n2s
+        <<
+            (stringtype)  {v}
+            (nametype)  {v n2s}
+            (integertype) {v i2s}
+            (booleantype) {v b2s}
+            (realtype)    {v r2s}
+            (dicttype)    {(<<dict>>) }
+            (arraytype)   {(arraytype)}
+        >>
+        [{(Unknown)}]
+        switch
+
+
+        end
+    }bind def
+
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.util

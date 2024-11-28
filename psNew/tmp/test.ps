@@ -1,5 +1,6 @@
 
 (globals.ps) run
+(assert.ps) run
 
 % Should not rely on any primative.ps
 %
@@ -7,6 +8,7 @@
 
     /aposkribh.test# 20 dict def
 
+    aposkribh.assert# begin
     aposkribh.test# begin
 
     /aposkribh.StopOnFail where not{
@@ -17,44 +19,31 @@
         /aposkribh.Testing true def
     }if
 
-    /isProc{
-        2 dict begin
-        /n exch  def
-        n count  ge{
-            (/isProc: Stack too small) /stackunderflow signalerror
-        }if
-        n index type /arraytype ne{
-            n  index cvlit  ===
-            n  index type =
-            (/isProc: Not executable proc) /typecheck signalerror
-        }if
-        end
-    }bind def
 
     % simple tests
     /test.F{ % { } : proc should return true
-        0 isProc
+        0 assertProc
         [false] test.V
     }bind def
     
     /test.T{ % { } : proc should return false
-        0 isProc
+        0 assertProc
         [true] test.V
     }bind def
     
 
     /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
-        1 isProc
+        1 assertProc
         10 dict begin
         /_expectedStack exch def
         %
         
-        dup /procAsString exch cvlit def
+        dup /procAsLiteral exch cvlit def
 
         aposkribh.VERBOSE_TEST{
             () =
             (test.V) =
-            procAsString ===
+            procAsLiteral ===
         }if
         
         {
@@ -62,7 +51,7 @@
             clear
             {proc} exec
         }stopped{
-            procAsString ===
+            procAsLiteral ===
             _expectedStack ===
             (Unexcpected error: ) =
             $error /errorname get =
@@ -71,7 +60,7 @@
         }{
             _expectedStack arraySameAsStack not{
                 =
-                procAsString ===
+                procAsLiteral ===
                 _expectedStack ===
                 (Stack +) =
                 stack
@@ -84,16 +73,17 @@
     }bind def
 
     /test.E{ % { } /errortype : Should run and throw a specific error
-        1 isProc
+        1 assertProc
+        
         10 dict begin
         /_expectedError exch def
 
-        dup /procAsString exch cvlit def
+        dup /procAsLiteral exch cvlit def
 
         aposkribh.VERBOSE_TEST{
             () =
             (test.E) =
-            procAsString ===
+            procAsLiteral ===
         }if
 
         {
@@ -105,22 +95,27 @@
             
             actualError _expectedError ne{
                 (FAIL: Expected error but wrong error) =
-                procAsString ===
+                procAsLiteral ===
                 actualError =
                 _expectedError =
                 (/test.E: ) /invalidexit signalerror
             }if
         }{
             (FAIL: Expected error but no error) =
-            procAsString ===
+            procAsLiteral ===
             _expectedError =
             (/test.E: ) /invalidexit signalerror
         }ifelse
         clear
     }bind def
 
+    /runTests{
+
+    }bind def
 
     end  % aposkribh_test#
+
+    end % aposkribh.assert#
 }{
     pop % get rid of found dict 
 }ifelse
