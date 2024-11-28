@@ -5,7 +5,9 @@ aposkribh.assert#
 begin
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
+%  assertInteger
  clear 10   0 assertInteger
  clear 0    0 assertInteger
  clear -100 0 assertInteger
@@ -16,30 +18,46 @@ begin
 
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL
 [
-    (22 1 assertInteger) % /stackunderflow
-    (22.3 0 assertInteger) % /typecheck
-    (assertInteger)        % /stackunderflow
-    (44 (foo) -100 3 assertInteger) % /typecheck
-    (44 (foo) -100 1 assertInteger) % /typecheck
-    (44 (foo) -100 -1 assertInteger) % /rangecheck
-]{
-    /proc () def
-    {
-        /proc exch store
+    [ ( 22 1 assertInteger)            /stackunderflow ]
+    [ ( 22.3 0 assertInteger)          /typecheck      ]
+    [ ( assertInteger)                 /stackunderflow ]
+    [ ( 44 (foo) -100 3 assertInteger) /stackunderflow ]
+    [ ( 44 (foo) -100 1 assertInteger) /typecheck      ]
+    [ ( 44 (foo) -100 -1 assertInteger) /rangecheck     ]
+    [ ( (foo) 0 assertInteger)          /typecheck      ]
+]
+{ % forall
+    /proc null def
+        /expecterError null def
+    { % stopped
+        /a exch store
+        /proc a 0 get store
+        /expectedError a 1 get store 
         clear
         proc cvx
         exec
-    }stopped{
-        % OK
+    }stopped{ % ifelse
+        /actualError $error /errorname get def
+
+        actualError expectedError ne{ % if
+            (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
+            (Expected error: /) expectedError expectedError length string cvs concatstrings =
+            (  Actual error: /) actualError 20 string cvs concatstrings =
+            (% --> {) proc concatstrings ( }) concatstrings =
+            (assert_test.ps) /undefined signalerror
+        }if
     }{
         (FAIL: This should not run successfully but should throw an error) =
-        (% --> {) proc concatstrings ( })concatstrings =
+        (% --> {) proc concatstrings ( }) concatstrings =
         (assert_test.ps) /undefined signalerror
     }ifelse
 }forall
-    (*********************) =
+
 
 
 end

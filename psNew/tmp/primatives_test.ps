@@ -6,8 +6,6 @@
 
 (test.ps) run
 
-(********************) =
-
 aposkribh.assert#
 begin
 aposkribh.primatives#
@@ -71,7 +69,7 @@ test.primatives# begin
      { 32 [/numbertype] (checkArgs2)  checkArgs2 }    [32]      test.V
      { 32 45 66 [/integertype /integertype /integertype] (checkArgs2)  checkArgs2 }   [66 45 32]      test.V
      %
-          {  [/integertype] (checkArgs)  checkArgs2 }   /stackunderflow      test.E
+     {  [/integertype] (checkArgs)  checkArgs2 }   /stackunderflow      test.E
      { 32.5 [/integertype] (checkArgs)  checkArgs2 }   /typecheck      test.E
  }def
 
