@@ -12,12 +12,19 @@
         count 0 eq{
             (/assertInteger: Empty stack: needs one integer) /stackunderflow signalerror
         }if
-        
+
         0 index type /integertype eq not{
             (/assertInteger: Needs integer arg#0) /typecheck signalerror
         }if
+
+        0 index 0 lt{
+            (/assertInteger: Needs to be positive integer) /rangecheck signalerror
+        }if
+
+        0 index  count gt{
+            (/assertInteger: Referenced stack location greater than stack size) /stackunderflow signalerror
+        }if
         
-        begin
         index type /integertype eq not{
             (/assertInteger: Not integer) /typecheck signalerror
         }if

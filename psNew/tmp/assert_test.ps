@@ -1,0 +1,45 @@
+
+(assert.ps) run
+
+aposkribh.assert#
+begin
+
+
+% Should not FAIL
+ clear 10   0 assertInteger
+ clear 0    0 assertInteger
+ clear -100 0 assertInteger
+ clear (foo) -100 0 assertInteger
+ clear 44 (foo) -100 2 assertInteger
+ clear 44 (foo) 1 assertInteger
+
+
+
+
+% Should FAIL
+[
+    (22 1 assertInteger) % /stackunderflow
+    (22.3 0 assertInteger) % /typecheck
+    (assertInteger)        % /stackunderflow
+    (44 (foo) -100 3 assertInteger) % /typecheck
+    (44 (foo) -100 1 assertInteger) % /typecheck
+    (44 (foo) -100 -1 assertInteger) % /rangecheck
+]{
+    /proc () def
+    {
+        /proc exch store
+        clear
+        proc cvx
+        exec
+    }stopped{
+        % OK
+    }{
+        (FAIL: This should not run successfully but should throw an error) =
+        (% --> {) proc concatstrings ( })concatstrings =
+        (assert_test.ps) /undefined signalerror
+    }ifelse
+}forall
+    (*********************) =
+
+
+end
