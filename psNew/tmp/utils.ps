@@ -1,0 +1,70 @@
+
+(globals.ps) run
+(primatives.ps) run
+(types.ps) run
+
+/aposkribh.utils# where not{
+
+    /aposkribh.utils# 50 dict def
+
+    aposkribh.utils# begin
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    /switch{
+        (SWITCH start) =
+        % Needs 3 args:
+        % 2:any type: value to be switched on
+        % 1:dict: keys are the match; values are the return value
+        % 0: executable array {} in []: default fall through return value
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        [/arraytype /dicttype /anytype] (/switch)  checkArgs
+
+        /_default exch def
+        /_caseDict# exch def    
+
+        % value being checked can be anything
+        /_v exch def
+
+        % body
+        _caseDict# _v known not{
+            _default 0 get (/switch: default) execClean
+        }{
+            _caseDict# _v get (/switch: case) execClean
+        }ifelse
+
+    }bind def
+
+    /nswitch{ % Array of args; if empty does all; otherwise walks through, matches and runs
+        % Needs 3 args:
+        % 2:[any type]: value to be switched on
+        % 1:dict: keys are the match; values are the return value
+        % 0: executable array {} in []: default fall through return value
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         [/arraytype /dicttype /arraytype] (/nswitch) checkArgs
+
+        (HELLO) =
+        
+
+        /_default exch def
+        /_caseDict# exch def    
+        
+        % array of values being checked can be anything
+        /_a exch def
+        
+        % body
+        (======================================================) =
+        _a{
+            () =
+            (BODY) =
+            /v exch def
+            v _caseDict# _default switch =
+            (GGGG) =
+        }forall
+        (END nswitch)
+    }bind def
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end % aposkribh.util
+}if
+

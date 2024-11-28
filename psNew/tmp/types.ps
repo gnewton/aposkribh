@@ -7,6 +7,7 @@
 
     aposkribh.types# begin
 
+    
     /newtypes# <<%30 dict def % name {}returning bool
                    /numbertype {isNumberType} % int or real
                    /numberarraytype {isNumberArrayType} % int or real
@@ -19,31 +20,43 @@
                    % } % int or real
                >>def
 
-     /isNumberType{
+    /isNumberType{
          type dup /integertype eq exch /realtype eq or % int or real
      }def
 
 
-     /isNumberArrayType{
-         3 dict begin
-         /_v exch def
-         _v type /arraytype ne{
+    /isNumberArrayType{
+         3 dict
+         begin
+         0 index type /arraytype ne{
+             pop
              false
          }{
-             true
-             _v {
-                 isNumberType not{
-                     pop
-                     false
-                     exit
-                 }if
-             }forall
+             0 index xcheck{
+                 pop
+                 false
+             }{
+                 /_v exch def
+                 _v length 0 eq{
+                     true
+                 }{
+                     true
+                     _v {
+                         isNumberType not{
+                             pop
+                             false
+                             exit
+                         }if
+                     }forall
+                 }ifelse
+             }ifelse
          }ifelse
-         end
+         end % anonymous
      }def
 
      /isStringArrayType{
-         3 dict begin
+         3 dict
+         begin
          /_v exch def
          _v type /arraytype ne{
              false
@@ -57,44 +70,63 @@
                  }if
              }forall
          }ifelse
-         end
+         end % anonymous
      }def
     
-    /isType{
-        [/nametype /anytype] (isType) checkArgs
-        2 dict begin
+     /isType{
+     %     %[/anytype /nametype] (isType) checkArgs
+          2 dict
+          begin
+         
+          /_t exch def
+          /_v exch def
+          _v _t  isSpecificAddedType{
+              true
+          }{
+              _v type _t eq
+          }ifelse
+     end % anonymous
+    }def
+
+     /isBuiltInType{
+         (     /isBuiltInType{) =
+         2 dict
+         begin
+         /_v exch def
+         [
+             { _v type /stringtype eq }
+             { _v type /integertype eq}
+             { _v type /nametype eq }
+             { _v type /realtype eq}
+             { _v type /booleantype eq}
+             { _v type /dicttype eq}
+         ]orAll
+         (     /isBuiltInType{ END) =
+         end % anonymous
+     }def
+
+     /isSpecificAddedType{
+         2 dict 
+         begin
+         
         /_t exch def
         /_v exch def
 
-        _v _t isAddedType{
-            true
-        }{
-            [
-                {_t /stringtype eq}
-                {_t /integertype eq}
-                {_t /nametype eq}
-                {_t /realtype eq}
-                {_t /booleantype eq}
-                {_t /dicttype eq}
-            ]orAll
-        }ifelse
-        end
-    }bind def
-
-
-    /isAddedType{
-        2 dict begin
-        /_t exch def
-        /_v exch def
+        aposkribh.types#
+        begin
         
         aposkribh.types# /newtypes# get _t known{
-            _v aposkribh.types# /newtypes# get _t get exec 
+            aposkribh.types# /newtypes# get
+            begin
+             _v aposkribh.types# /newtypes# get _t get exec
+            end % aposkribh.types# /newtypes# get
         }{
             false
         }ifelse
 
-        end
-    }bind def
+        end % aposkribh.types# 
+        end % anonymous
+    }def
 
 
 

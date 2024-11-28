@@ -1,6 +1,8 @@
 
 (globals.ps) run
 
+(types.ps) run
+
 /aposkribh.primatives# where not{
 
     /aposkribh.primatives# 50 dict def
@@ -39,7 +41,13 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /stack2array{
-        [/integertype] (/stack2array) checkArgs
+        count 1 lt{
+            (/stack2array: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /integertype not{
+            (/stack2array: Not /integertype on stack) /stackunderflow signalerror
+        }if
 
          %%%
          2 dict begin
@@ -57,26 +65,47 @@
          }for
          end
          (--------mmmmmmm) =
+         $a
          %%%
     }bind def
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /r2s{
-        [/realtype] (r2s) checkArgs
+        count 1 lt{
+            (/r2s: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /realtype type not{
+            (/r2s: Not /realtype type on stack) /stackunderflow signalerror
+        }if
         24 string cvs
     }bind def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /n2s{ % /nametype to string /nametype --> (nametype)
-        [/nametype] (n2s) checkArgs
+        count 1 lt{
+            (/n2s: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /nametype type not{
+            (/n2s: Not /nametype type on stack) /stackunderflow signalerror
+        }if
+        %
 
         dup length string cvs
     }bind def
 
 
     /b2s{ % /nametype to string /nametype --> (nametype)
-        [/booleantype] (b2s) checkArgs
+        count 1 lt{
+            (/b2s: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /booleantype type not{
+            (/b2s: Not /booleantype type on stack) /stackunderflow signalerror
+        }if
+
         {
             (true)
         }{
@@ -86,11 +115,23 @@
     }bind def
     
     /i2s{ % int to string int --> (int)
-        [/integertype] (i2s) checkArgs
+        (/i2s start) =
+        count =
+        count 1 lt{
+            (/i2s: Empty stack) =
+            (/i2s: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /integertype eq =
+        
+        0 index type /integertype eq not{
+
+            (/i2s: Not /integertype on stack) /stackunderflow signalerror
+        }if
 
         /i exch def
         /orig i def
-        
+
         /digits 1 def
         {
             i 10 lt{
@@ -99,7 +140,6 @@
             /i i 10 div store
             /digits digits 1 add store
         }loop
-        
         orig digits string cvs
     }bind def
 
@@ -112,6 +152,7 @@
 
     /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
         aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+            
             count 2 lt{
                 mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
             }{
@@ -124,9 +165,26 @@
                         mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
                     }{
                         % end args
-                        2 dict begin
+                        2 dict
+                        begin
                         /_procName exch def
                         /_typesArray exch def
+
+                        % Not enought args on stack
+                        count _typesArray length lt{
+                            mark (/checkargs2: ) (checkArgs2) (stack is smaller than array) strcatmark /stackunderflow signalerror
+                        }if
+
+                        () =
+                        0 1 _typesArray length 1 sub{
+                            /i exch def
+                            aposkribh.types#
+                            begin
+                            i index  _typesArray i get  isType not{
+                                (/checkargs2: Types don't match)  /typecheck signalerror
+                            }if
+                            end
+                        }for
                         end
                     }ifelse
                 }ifelse
@@ -136,8 +194,9 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool
-
-        aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+        (/checkArgs START) =
+        %aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+        false {
             count 2 lt{
                 mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
             }{
@@ -156,6 +215,7 @@
                         % end args
                         2 dict begin
                         /_procName exch def
+                        _procName ===
                         /_typesArray exch def
                         aposkribh.TRACE{
                             () =
@@ -175,19 +235,33 @@
                             % See if types match
                             0 1 _typesArray length 1 sub{
                                 /i exch def
+                                (BAD) =
                                 mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
-
+                                (BAD 2) =
+                                _typesArray i get =
+                                _typesArray i get /anytype =
                                 _typesArray i get /anytype ne{
                                     i index type _typesArray i get ne{ % Bad arg: error
+                                        (BAD 3) =
+                                        i =
+                                        i i2s =
                                         mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
-                                        
-                                        mark
-                                        (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
-                                        i i2s (; type is /)
-                                        i 4 add index type dup length string cvs
-                                        (; should be /) _typesArray i get dup length string cvs
-                                        strcatmark
-                                        /typecheck signalerror
+                                        (BAD 4) =
+                                        % mark
+                                        % (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
+                                        % i i2s (; type is /)
+                                        % i 4 add index type dup length string cvs
+                                        % (; should be /) _typesArray i get dup length string cvs
+                                        % strcatmark
+                                        % /typecheck signalerror
+
+
+                                        (/checkArgs: ERROR:) = _procName = (: arg does not match type: index=)=
+                                        i i2s =(; type is /)=
+                                        (BAD 5) =
+                                        %i 4 add index type dup length string cvs =
+                                        (BAD 6) =
+                                        (; should be /) = _typesArray i get dup length string cvs =
                                     }if
                                 }if
                             }for
@@ -251,7 +325,6 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /arrayEqualsStack{ % [array of values] -> bool
         % Checks to see if values in array equal the values (remaining) on the stack
-        [/arraytype] (arrayEqualsStack) checkArgs
         0 index type /arraytype ne{
             (/arrayEqualsStack: First arg is not an array) /typecheck signalerror
         }if
@@ -278,7 +351,14 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /spaces{
-        [/integertype] (spaces)  checkArgs
+        count 1 lt{
+            (/spaces: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /integertype not{
+            (/spaces: Not /integertype on stack) /stackunderflow signalerror
+        }if
+
         2 dict begin
         /_n exch def
         /str () def
@@ -291,59 +371,6 @@
     }bind def
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /switch{
-        (SWITCH start) =
-        % Needs 3 args:
-        % 2:any type: value to be switched on
-        % 1:dict: keys are the match; values are the return value
-        % 0: executable array {} in []: default fall through return value
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        [/arraytype /dicttype /anytype] (/switch)  checkArgs
-
-        /_default exch def
-        /_caseDict# exch def    
-
-        % value being checked can be anything
-        /_v exch def
-
-        % body
-        _caseDict# _v known not{
-            _default 0 get (/switch: default) execClean
-        }{
-            _caseDict# _v get (/switch: case) execClean
-        }ifelse
-
-    }bind def
-
-    /nswitch{ % Array of args; if empty does all; otherwise walks through, matches and runs
-        % Needs 3 args:
-        % 2:[any type]: value to be switched on
-        % 1:dict: keys are the match; values are the return value
-        % 0: executable array {} in []: default fall through return value
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-         [/arraytype /dicttype /arraytype] (/nswitch) checkArgs
-
-        (HELLO) =
-        
-
-        /_default exch def
-        /_caseDict# exch def    
-        
-        % array of values being checked can be anything
-        /_a exch def
-        
-        % body
-        (======================================================) =
-        _a{
-            () =
-            (BODY) =
-            /v exch def
-            v _caseDict# _default switch =
-            (GGGG) =
-        }forall
-        (END nswitch)
-    }bind def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -543,19 +570,16 @@
         end
     }bind def
 
-    /isNumber{
-        [/anytype] (/isNumber) checkArgs
-        
-        /_v exch def
-
-        _v type /integertype eq
-        _v type /realtype eq
-        or
-    }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /orAll{ % [] -> bool
-        [/arraytype] (/orAll) checkArgs
+        count 1 lt{
+            (/orAll: Empty stack) /stackunderflow signalerror
+        }if
+
+        0 index type /arraytype eq not{
+            (/orAll Not /arraytype on stack) /stackunderflow signalerror
+        }if
 
         0 index xcheck{
             mark (/orAll: array should not be executable )                     strcatmark /typecheck signalerror
@@ -632,7 +656,6 @@
         /msg () def
 
         count /c exch def
-
         
         c _array length lt{
             /returnValue false store
@@ -647,7 +670,7 @@
                 /i exch def
                 i index _array i get ne{
                     /returnValue false store
-                    /msg (At least one value is expected results array does not equal stack value: position: ) i 10 string cvs concatstrings
+                    /msg (/arraySameAsStack: At least one value is expected results array does not equal stack value: position: ) i 10 string cvs concatstrings
                     store
                     exit
                 }if
@@ -657,12 +680,12 @@
             msg
         }if
         returnValue
-        end
+        end % anonymous
     }def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    end % 
+    end % aposkribh.primatives# 
 }if
 
 

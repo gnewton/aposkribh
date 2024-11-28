@@ -62,16 +62,21 @@
             clear
             {proc} exec
         }stopped{
-            $error /errorname get
-            (Fail: Error: Should run OK and return results) =
             procAsString ===
             _expectedStack ===
-            (/V: FAIL ) exch signalerror
+            (Unexcpected error: ) =
+            $error /errorname get =
+            $error /errorname get
+            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
         }{
             _expectedStack arraySameAsStack not{
-                (Fail: V: Results stack does not match) =
+                =
                 procAsString ===
                 _expectedStack ===
+                (Stack +) =
+                stack
+                (Stack -) =
+                (Fail: test.V: Results stack does not match)  /invalidexit signalerror
             }if
         }ifelse
         end

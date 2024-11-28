@@ -11,6 +11,59 @@ aposkribh.types# begin
 aposkribh.test#  begin
 
 
+
+
+
+{ (m) isNumberType } test.F
+{ 2.5 isNumberType } test.T
+{ 22 isNumberType} test.T
+{ <<>> isNumberType } test.F
+{ [] isNumberType } test.F
+{ [(m) (foo)] isNumberType } test.F
+{ [(m)] isNumberType } test.F
+{ [2 (m)] isNumberType } test.F
+{ [2 43.5] isNumberType } test.F
+{ [2] isNumberType } test.F
+{ null isNumberType } test.F
+{ true isNumberType } test.F
+{ {} isNumberType } test.F
+
+{ [] isNumberArrayType } test.T
+{ (m) isNumberArrayType } test.F
+{ 2.5 isNumberArrayType } test.F
+{ 22 isNumberArrayType} test.F
+{ <<>> isNumberArrayType } test.F
+{ [(m) (foo)] isNumberArrayType } test.F
+{ [(m)] isNumberArrayType } test.F
+{ [2 (m)] isNumberArrayType } test.F
+{ [2 43.5] isNumberArrayType } test.T
+{ [2] isNumberArrayType } test.T
+{ null isNumberArrayType } test.F
+{ true isNumberArrayType } test.F
+{ {} isNumberArrayType } test.F
+
+
+{ [(m) ] isStringArrayType } test.T
+{ [22 ] isStringArrayType } test.F
+
+
+quit
+mark (/************************* )                     strcatmark /typecheck signalerror
+(----) =
+22 /integertype isType =
+2.5 /numbertype isType =
+[22] /numberarraytype isType =
+[(m) ] /stringarraytype isType =
+[22 ] /stringarraytype isType =
+
+
+
+22 /integertype  isType =
+22 /numbertype  isType =
+(22) /numbertype  isType =
+
+
+
 { 22 /numbertype  isType}             test.T
 { [22.5] /numberarraytype  isType}    test.T
 { [22.5 44] /numberarraytype  isType} test.T

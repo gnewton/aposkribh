@@ -4,7 +4,28 @@
 
 (test.ps) run
 
+(********************) =
+
 aposkribh.primatives# begin
+aposkribh.types# begin
+% 32 /integertype isType =
+% /a [/stringtype] def
+% a ===
+% (m)  a 0 get isType =
+% (777777777) =
+% /m{
+%     /t exch def
+%     /v exch def
+%     v type t  isType
+% }def
+
+% (m)  a 0 m
+% mark (doooo) strcatmark /stackunderflow signalerror
+% quit
+% end
+
+
+
 aposkribh.test# begin
 
 /aposkribh.Testing true store
@@ -17,17 +38,18 @@ test.primatives# begin
 
 /checkArgs.Tests{
 
-    { 32.2 [/integertype] (checkArgs)  checkArgs   }    /typecheck       test.E
-    { [/integertype] (checkArgs) checkArgs         }    /stackunderflow  test.E
-    { true [/stringtype] (checkArgs) checkArgs     }    /typecheck       test.E
-    { 1 [/stringtype] (checkArgs) checkArgs        }    /typecheck       test.E
-    { (foo)  <<>> (checkArgs)    checkArgs         }    /typecheck       test.E
-    { (o) [/integertype] (checkArgs) checkArgs     }    /typecheck       test.E
+    %{ 32 [/integertype] (checkArgs)  checkArgs   }    /typecheck       test.E
+    
+%     { [/integertype] (checkArgs) checkArgs         }    /stackunderflow  test.E
+%     { true [/stringtype] (checkArgs) checkArgs     }    /typecheck       test.E
+%     { 1 [/stringtype] (checkArgs) checkArgs        }    /typecheck       test.E
+%     { (foo)  <<>> (checkArgs)    checkArgs         }    /typecheck       test.E
+%     { (o) [/integertype] (checkArgs) checkArgs     }    /typecheck       test.E
     
     
-    { 132 [/integertype] (checkArgs)  checkArgs                 }   [132]      test.V
-%    { 32 [/numbertype] (checkArgs)  checkArgs                 }   [32]      test.V
-    { 32 44 [/integertype /integertype]  (checkArgs) checkArgs }   [44 32]   test.V
+%     { 132 [/integertype] (checkArgs)  checkArgs                 }   [132]      test.V
+% %    { 32 [/numbertype] (checkArgs)  checkArgs                 }   [32]      test.V
+%     { 32 44 [/integertype /integertype]  (checkArgs) checkArgs }   [44 32]   test.V
 }bind def
 
 
@@ -38,13 +60,14 @@ test.primatives# begin
 }bind def
 
 
-/checkArgs2.Tests{
-    { 32 [/numbertype] (checkArgs)  checkArgs2 }    [32]      test.V
-    { 32 [/integertype] (checkArgs)  checkArgs2 }   [32]      test.V
-    { 32 45 66 [/integertype /integertype /integertype] (checkArgs)  checkArgs2 }   [66 45 32]      test.V
-    %
-    %{ 32.5 [/integertype] (checkArgs)  checkArgs2 }   /typecheck      test.E
-}def
+ /checkArgs2.Tests{
+     { 32 [/integertype] (checkArgs2)  checkArgs2 }   [32]      test.V
+     { 32 [/numbertype] (checkArgs2)  checkArgs2 }    [32]      test.V
+     { 32 45 66 [/integertype /integertype /integertype] (checkArgs2)  checkArgs2 }   [66 45 32]      test.V
+     %
+          {  [/integertype] (checkArgs)  checkArgs2 }   /stackunderflow      test.E
+     { 32.5 [/integertype] (checkArgs)  checkArgs2 }   /typecheck      test.E
+ }def
 
 end % test.primatives# begin
 
