@@ -8,34 +8,69 @@
 
     aposkribh.assert# begin
 
-    /assertInteger{
+    /astack{
+        () =
+        =
+        (<<<) =
+        stack
+        (>>>) =
+    }bind def
+    
+
+    /assertAtLeastNArgs{ % n
         count 0 eq{
-            (/assertInteger: Empty stack: needs one integer) /stackunderflow signalerror
+            (/assertAtLeastNArgs: Need at least one arg) /stackunderflow signalerror
         }if
 
+        1 dict begin
+        /n exch def
+        n 0 lt{
+            (/assertAtLeastNArgs: Arg needs to be >=0) /rangecheck signalerror
+        }if
+
+        count n lt{
+             (/assertAtLeastNArgs: Referenced stack location greater than stack size) /stackunderflow signalerror
+         }if
+        end
+    }bind def
+    
+    /assert0IsPositiveInteger{ % Is the 0th arg a /intergertype
+        1 assertAtLeastNArgs
+
+
         0 index type /integertype eq not{
-            (/assertInteger: Needs integer arg#0) /typecheck signalerror
+            (/assert0IsPositiveInteger: Needs integer arg#0) /typecheck signalerror
         }if
 
         0 index 0 lt{
-            (/assertInteger: Needs to be positive integer) /rangecheck signalerror
+            (/assert0IsPositiveInteger: Needs to be positive integer) /rangecheck signalerror
         }if
+    }bind def
 
-        0 index  count gt{
-            (/assertInteger: Referenced stack location greater than stack size) /stackunderflow signalerror
+    
+    /assertStackIsBigEnoughFromArg0{ % n -> Does the Nth arg item exist (n < count)
+        assert0IsPositiveInteger
+
+        dup 
+        /n exch def
+        count n lt{
+            (/assertStackIsBigEnoughFromArg0: Referenced stack location greater than stack size) /stackunderflow signalerror
         }if
-        
+    }bind def
+    
+    /assertInteger{ % n -> checks to see if Nth arg is /integertype
+        assertStackIsBigEnoughFromArg0
+
         index type /integertype eq not{
             (/assertInteger: Not integer) /typecheck signalerror
         }if
     }bind def
     
     /assertProc{
+        assertStackIsBigEnoughFromArg0
+        
         2 dict begin
         /n exch  def
-        n count  ge{
-            (/assertIsProc: Stack too small) /stackunderflow signalerror
-        }if
         n index type /arraytype ne{
             n  index cvlit  ===
             n  index type =

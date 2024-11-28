@@ -5,39 +5,88 @@ aposkribh.assert#
 begin
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
-%  assertInteger
- clear 10   0 assertInteger
- clear 0    0 assertInteger
- clear -100 0 assertInteger
- clear (foo) -100 0 assertInteger
- clear 44 (foo) -100 2 assertInteger
- clear 44 (foo) 1 assertInteger
+[
+    (1 1 assertAtLeastNArgs)
+    ((m) 1  assertAtLeastNArgs)
+    (77 66  2 assertAtLeastNArgs)
+    (0 assertAtLeastNArgs)
+
+
+    (0 assert0IsPositiveInteger)
+    (100 assert0IsPositiveInteger)
+
+    (33 1 assertStackIsBigEnoughFromArg0)
+    ((mm) 33 2 assertStackIsBigEnoughFromArg0)
+    (44 (mm) 33 2 assertStackIsBigEnoughFromArg0)
+    
+    (10   0 assertInteger)
+     (0    0 assertInteger)
+     (-100 0 assertInteger)
+     ((foo) -100 0 assertInteger)
+     (44 (foo) -100 2 assertInteger)
+]
+% forall
+{
+    % stopped
+    {
+        /proc exch def
+        clear
+        proc cvx
+        exec
+    }stopped{ % if
+        (FAIL: This should run successfully but did not:) =
+        proc =
+        $error /errorname get =
+        $error /command get =
+        (assert_test.ps) /undefined signalerror
+    }if
+}forall
 
 
 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL
 [
-    [ ( 22 1 assertInteger)            /stackunderflow ]
-    [ ( 22.3 0 assertInteger)          /typecheck      ]
-    [ ( assertInteger)                 /stackunderflow ]
-    [ ( 44 (foo) -100 3 assertInteger) /stackunderflow ]
-    [ ( 44 (foo) -100 1 assertInteger) /typecheck      ]
+
+    [ (assertAtLeastNArgs)  /stackunderflow ]
+    [ (-1 assertAtLeastNArgs) /rangecheck ]
+    [ (1 assertAtLeastNArgs)  /stackunderflow ]
+
+
+    [ (assert0IsPositiveInteger)      /stackunderflow     ]
+    [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
+    [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
+    [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
+    [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
+    [ (null assert0IsPositiveInteger)    /typecheck      ]
+    [ (true assert0IsPositiveInteger)    /typecheck      ]
+    [ ([] assert0IsPositiveInteger)    /typecheck      ]
+    [ ([22] assert0IsPositiveInteger)    /typecheck      ]
+    [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
+    [ (mark  assert0IsPositiveInteger)    /typecheck      ]
+
+    [ (assertStackIsBigEnoughFromArg0)    /stackunderflow ]
+    [ (2 assertStackIsBigEnoughFromArg0)    /stackunderflow ]
+
+    [ ( assertInteger)                  /stackunderflow ]
+    [ ( 22 2 assertInteger)             /stackunderflow ]
+    [ ( (foo) assertInteger)            /typecheck      ]
+    [ ( 22.3 0 assertInteger)           /typecheck      ]
+    [ ( 44 (foo) -100 3 assertInteger)  /stackunderflow ]
+    [ ( 44 (foo) -100 1 assertInteger)  /typecheck      ]
     [ ( 44 (foo) -100 -1 assertInteger) /rangecheck     ]
     [ ( (foo) 0 assertInteger)          /typecheck      ]
 ]
 { % forall
     /proc null def
-        /expecterError null def
+    /expecterError null def
     { % stopped
         /a exch store
         /proc a 0 get store
-        /expectedError a 1 get store 
+        /expectedError a 1 get store
         clear
         proc cvx
         exec
@@ -45,14 +94,17 @@ begin
         /actualError $error /errorname get def
 
         actualError expectedError ne{ % if
+            () =
             (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
             (Expected error: /) expectedError expectedError length string cvs concatstrings =
             (  Actual error: /) actualError 20 string cvs concatstrings =
             (% --> {) proc concatstrings ( }) concatstrings =
+            $error /command get =
             (assert_test.ps) /undefined signalerror
         }if
     }{
-        (FAIL: This should not run successfully but should throw an error) =
+        () =
+        (FAIL: This should not run successfully but should throw an error. Did not throw an error.) =
         (% --> {) proc concatstrings ( }) concatstrings =
         (assert_test.ps) /undefined signalerror
     }ifelse
