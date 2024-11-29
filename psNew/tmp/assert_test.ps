@@ -5,7 +5,6 @@ aposkribh.assert#
 begin
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
 [
@@ -27,6 +26,8 @@ begin
      (-100 0 assertInteger)
      ((foo) -100 0 assertInteger)
      (44 (foo) -100 2 assertInteger)
+     ( {} 0 assertProc  )
+     ( {} 42 1 assertProc  )
 ]
 % forall
 {
@@ -79,6 +80,10 @@ begin
     [ ( 44 (foo) -100 1 assertInteger)  /typecheck      ]
     [ ( 44 (foo) -100 -1 assertInteger) /rangecheck     ]
     [ ( (foo) 0 assertInteger)          /typecheck      ]
+
+    [ ( assertProc  )           /stackunderflow ]
+    [ ( {} 42 0 assertProc  )           /typecheck ]
+    [ ( 42 [0] 0 assertProc  ) /typecheck ]
 ]
 { % forall
     /proc null def
@@ -94,7 +99,6 @@ begin
         /actualError $error /errorname get def
 
         actualError expectedError ne{ % if
-            () =
             (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
             (Expected error: /) expectedError expectedError length string cvs concatstrings =
             (  Actual error: /) actualError 20 string cvs concatstrings =

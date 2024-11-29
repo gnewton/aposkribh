@@ -15,7 +15,6 @@
         stack
         (>>>) =
     }bind def
-    
 
     /assertAtLeastNArgs{ % n
         count 0 eq{
@@ -71,11 +70,15 @@
         
         2 dict begin
         /n exch  def
+        
         n index type /arraytype ne{
-            n  index cvlit  ===
-            n  index type =
             (/assertIsProc: Not executable proc) /typecheck signalerror
-        }if
+        }{
+            n index xcheck not{
+                (/assertIsProc: Not executable proc) /typecheck signalerror
+            }if
+        }ifelse
+
         end
     }bind def
 
