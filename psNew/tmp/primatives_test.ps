@@ -61,7 +61,15 @@ test.primatives# begin
     { (32.2) (strcatmark)  strcatmark     }      /unmatchedmark  test.E
     { mark 323  (strcatmark)  strcatmark   }      /typecheck      test.E
     { mark /foo  (strcatmark)  strcatmark }      /typecheck      test.E
+
+%    { mark (A)(B)  strcatmark }    [(AB) 2 ]      test.V
 }bind def
+
+ /strcatmark.Tests2{
+     ( (32.2) (strcatmark)  strcatmark     )      /unmatchedmark  test.E2
+     ( mark 323  (strcatmark)  strcatmark )      /typecheck      test.E2
+     ( mark /foo  (strcatmark)  strcatmark)      /typecheck      test.E2
+ }bind def
 
 
  /checkArgs2.Tests{

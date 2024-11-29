@@ -28,6 +28,16 @@ begin
      (44 (foo) -100 2 assertInteger)
      ( {} 0 assertProc  )
      ( {} 42 1 assertProc  )
+
+     ( (foo) 42 1 assertString  )
+     ( 34 (foo)  0 assertString  )
+     ( (foo) 42.3 0 assertReal  )
+     ( (foo) 42.3 0 assertNumber  )
+     ( (foo) 42 0 assertNumber  )
+
+     ( [] 0 assertArray )
+
+
 ]
 % forall
 {
@@ -57,17 +67,18 @@ begin
     [ (1 assertAtLeastNArgs)  /stackunderflow ]
 
 
-    [ (assert0IsPositiveInteger)      /stackunderflow     ]
     [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
     [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
+    [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
     [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
     [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
+    [ ([22] assert0IsPositiveInteger)    /typecheck      ]
+    [ ([] assert0IsPositiveInteger)    /typecheck      ]
+    [ (assert0IsPositiveInteger)      /stackunderflow     ]
+    [ (mark  assert0IsPositiveInteger)    /typecheck      ]
     [ (null assert0IsPositiveInteger)    /typecheck      ]
     [ (true assert0IsPositiveInteger)    /typecheck      ]
-    [ ([] assert0IsPositiveInteger)    /typecheck      ]
-    [ ([22] assert0IsPositiveInteger)    /typecheck      ]
-    [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
-    [ (mark  assert0IsPositiveInteger)    /typecheck      ]
+    [ ({}  assert0IsPositiveInteger)    /typecheck      ]
 
     [ (assertStackIsBigEnoughFromArg0)    /stackunderflow ]
     [ (2 assertStackIsBigEnoughFromArg0)    /stackunderflow ]
@@ -84,6 +95,29 @@ begin
     [ ( assertProc  )           /stackunderflow ]
     [ ( {} 42 0 assertProc  )           /typecheck ]
     [ ( 42 [0] 0 assertProc  ) /typecheck ]
+
+    [ ( assertString  ) /stackunderflow ]
+    [ ( 0 assertString  ) /stackunderflow  ]
+    [ ( 42 0 assertString  ) /typecheck ]
+    [ ( 42.2 0 assertString  ) /typecheck ]
+    [ ( true 0 assertString  ) /typecheck ]
+    [ ( <<>> 0 assertString  ) /typecheck ]
+    [ ( null 0 assertString  ) /typecheck ]
+    [ ( /stringtype 0 assertString  ) /typecheck ]
+    [ ( {}  0 assertString  ) /typecheck ]
+    [ ( mark  0 assertString  ) /typecheck ]
+
+    [ ( assertArray ) /stackunderflow ] 
+    [ ( 0 assertArray ) /stackunderflow ] 
+    [ ( 3 0 assertArray ) /typecheck ]
+    [ ( 3.0 0 assertArray ) /typecheck ]
+    [ ( <<>> 0 assertArray ) /typecheck ]
+    [ ( (foo) 0 assertArray ) /typecheck ]
+    [ ( [ 0 assertArray ) /typecheck ]
+    [ ( mark 0 assertArray ) /typecheck ]
+    [ ( null 0 assertArray ) /typecheck ]
+    [ ( true 0 assertArray ) /typecheck ]
+    [ ( /integertype 0 assertArray ) /typecheck ] 
 ]
 { % forall
     /proc null def

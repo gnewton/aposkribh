@@ -68,9 +68,53 @@
                 (Fail: test.V: Results stack does not match)  /invalidexit signalerror
             }if
         }ifelse
+
         end
         clear
     }bind def
+
+
+    
+    /test.V2{ % {} [expected values left on stack] : proc should run and return specific values on stack
+        1 assertProc
+        10 dict begin
+        /_expectedStack exch def
+        %
+        
+        dup /procAsLiteral exch cvlit def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.V) =
+            procAsLiteral ===
+        }if
+        
+        {
+            /proc exch def
+            clear
+            {proc} exec
+        }stopped{
+            procAsLiteral ===
+            _expectedStack ===
+            (Unexcpected error: ) =
+            $error /errorname get =
+            $error /errorname get
+            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
+        }{
+            _expectedStack arraySameAsStack not{
+                =
+                procAsLiteral ===
+                _expectedStack ===
+                (Stack +) =
+                stack
+                (Stack -) =
+                (Fail: test.V: Results stack does not match)  /invalidexit signalerror
+            }if
+        }ifelse
+        end
+        clear
+    }bind def
+
 
     /test.E{ % { } /errortype : Should run and throw a specific error
         1 assertProc
@@ -103,6 +147,44 @@
         }{
             (FAIL: Expected error but no error) =
             procAsLiteral ===
+            _expectedError =
+            (/test.E: ) /invalidexit signalerror
+        }ifelse
+        clear
+    }bind def
+
+    /test.E2{ % { } /errortype : Should run and throw a specific error
+        1 assertString
+        
+        10 dict begin
+        
+        /_expectedError exch def
+
+        /proc exch  def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.E) =
+            proc ===
+        }if
+
+        {
+            clear
+            proc cvx
+            exec
+        }stopped{
+            /actualError $error /errorname get def
+            
+            actualError _expectedError ne{
+                (FAIL: Expected error but wrong error) =
+                proc ===
+                actualError =
+                _expectedError =
+                (/test.E: ) /invalidexit signalerror
+            }if
+        }{
+            (FAIL: Expected error but no error) =
+            proc ===
             _expectedError =
             (/test.E: ) /invalidexit signalerror
         }ifelse

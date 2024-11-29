@@ -64,7 +64,46 @@
             (/assertInteger: Not integer) /typecheck signalerror
         }if
     }bind def
-    
+
+    /assertReal{ % n -> checks to see if Nth arg is /realtype
+        assertStackIsBigEnoughFromArg0
+        
+        index type /realtype eq not{
+            (/assertReal: Not real) /typecheck signalerror
+        }if
+    }bind def
+
+    /assertNumber{ % n -> checks to see if Nth arg is /realtype
+        assertStackIsBigEnoughFromArg0
+
+        1 dict begin
+        /i exch def
+        i type /realtype eq not
+        i type /integertype eq not
+        and
+        {
+            (/assertReal: Not number) /typecheck signalerror
+        }if
+        end
+    }bind def
+
+    /assertArray{ % n -> checks to see if Nth arg is /arraytype
+        assertStackIsBigEnoughFromArg0
+        index type /arraytype eq not{
+            (/assertArray: Not array) /typecheck signalerror
+        }if
+    }bind def
+
+
+
+    /assertString{ % n -> checks to see if Nth arg is /stringtype
+        assertStackIsBigEnoughFromArg0
+
+        index type /stringtype eq not{
+            (/assertString Not string) /typecheck signalerror
+        }if
+    }bind def
+
     /assertProc{
         assertStackIsBigEnoughFromArg0
         
@@ -82,6 +121,9 @@
         end
     }bind def
 
+    /assertArraysEqual{
+
+    }bind def
 
     end  % aposkribh_assert#
 }{
