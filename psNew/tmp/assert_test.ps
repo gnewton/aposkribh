@@ -5,6 +5,9 @@ aposkribh.assert#
 begin
 
 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
 [
@@ -37,6 +40,10 @@ begin
 
      ( [] 0 assertArray )
 
+     
+     ( [] [] assertArraysEqual )
+     ( [1 2 3 4] [1 2 3 4] assertArraysEqual )
+     ( [(foo) null 65.4 3 4 true /stringtype {} ] [(foo) null 65.4 3 4 true /stringtype {}] assertArraysEqual  )
 
 ]
 % forall
@@ -117,7 +124,14 @@ begin
     [ ( mark 0 assertArray ) /typecheck ]
     [ ( null 0 assertArray ) /typecheck ]
     [ ( true 0 assertArray ) /typecheck ]
-    [ ( /integertype 0 assertArray ) /typecheck ] 
+    [ ( /integertype 0 assertArray ) /typecheck ]
+    
+    [ (  assertArraysEqual ) /stackunderflow ]
+    [ ( 87  assertArraysEqual ) /stackunderflow ]
+    [ ( 85 87  assertArraysEqual ) /typecheck ]
+    [ ( [85] [87]  assertArraysEqual ) /rangecheck ]
+    [ ( 22 [87]  assertArraysEqual ) /typecheck ]
+    
 ]
 { % forall
     /proc null def

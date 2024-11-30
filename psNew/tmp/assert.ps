@@ -122,6 +122,24 @@
     }bind def
 
     /assertArraysEqual{
+        2 assertAtLeastNArgs
+        0 assertArray
+        1 assertArray
+
+        /a1 exch def
+        /a2 exch def
+
+        a1 length a2 length ne{
+            (/assertArraysEqual: Not equal: different lengths) /rangeheck signalerror
+        }if
+
+        0 1 a1 length 1 sub{
+            /i exch def
+            a1 i get  a2 i get  ne{
+                (/assertArraysEqual: Not equal: different values) /rangecheck signalerror
+            }if
+        }for
+        
 
     }bind def
 
