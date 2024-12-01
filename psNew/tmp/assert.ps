@@ -21,47 +21,41 @@
         count 2 lt{
             (/TR: Needs 2 args) /stackunderflow signalerror
         }if
-        
         1 index type /stringtype ne{
             (/TR: Second arg needs to be /stringtpe (name of calling proc)) /typecheck signalerror
         }if
-        
         0 index type /arraytype ne
         {
             (/TR: First arg needs to be a proc {} ) /typecheck signalerror
         }if
-
-
-        /proc exch def
+        10 dict begin
+        /tproc exch def
         /procName exch def
-        
+
         aposkribh.ASSERTIONS_TRACE_ON{
             () =
-            (TR: ) (: START: ) concatstrings procName  concatstrings =
-            (TR: Stack start) =
+            (TR:  ) (START: ) concatstrings procName  concatstrings =
+            (TR:  Stack start) =
             stack
-            (TR: Stack end) =
+            (TR:  Stack end) =
         }if
-        
-%        {
-            %exec
-            proc
-%        }stopped{
-        %     (TR: ** FAIL: This should run successfully but did not:) =
-        %     (TR:  Procedure = ) procName   concatstrings  =
-        %     (TR:  Error = ) $error /errorname get 20 string cvs concatstrings  =
-        %     (TR:  Failing command = ) $error /command get  $error /command get length string cvs concatstrings =
-        %     % rethrow error
-        %     $error /command get  =
-        %     $error /command get type =
-        %     $error /command get $error /errorname get signalerror
-        % }{
-        % }ifelse
+
+        {
+            tproc
+             }stopped{
+             aposkribh.ASSERTIONS_TRACE_ON{
+                 (TR:  Procedure = ) procName   concatstrings  =
+                 (TR:  Error = ) $error /errorname get 20 string cvs concatstrings  =
+                 (TR:  Failing command = ) =
+                 $error /command get =
+             }if
+             $error /command get  $error /errorname get signalerror
+         }if
 
         aposkribh.ASSERTIONS_TRACE_ON{
             (TR: ) (: END: ) concatstrings procName  concatstrings =
         }if
-        
+        end
     }bind def
     
     /assertAtLeastNArgs{ % n

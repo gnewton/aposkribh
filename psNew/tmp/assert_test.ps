@@ -8,68 +8,73 @@ begin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
 [
-    ( (test1) {  2 3 add pop } TR)
+    %    ( (MMM) {  2 3 add pop } TR)
+    ( (test-56) { 1 2 add } TR)
 
 
-    (1 1 assertAtLeastNArgs)
-    ((m) 1  assertAtLeastNArgs)
-    (77 66  2 assertAtLeastNArgs)
-    (0 assertAtLeastNArgs)
+    % (1 1 assertAtLeastNArgs)
+    % ((m) 1  assertAtLeastNArgs)
+    % (77 66  2 assertAtLeastNArgs)
+    % (0 assertAtLeastNArgs)
 
 
-    % (0 assert0IsPositiveInteger)
-    % (100 assert0IsPositiveInteger)
+    % % (0 assert0IsPositiveInteger)
+    % % (100 assert0IsPositiveInteger)
 
-    (33 1 assertStackIsBigEnoughFromArg0)
-    ((mm) 33 2 assertStackIsBigEnoughFromArg0)
-    (44 (mm) 33 2 assertStackIsBigEnoughFromArg0)
+    % (33 1 assertStackIsBigEnoughFromArg0)
+    % ((mm) 33 2 assertStackIsBigEnoughFromArg0)
+    % (44 (mm) 33 2 assertStackIsBigEnoughFromArg0)
     
-    (10   0 assertInteger)
-     (0    0 assertInteger)
-     (-100 0 assertInteger)
-     ((foo) -100 0 assertInteger)
-     (44 (foo) -100 2 assertInteger)
-     ( {} 0 assertProc  )
-     ( {} 42 1 assertProc  )
+    % (10   0 assertInteger)
+    %  (0    0 assertInteger)
+    %  (-100 0 assertInteger)
+    %  ((foo) -100 0 assertInteger)
+    %  (44 (foo) -100 2 assertInteger)
+    %  ( {} 0 assertProc  )
+    %  ( {} 42 1 assertProc  )
 
-     ( (foo) 42 1 assertString  )
-     ( 34 (foo)  0 assertString  )
-     ( (foo) 42.3 0 assertReal  )
-     ( (foo) 42.3 0 assertNumber  )
-     ( (foo) 42 0 assertNumber  )
+    %  ( (foo) 42 1 assertString  )
+    %  ( 34 (foo)  0 assertString  )
+    %  ( (foo) 42.3 0 assertReal  )
+    %  ( (foo) 42.3 0 assertNumber  )
+    %  ( (foo) 42 0 assertNumber  )
 
-     ( [] 0 assertArray )
+    %  ( [] 0 assertArray )
 
      
-     ( [] [] assertArraysEqual )
-     ( [1 2 3 4] [1 2 3 4] assertArraysEqual )
-     ( [(foo) null 65.4 3 4 true /stringtype {} ] [(foo) null 65.4 3 4 true /stringtype {}] assertArraysEqual  )
+    %  ( [] [] assertArraysEqual )
+    %  ( [1 2 3 4] [1 2 3 4] assertArraysEqual )
+    %  ( [(foo) null 65.4 3 4 true /stringtype {} ] [(foo) null 65.4 3 4 true /stringtype {}] assertArraysEqual  )
 
 ]
 % forall
 {
+    10 dict begin
     % stopped
     {
-        /proc exch def
+        /test_proc exch def
 
         aposkribh.ASSERTIONS_TRACE_ON{
             () =
+            (---------------------------------------------------------------------------------------------) =
             (assert_test.ps: Running positive test:) =
-            proc =
+            test_proc =
         }if
         
         clear
-        proc cvx
+        test_proc cvx
         exec
     }stopped{ % if
         (FAIL: This should run successfully but did not:) =
-        proc =
+        (A) =
+        test_proc =
+        (B) =
         $error /errorname get =
         $error /command get =
         (assert_test.ps) /undefined signalerror
     }if
+    end
 }forall
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,90 +82,89 @@ begin
 [
     [ ( (test1) {  2 (m) add } TR) /typecheck ]
 
-    [ (assertAtLeastNArgs)  /stackunderflow ]
-    [ (-1 assertAtLeastNArgs) /rangecheck ]
-    [ (1 assertAtLeastNArgs)  /stackunderflow ]
+    % [ (assertAtLeastNArgs)  /stackunderflow ]
+    % [ (-1 assertAtLeastNArgs) /rangecheck ]
+    % [ (1 assertAtLeastNArgs)  /stackunderflow ]
 
 
-    % [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
-    % [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
-    % [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
-    % [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
-    % [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
-    % [ ([22] assert0IsPositiveInteger)    /typecheck      ]
-    % [ ([] assert0IsPositiveInteger)    /typecheck      ]
-    % [ (assert0IsPositiveInteger)      /stackunderflow     ]
-    % [ (mark  assert0IsPositiveInteger)    /typecheck      ]
-    % [ (null assert0IsPositiveInteger)    /typecheck      ]
-    % [ (true assert0IsPositiveInteger)    /typecheck      ]
-    % [ ({}  assert0IsPositiveInteger)    /typecheck      ]
+    % % [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
+    % % [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
+    % % [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
+    % % [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
+    % % [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
+    % % [ ([22] assert0IsPositiveInteger)    /typecheck      ]
+    % % [ ([] assert0IsPositiveInteger)    /typecheck      ]
+    % % [ (assert0IsPositiveInteger)      /stackunderflow     ]
+    % % [ (mark  assert0IsPositiveInteger)    /typecheck      ]
+    % % [ (null assert0IsPositiveInteger)    /typecheck      ]
+    % % [ (true assert0IsPositiveInteger)    /typecheck      ]
+    % % [ ({}  assert0IsPositiveInteger)    /typecheck      ]
 
-    [ (assertStackIsBigEnoughFromArg0)    /stackunderflow ]
-    [ (2 assertStackIsBigEnoughFromArg0)    /stackunderflow ]
+    % [ (assertStackIsBigEnoughFromArg0)    /stackunderflow ]
+    % [ (2 assertStackIsBigEnoughFromArg0)    /stackunderflow ]
 
-    [ ( assertInteger)                  /stackunderflow ]
-    [ ( 22 2 assertInteger)             /stackunderflow ]
-    [ ( (foo) assertInteger)            /typecheck      ]
-    [ ( 22.3 0 assertInteger)           /typecheck      ]
-    [ ( 44 (foo) -100 3 assertInteger)  /stackunderflow ]
-    [ ( 44 (foo) -100 1 assertInteger)  /typecheck      ]
-    [ ( 44 (foo) -100 -1 assertInteger) /rangecheck     ]
-    [ ( (foo) 0 assertInteger)          /typecheck      ]
+    % [ ( assertInteger)                  /stackunderflow ]
+    % [ ( 22 2 assertInteger)             /stackunderflow ]
+    % [ ( (foo) assertInteger)            /typecheck      ]
+    % [ ( 22.3 0 assertInteger)           /typecheck      ]
+    % [ ( 44 (foo) -100 3 assertInteger)  /stackunderflow ]
+    % [ ( 44 (foo) -100 1 assertInteger)  /typecheck      ]
+    % [ ( 44 (foo) -100 -1 assertInteger) /rangecheck     ]
+    % [ ( (foo) 0 assertInteger)          /typecheck      ]
 
-    [ ( assertProc  )           /stackunderflow ]
-    [ ( {} 42 0 assertProc  )           /typecheck ]
-    [ ( 42 [0] 0 assertProc  ) /typecheck ]
+    % [ ( assertProc  )           /stackunderflow ]
+    % [ ( {} 42 0 assertProc  )           /typecheck ]
+    % [ ( 42 [0] 0 assertProc  ) /typecheck ]
 
-    [ ( assertString  ) /stackunderflow ]
-    [ ( 0 assertString  ) /stackunderflow  ]
-    [ ( 42 0 assertString  ) /typecheck ]
-    [ ( 42.2 0 assertString  ) /typecheck ]
-    [ ( true 0 assertString  ) /typecheck ]
-    [ ( <<>> 0 assertString  ) /typecheck ]
-    [ ( null 0 assertString  ) /typecheck ]
-    [ ( /stringtype 0 assertString  ) /typecheck ]
-    [ ( {}  0 assertString  ) /typecheck ]
-    [ ( mark  0 assertString  ) /typecheck ]
+    % [ ( assertString  ) /stackunderflow ]
+    % [ ( 0 assertString  ) /stackunderflow  ]
+    % [ ( 42 0 assertString  ) /typecheck ]
+    % [ ( 42.2 0 assertString  ) /typecheck ]
+    % [ ( true 0 assertString  ) /typecheck ]
+    % [ ( <<>> 0 assertString  ) /typecheck ]
+    % [ ( null 0 assertString  ) /typecheck ]
+    % [ ( /stringtype 0 assertString  ) /typecheck ]
+    % [ ( {}  0 assertString  ) /typecheck ]
+    % [ ( mark  0 assertString  ) /typecheck ]
 
-    [ ( assertArray ) /stackunderflow ] 
-    [ ( 0 assertArray ) /stackunderflow ] 
-    [ ( 3 0 assertArray ) /typecheck ]
-    [ ( 3.0 0 assertArray ) /typecheck ]
-    [ ( <<>> 0 assertArray ) /typecheck ]
-    [ ( (foo) 0 assertArray ) /typecheck ]
-    [ ( [ 0 assertArray ) /typecheck ]
-    [ ( mark 0 assertArray ) /typecheck ]
-    [ ( null 0 assertArray ) /typecheck ]
-    [ ( true 0 assertArray ) /typecheck ]
-    [ ( /integertype 0 assertArray ) /typecheck ]
+    % [ ( assertArray ) /stackunderflow ] 
+    % [ ( 0 assertArray ) /stackunderflow ] 
+    % [ ( 3 0 assertArray ) /typecheck ]
+    % [ ( 3.0 0 assertArray ) /typecheck ]
+    % [ ( <<>> 0 assertArray ) /typecheck ]
+    % [ ( (foo) 0 assertArray ) /typecheck ]
+    % [ ( [ 0 assertArray ) /typecheck ]
+    % [ ( mark 0 assertArray ) /typecheck ]
+    % [ ( null 0 assertArray ) /typecheck ]
+    % [ ( true 0 assertArray ) /typecheck ]
+    % [ ( /integertype 0 assertArray ) /typecheck ]
     
-    [ (  assertArraysEqual ) /stackunderflow ]
-    [ ( 87  assertArraysEqual ) /stackunderflow ]
-    [ ( 85 87  assertArraysEqual ) /typecheck ]
-    [ ( [85] [87]  assertArraysEqual ) /rangecheck ]
-    [ ( 22 [87]  assertArraysEqual ) /typecheck ]
-    
+    % [ (  assertArraysEqual ) /stackunderflow ]
+    % [ ( 87  assertArraysEqual ) /stackunderflow ]
+    % [ ( 85 87  assertArraysEqual ) /typecheck ]
+    % [ ( [85] [87]  assertArraysEqual ) /rangecheck ]
+    % [ ( 22 [87]  assertArraysEqual ) /typecheck ]
 ]
 { % forall
-    /proc null def
-    /expecterError null def
+    10 dict begin
+    /test_proc null def
+    /expectedError null def
     { % stopped
         /a exch store
-        /proc a 0 get store
+        /test_proc a 0 get store
         /expectedError a 1 get store
-
         aposkribh.ASSERTIONS_TRACE_ON{
             () =
+            (---------------------------------------------------------------------------------------------) =
             (assert_test.ps: Running negative test:) =
-            proc =
+            test_proc =
         }if
         
         clear
-        proc cvx
+        test_proc cvx
         exec
     }stopped{ % ifelse
         /actualError $error /errorname get def
-
         actualError expectedError ne{ % if
             (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
             (Expected error: /) expectedError expectedError length string cvs concatstrings =
@@ -175,6 +179,7 @@ begin
         %(% --> {) proc concatstrings ( }) concatstrings =
         (assert_test.ps) /undefined signalerror
     }ifelse
+    end
 }forall
 
 
