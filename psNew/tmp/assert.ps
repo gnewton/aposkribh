@@ -141,6 +141,17 @@
         }TR
     }bind def
 
+    /assertZeroOrPositiveInteger{ % n -> checks to see >= 0
+        (/assertZeroOrPositiveInteger){
+            1 assertAtLeastNArgs
+            0 assertInteger
+            0 lt{
+                (/ZeroOrPositiveInteger: Negative number) /rangecheck signalerror
+            }if
+        }TR
+
+    }bind def
+    
     /assertZeroOrPositiveNumber{ % n -> checks to see >= 0
         (/assertZeroOrPositiveNumber){
             1 assertAtLeastNArgs
