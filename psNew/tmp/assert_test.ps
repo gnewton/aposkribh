@@ -5,20 +5,20 @@ aposkribh.assert#
 begin
 
 
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should not FAIL
 [
+    ( (test1) {  2 3 add pop } TR)
+
+
     (1 1 assertAtLeastNArgs)
     ((m) 1  assertAtLeastNArgs)
     (77 66  2 assertAtLeastNArgs)
     (0 assertAtLeastNArgs)
 
 
-    (0 assert0IsPositiveInteger)
-    (100 assert0IsPositiveInteger)
+    % (0 assert0IsPositiveInteger)
+    % (100 assert0IsPositiveInteger)
 
     (33 1 assertStackIsBigEnoughFromArg0)
     ((mm) 33 2 assertStackIsBigEnoughFromArg0)
@@ -51,6 +51,13 @@ begin
     % stopped
     {
         /proc exch def
+
+        aposkribh.ASSERTIONS_TRACE_ON{
+            () =
+            (assert_test.ps: Running positive test:) =
+            proc =
+        }if
+        
         clear
         proc cvx
         exec
@@ -68,24 +75,25 @@ begin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL
 [
+    [ ( (test1) {  2 (m) add } TR) /typecheck ]
 
     [ (assertAtLeastNArgs)  /stackunderflow ]
     [ (-1 assertAtLeastNArgs) /rangecheck ]
     [ (1 assertAtLeastNArgs)  /stackunderflow ]
 
 
-    [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
-    [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
-    [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
-    [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
-    [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
-    [ ([22] assert0IsPositiveInteger)    /typecheck      ]
-    [ ([] assert0IsPositiveInteger)    /typecheck      ]
-    [ (assert0IsPositiveInteger)      /stackunderflow     ]
-    [ (mark  assert0IsPositiveInteger)    /typecheck      ]
-    [ (null assert0IsPositiveInteger)    /typecheck      ]
-    [ (true assert0IsPositiveInteger)    /typecheck      ]
-    [ ({}  assert0IsPositiveInteger)    /typecheck      ]
+    % [ ((foo) assert0IsPositiveInteger)   /typecheck      ]
+    % [ (-1 assert0IsPositiveInteger)      /rangecheck      ]
+    % [ (/stringtype  assert0IsPositiveInteger)    /typecheck      ]
+    % [ (45.5 assert0IsPositiveInteger)    /typecheck      ]
+    % [ (<<>> assert0IsPositiveInteger)    /typecheck      ]
+    % [ ([22] assert0IsPositiveInteger)    /typecheck      ]
+    % [ ([] assert0IsPositiveInteger)    /typecheck      ]
+    % [ (assert0IsPositiveInteger)      /stackunderflow     ]
+    % [ (mark  assert0IsPositiveInteger)    /typecheck      ]
+    % [ (null assert0IsPositiveInteger)    /typecheck      ]
+    % [ (true assert0IsPositiveInteger)    /typecheck      ]
+    % [ ({}  assert0IsPositiveInteger)    /typecheck      ]
 
     [ (assertStackIsBigEnoughFromArg0)    /stackunderflow ]
     [ (2 assertStackIsBigEnoughFromArg0)    /stackunderflow ]
@@ -140,6 +148,13 @@ begin
         /a exch store
         /proc a 0 get store
         /expectedError a 1 get store
+
+        aposkribh.ASSERTIONS_TRACE_ON{
+            () =
+            (assert_test.ps: Running negative test:) =
+            proc =
+        }if
+        
         clear
         proc cvx
         exec
@@ -150,14 +165,14 @@ begin
             (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
             (Expected error: /) expectedError expectedError length string cvs concatstrings =
             (  Actual error: /) actualError 20 string cvs concatstrings =
-            (% --> {) proc concatstrings ( }) concatstrings =
+            %(% --> {) proc concatstrings ( }) concatstrings =
             $error /command get =
             (assert_test.ps) /undefined signalerror
         }if
     }{
         () =
         (FAIL: This should not run successfully but should throw an error. Did not throw an error.) =
-        (% --> {) proc concatstrings ( }) concatstrings =
+        %(% --> {) proc concatstrings ( }) concatstrings =
         (assert_test.ps) /undefined signalerror
     }ifelse
 }forall

@@ -71,22 +71,16 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /r2s{
-        count 1 lt{
-            (/r2s: Empty stack) /stackunderflow signalerror
-        }if
+        1 assertAtLeastNArgs
+        0 assertReal
 
-        0 index type /realtype type not{
-            (/r2s: Not /realtype type on stack) /stackunderflow signalerror
-        }if
         24 string cvs
     }bind def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /n2s{ % /nametype to string /nametype --> (nametype)
-        count 1 lt{
-            (/n2s: Empty stack) /stackunderflow signalerror
-        }if
+        1 assertAtLeastNArgs
 
         0 index type /nametype type not{
             (/n2s: Not /nametype type on stack) /stackunderflow signalerror
@@ -115,19 +109,8 @@
     }bind def
     
     /i2s{ % int to string int --> (int)
-        (/i2s start) =
-        count =
-        count 1 lt{
-            (/i2s: Empty stack) =
-            (/i2s: Empty stack) /stackunderflow signalerror
-        }if
-
-        0 index type /integertype eq =
-        
-        0 index type /integertype eq not{
-
-            (/i2s: Not /integertype on stack) /stackunderflow signalerror
-        }if
+        1 assertAtLeastNArgs
+        0 assertInteger
 
         /i exch def
         /orig i def
@@ -350,9 +333,8 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /spaces{
-        count 1 lt{
-            (/spaces: Empty stack) /stackunderflow signalerror
-        }if
+        1 assertAtLeastNArgs
+        0 assertInteger
 
         0 index type /integertype not{
             (/spaces: Not /integertype on stack) /stackunderflow signalerror
