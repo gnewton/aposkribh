@@ -9,6 +9,96 @@
 
     aposkribh.primatives# begin
 
+    /stringtype*  (do) def
+    /stringtype+  (do) def
+    /anytype+ (do) def
+    /anytype* (do) def
+
+    /Args#<<
+              %%%%%%%% TODO with types.ps complex types
+               % /strcatmark [
+               %     [  [/marktype /stringtype*] [/stringtype]   ]% [args] [results]
+               % ] 
+
+               % /stack2array[
+               %     [  [/integetype /anytype+] [/anytype+]  ]
+               % ]
+
+               /r2s[
+                   [  [/realtype] [/stringtype]  ]
+               ]
+          >> def
+
+    /runner{ % lib_dict /procName {proc}
+        count 3 lt{
+            (/runner: Needs 3 args) /stackunderflow signalerror
+        }if
+
+        0 index type /arraytype ne
+        {
+        
+            (/runner: Arg0 must be procedure) /typecheck signalerror
+        }{
+            0 index type xcheck not{
+                (/runner: Arg0 must be executable procedure) /typecheck signalerror
+            }if
+        }ifelse
+
+        1 index type /nametype ne{
+                (/runner: Arg1 nust be /nametype) /typecheck signalerror
+        }if
+
+        2 index type /dicttype ne{
+            (/runner: Arg2 nust be /dicttype) /typecheck signalerror
+        }if
+        % args
+        3 dict begin
+        /proc exch def
+        /procName exch def
+        /procDict# exch def
+
+        % Is the proc in the main dict; where its code lives:
+        procDict# procName known not{
+            (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
+        }if
+
+        % Does the main dict have an Args# dict?
+        procDict# /Args# known not{
+            (/runner: /Args# dictionary does not exist in dict) /undefined signalerror
+        }if
+
+        % Does the main/Args# dict have a /procName entry?
+        procDict# /Args# get procName known not{
+            (/runner: Procedure does not exist in /Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
+        }if
+
+
+        /args procDict# /Args# get procName get def
+        args ===
+
+        /stringtype dup length string cvs =
+        /stringtype* dup length string cvs =
+
+        /stringtype dup length string cvs  (*) concatstrings 
+        /stringtype* dup length string cvs eq =
+
+        % TODO: get args from /Args#/procName and see if OK
+        %
+        %
+        (/runner:    =======  TODO  =======     Get args from /Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
+
+        end
+
+        
+    }def
+
+
+
+
+
+    
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /strcatmark{ % mark (s1) (s2)...(sn) -> (s1s2....sn)
         {
@@ -29,6 +119,9 @@
         $str 
         end
     }bind def
+
+
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /verbose2{ % mark (s0) (s1) ..(sn) --> (s0s1..sn) =
@@ -643,17 +736,10 @@
 
     }bind def
 
+    aposkribh.primatives# /r2s {} runner
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.primatives# 
 }if
-
-
-
-
-
-
-
-
-
 
 

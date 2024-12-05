@@ -9,6 +9,54 @@
     aposkribh.assert# begin
     aposkribh.types# begin
 
+    /builtinTypesAsStrings
+    <<
+        /arraytype (arraytype)
+        /booleantype (booleantype)
+        /integertype (integertype)
+        /marktype (marktype)
+        /nametype (nametype)
+        /nulltype (nulltype)
+        /realtype (realtype)
+        /stringtype (stringtype)
+    >>def
+
+    /oneOrMore
+    <<
+        /arraytype+ (arraytype)
+        /booleantype+ (booleantype)
+        /integertype+ (integertype)
+        /marktype (marktype)
+        /nametype (nametype)
+        /nulltype (nulltype)
+        /realtype (realtype)
+        /stringtype (stringtype)
+    >>def
+
+    /zeroOrMore
+    <<
+        /arraytype* (arraytype)
+        /booleantype* (booleantype)
+        /integertype* (integertype)
+        /marktype* (marktype)
+        /nametype* (nametype)
+        /nulltype* (nulltype)
+        /realtype* (realtype)
+        /stringtype* (stringtype)
+    >>def
+
+    /zeroOrOne
+    <<
+        /arraytype? (arraytype)
+        /booleantype? (booleantype)
+        /integertype? (integertype)
+        /marktype? (marktype)
+        /nametype? (nametype)
+        /nulltype? (nulltype)
+        /realtype? (realtype)
+        /stringtype? (stringtype)
+    >>def
+
     
     /newtypes# <<%30 dict def % name {}returning bool
                    /numbertype {isNumberType} % int or real
