@@ -24,8 +24,9 @@
                %     [  [/integetype /anytype+] [/anytype+]  ]
                % ]
 
-               /r2s[
-                   [  [/realtype] [/stringtype]  ]
+              /r2s[
+                  [ /stringtype /stringtype ]
+                  [ /realtype /stringtype ]
                ]
           >> def
 
@@ -72,15 +73,24 @@
             (/runner: Procedure does not exist in /Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
         }if
 
+        (----) =
 
-        /args procDict# /Args# get procName get def
-        args ===
+        (----MMMMMMM) =
+        stack
+        /argsOK false def
 
-        /stringtype dup length string cvs =
-        /stringtype* dup length string cvs =
+        /argTypes procDict# /Args# get procName get def
 
-        /stringtype dup length string cvs  (*) concatstrings 
-        /stringtype* dup length string cvs eq =
+        0 1 argTypes length 1 sub{
+            /i exch def
+            (===============) =
+            argTypes i get ===
+            argTypes i get stackTypesMatchArray ===
+            (---------------------------------) =
+            () =
+        }for
+
+        argsOK
 
         % TODO: get args from /Args#/procName and see if OK
         %
@@ -93,7 +103,35 @@
     }def
 
 
+    /stackTypesMatchArray{ % /arraytype of types--> /booleantype
+        0 index type /arraytype ne{
+            (/stackTypesMatchArray Arg0 not /arraytype) =
+            quit
+        }if
+        
+        2 dict begin
+        /_a exch def
+        count _a length lt{
+            (Stack not big enough) =
+            quit
+        }if
 
+        /$match true def
+        _a length =
+        0 1 _a length 1 sub{
+            /i exch def
+            i =
+            i index type =
+            _a i get =
+            i index type  _a i get ne{
+                (%%%%%%%) =
+                /$match false store
+                exit
+            }if
+        }for
+        $match
+        end
+    }def
 
 
     
@@ -736,6 +774,8 @@
 
     }bind def
 
+    clear
+    (22) 33.2
     aposkribh.primatives# /r2s {} runner
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
