@@ -25,9 +25,17 @@
                % ]
 
               /r2s[
-                  [ /stringtype /stringtype ]
-                  [ /realtype /stringtype ]
-               ]
+                  [ /realtype ]
+              ]
+              
+              /n2s[
+                  [ /nametype ]
+              ]
+
+              /b2s[
+                  [ /booleantype ]
+              ]
+              
           >> def
 
     /runner{ % lib_dict /procName {proc}
@@ -73,29 +81,29 @@
             (/runner: Procedure does not exist in /Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
         }if
 
-        (----) =
-
-        (----MMMMMMM) =
-        stack
-        /argsOK false def
 
         /argTypes procDict# /Args# get procName get def
 
+        /oneMatches false def
+        
         0 1 argTypes length 1 sub{
             /i exch def
-            (===============) =
-            argTypes i get ===
-            argTypes i get stackTypesMatchArray ===
-            (---------------------------------) =
-            () =
+            argTypes i get stackTypesMatchArray{
+                /oneMatches true store
+                exit
+            }if
         }for
 
-        argsOK
+        oneMatches not{
+            (/runner: One arg does not match type) /typecheck signalerror
+        }if
 
-        % TODO: get args from /Args#/procName and see if OK
-        %
-        %
-        (/runner:    =======  TODO  =======     Get args from /Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
+        (SSSSSSSSSSSS) =
+        stack
+        (MMMMMMMMMMMMMMMMMM) =
+        proc exec
+
+        %(/runner:    =======  TODO  =======     Get args from /Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
 
         end
 
@@ -103,33 +111,29 @@
     }def
 
 
-    /stackTypesMatchArray{ % /arraytype of types--> /booleantype
+    /stackTypesMatchArray{ % /arraytype of types--> bookean
         0 index type /arraytype ne{
-            (/stackTypesMatchArray Arg0 not /arraytype) =
-            quit
+            (/stackTypesMatchArray Arg0 not /arraytype) /typecheck signalerror
         }if
         
         2 dict begin
         /_a exch def
         count _a length lt{
-            (Stack not big enough) =
-            quit
-        }if
+            %(/stackTypesMatchArray stack not big enough) /stackunderflow signalerror
+            false
+        }{
+            /matches false def
+            /failedIndex null def
+            0 1 _a length 1 sub{
+                /i exch def
+                i index type  _a i get eq{
+                    /matches true store
+                    exit
+                }if
+            }for
 
-        /$match true def
-        _a length =
-        0 1 _a length 1 sub{
-            /i exch def
-            i =
-            i index type =
-            _a i get =
-            i index type  _a i get ne{
-                (%%%%%%%) =
-                /$match false store
-                exit
-            }if
-        }for
-        $match
+            matches
+        }ifelse
         end
     }def
 
@@ -202,40 +206,44 @@
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /r2s{
-        1 assertAtLeastNArgs
-        0 assertReal
-
-        24 string cvs
+        aposkribh.primatives# /r2s {
+            %1 assertAtLeastNArgs
+            %0 assertReal
+            24 string cvs
+        }runner
     }bind def
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /n2s{ % /nametype to string /nametype --> (nametype)
-        1 assertAtLeastNArgs
+        aposkribh.primatives# /n2s {
+            % 1 assertAtLeastNArgs
 
-        0 index type /nametype type not{
-            (/n2s: Not /nametype type on stack) /stackunderflow signalerror
-        }if
+        % 0 index type /nametype type not{
+        %     (/n2s: Not /nametype type on stack) /stackunderflow signalerror
+        % }if
         %
 
         dup length string cvs
+        }runner
     }bind def
 
 
-    /b2s{ % /nametype to string /nametype --> (nametype)
-        count 1 lt{
-            (/b2s: Empty stack) /stackunderflow signalerror
-        }if
+    /b2s{ % /booleantype to string /booleantype --> (true|false)
+        aposkribh.primatives# /b2s {
+        % count 1 lt{
+        %     (/b2s: Empty stack) /stackunderflow signalerror
+        % }if
 
-        0 index type /booleantype type not{
-            (/b2s: Not /booleantype type on stack) /stackunderflow signalerror
-        }if
-
-        {
-            (true)
-        }{
-            (false)
-        }ifelse
+        % 0 index type /booleantype type not{
+        %     (/b2s: Not /booleantype type on stack) /stackunderflow signalerror
+        % }if
+            {
+                (true)
+            }{
+                (false)
+            }ifelse
+        }runner
         
     }bind def
     
@@ -774,10 +782,20 @@
 
     }bind def
 
-    clear
-    (22) 33.2
-    aposkribh.primatives# /r2s {} runner
 
+    (########################) =
+    clear
+    33.3 r2s type =
+
+    /integertype n2s type =
+    /foo  n2s type =
+    (@@@@@@@@@@@@@@@@@@@@@@@@) =
+
+    true  b2s type =
+
+    
+    
+    quit
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.primatives# 
 }if
