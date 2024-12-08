@@ -8,11 +8,73 @@
 
     aposkribh.assert# begin
     aposkribh.types# begin
+    
+    /typesWithExamplars
+    <<
+        /arraytype [
+            []
+            [ 23 ]
+            [ 23 44.4]
+            [ 23 44.4 (foo) ]
+            [ 23 44.4 (foo) true]
+            [ 23 44.4 (foo) true  null]
+            [ [] ]
+            [ [3] ]
+            [ [3.0] ]
+            [ [(foo)] ]
+        ]
+        
+        /booleantype [
+            true
+            false
+        ]
+        
+        /dicttype[
+            <<>>
+            << /v 42>>
+            << (m) 42>>
+            << 232 42>>
+        ]
+        
+        /integertype [
+            -999999
+            0
+            999999
+        ]
+        
+        /nametype [
+            /nametype
+            /foo
+        ]
+        
+        /nulltype
+        [
+            null
+        ]
 
+        /realtype [
+            -999999.45454
+            -45.6
+            0
+            34.5
+            999999.45454
+        ]
+        
+        /stringtype [
+            ()
+            (32)
+            (foo)
+            (This is a longer string that might cause problems..........................................................................)
+        ]
+    >>
+
+    
+    
     /builtinTypesAsStrings
     <<
         /arraytype (arraytype)
         /booleantype (booleantype)
+        /dicttype (dicttype)
         /integertype (integertype)
         /marktype (marktype)
         /nametype (nametype)
@@ -25,6 +87,7 @@
     <<
         /arraytype+ (arraytype)
         /booleantype+ (booleantype)
+        /dicttype+ (dicttype)
         /integertype+ (integertype)
         /marktype (marktype)
         /nametype (nametype)
@@ -37,6 +100,7 @@
     <<
         /arraytype* (arraytype)
         /booleantype* (booleantype)
+        /dicttype* (dicttype)
         /integertype* (integertype)
         /marktype* (marktype)
         /nametype* (nametype)
@@ -49,6 +113,7 @@
     <<
         /arraytype? (arraytype)
         /booleantype? (booleantype)
+        /dicttype? (dicttype)
         /integertype? (integertype)
         /marktype? (marktype)
         /nametype? (nametype)
