@@ -222,43 +222,51 @@
                 (/positiveTests: Dict does not contain proc: ) thisProcName dup length string cvs  concatstrings /undefined signalerror
             }if
 
-            thisProcArgsTypeList makeTestArgs{
-                () =
-                /args exch def
-                (Testing ) thisProcName dup length string cvs concatstrings =
-                ( with args: ) =
-                args ===
-                args aload pop
-                _dict thisProcName get exec ===
-            }forall
+                thisProcArgsTypeList makeTestArgs{
+                    () =
+                    /args exch def
+                    (Testing ) thisProcName dup length string cvs concatstrings =
+                    ( with args: ) =
+                    args ===
+                    args aload pop
+                    _dict thisProcName get exec ===
+                }forall
         }forall
         
         end
     }bind def
 
+    /NumTests 10 def
+    
     /makeTestArgs{ % array of array of types --> array of array of values of that type
         0 assertArray
         2 dict begin
         /_thisProcArgsTypeList exch def
-        /$argValuesList _thisProcArgsTypeList length array def
 
+        /$argValuesList _thisProcArgsTypeList length NumTests mul array def
+
+        /argValuesListIndex 0 def
+        
         0 1 _thisProcArgsTypeList length 1 sub{
             /i exch def
             /thisArgs _thisProcArgsTypeList i get def
 
 
-            /thisArgsValuesArray thisArgs length array def
-            $argValuesList i thisArgsValuesArray put
-            
-            0 1 thisArgs length 1 sub{
-                /j exch def
-
-                /ttype  thisArgs j get def
-
-                thisArgsValuesArray j
-                aposkribh.types# /typesWithExamplars get ttype get 0 get
-                put
-            }for
+            NumTests{
+                /thisArgsValuesArray thisArgs length array def
+                
+                $argValuesList argValuesListIndex thisArgsValuesArray put
+                /argValuesListIndex argValuesListIndex 1 add store
+                
+                0 1 thisArgs length 1 sub{
+                    /j exch def
+                    
+                    /ttype  thisArgs j get def
+                    thisArgsValuesArray j
+                    aposkribh.types# /typesWithExamplars get ttype get randomArrayValue
+                    put
+                }for
+            }repeat
         }for
 
         $argValuesList 

@@ -25,28 +25,18 @@
                % ]
               /add2[
                   [ /integertype /integertype]
-                  [ /integertype /integertype]
-                  [ /integertype /integertype]
-                  [ /integertype /integertype]
-                  [ /integertype /integertype]
               ]
               
               /r2s[
-                  [ /realtype ]
-                  [ /realtype ]
                   [ /realtype ]
               ]
               
               /n2s[
                   [ /nametype ]
-                  [ /nametype ]
-                  [ /nametype ]
               ]
 
               /b2s[
                   [ /booleantype ]
-                  [ /booleantype ]
-                  [ /booleantype /booleantype ]
               ]
               
           >> def
@@ -64,11 +54,9 @@
         0 index length 0 eq{
             (/randomArrayValue: Arg0 array cannot be zero length) /rangecheck signalerror
         }if
-
-        (---M) =
-        dup length 1 sub randomN get =
-        (---Z) =
+        %
         
+        dup length 1 sub randomN get 
     }def
 
     /randomN{ % N int -> random in 0 to <N range
@@ -79,7 +67,8 @@
         0 index type /integertype ne{
             (/randomN: Arg0 not array) /typecheck signalerror
         }if
-
+        %
+        
         1 dict begin
 
         /n exch cvr def
@@ -130,11 +119,22 @@
             (/runner: Procedure does not exist in /Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
         }if
 
-
         /argTypes procDict# /Args# get procName get def
 
+        /oneMatchesLength false def
+        0 1 argTypes length 1 sub{
+            /i exch def
+            count argTypes i get length ge{
+                /oneMatchesLength true store
+                argTypes i get ===
+                exit
+            }if
+        }for
+        oneMatchesLength not{
+            (/runner: Stack too small) /stackunderflow signalerror
+        }if
+
         /oneMatches false def
-        
         0 1 argTypes length 1 sub{
             /i exch def
             argTypes i get stackTypesMatchArray{
@@ -142,7 +142,6 @@
                 exit
             }if
         }for
-
         oneMatches not{
             (/runner: One arg does not match type) /typecheck signalerror
         }if
@@ -254,7 +253,7 @@
     /r2s{
         aposkribh.primatives# /r2s {
             %1 assertAtLeastNArgs
-            %0 assertReal
+            % 0 assertReal
             24 string cvs
         }runner
     }bind def
