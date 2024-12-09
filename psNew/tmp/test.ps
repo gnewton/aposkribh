@@ -243,25 +243,32 @@
         2 dict begin
         /_thisProcArgsTypeList exch def
 
+        (M) =
+        _thisProcArgsTypeList ===
+        (m) =
+
         /$argValuesList _thisProcArgsTypeList length NumTests mul array def
 
-        /argValuesListIndex 0 def
+        /argValuesListCounter 0 def
         
         0 1 _thisProcArgsTypeList length 1 sub{
             /i exch def
-            /thisArgs _thisProcArgsTypeList i get def
+            /thisArgsAndResults _thisProcArgsTypeList i get def
+            /thisArgs thisArgsAndResults 0 get def
 
+            thisArgs ===
 
             NumTests{
                 /thisArgsValuesArray thisArgs length array def
-                
-                $argValuesList argValuesListIndex thisArgsValuesArray put
-                /argValuesListIndex argValuesListIndex 1 add store
+                $argValuesList argValuesListCounter thisArgsValuesArray put
+
+                /argValuesListCounter argValuesListCounter 1 add store
                 
                 0 1 thisArgs length 1 sub{
                     /j exch def
                     
                     /ttype  thisArgs j get def
+
                     thisArgsValuesArray j
                     aposkribh.types# /typesWithExamplars get ttype get randomArrayValue
                     put
