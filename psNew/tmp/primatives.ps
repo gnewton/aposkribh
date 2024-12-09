@@ -22,7 +22,21 @@
 
                % /stack2array[
                %     [  [/integetype /anytype+] [/anytype+]  ]
+              % ]
+               % /known2[
+               %     [ [/nametype] % Args
+               %       [
+               %           [/booleantype] % Result #1
+               %           [/booleantype /dicttype] % Result #2
+               %       ]
+               %     ]
                % ]
+
+              %     [ [/nametype]
+              %       [/booleantype /dicttype]
+              %     ]
+              % ]
+              
               /add2[
                   [ [ /integertype /integertype] % args
                     [/integertype] % results on stack
@@ -584,7 +598,7 @@
             /str () def
             0 1 _n{
                 pop
-                /str str ( ) () concatstrings store
+                /str str ( ) concatstrings store
             }for
             str
             end
@@ -657,28 +671,6 @@
         end
     }def
 
-
-
-    /contains{ % v array _> bool
-        [/anytype /arraytype] (/contains) checkArgs
-
-        %%%%
-        2 dict begin
-        /_v exch def
-        /_a exch def
-
-        /containsFlag false def
-        _a
-        {
-            _v eq{
-                /containsFlag true store
-                exit
-            }if
-        }forall
-
-        containsFlag
-        end
-    }bind def
 
     /forxy{ % loops x outer, y inner and executes proc with x y on stack
         [/arraytype /dicttype] (forxy) checkArgs
@@ -883,6 +875,30 @@
     }bind def
 
 
+    /contains{ % array value -> true index|false; first item that matches
+        2 assertAtLeastNArgs
+        1 assertArray
+
+        2 dict begin
+        /_v exch def
+        /_a exch def
+
+
+        false % default return if nothing found
+        
+        0 1 _a length 1 sub{
+            /i exch def
+
+            _a i get  _v eq{
+                pop % pop off default false value
+                i
+                true
+               exit
+            }if
+        }for
+        
+        end
+    }bind def
     
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

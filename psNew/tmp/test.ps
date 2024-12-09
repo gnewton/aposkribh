@@ -200,7 +200,7 @@
     }bind def
 
 
-    /positiveTests{ % dict to test
+    /testLibrary_positive{ % dict to test
         1 assertAtLeastNArgs
         0 assertDict
 
@@ -210,27 +210,41 @@
 
         2 dict begin
 
-        /_dict exch def
+        /_library# exch def
 
-        /allProcsWithArgs _dict /Args# get def
+        /allLibProcsWithArgs _library# /Args# get def
 
-        allProcsWithArgs{
+        allLibProcsWithArgs{
             /thisProcArgsTypeList exch def
             /thisProcName exch def
 
-            _dict thisProcName known not{
+            _library# thisProcName known not{
                 (/positiveTests: Dict does not contain proc: ) thisProcName dup length string cvs  concatstrings /undefined signalerror
             }if
 
-                thisProcArgsTypeList makeTestArgs{
-                    () =
-                    /args exch def
-                    (Testing ) thisProcName dup length string cvs concatstrings =
-                    ( with args: ) =
-                    args ===
-                    args aload pop
-                    _dict thisProcName get exec ===
-                }forall
+            % Make args list from types list
+
+            thisProcArgsTypeList makeTestArgs /testArgs exch  def
+            /testResults exch def
+
+            (---) =
+            testResults ===
+            testArgs ===
+            (---) =
+            
+            %thisProcArgsTypeList makeTestArgs{
+            testArgs{
+                () =
+                /args exch def
+                %ff ===
+                (Testing ) thisProcName dup length string cvs concatstrings =
+                ( with args: ) =
+                args ===
+                args aload pop
+                (Results: ) =
+                _library# thisProcName get exec ===
+
+            }forall
         }forall
         
         end
@@ -240,6 +254,7 @@
     
     /makeTestArgs{ % array of array of types --> array of array of values of that type
         0 assertArray
+
         2 dict begin
         /_thisProcArgsTypeList exch def
 
@@ -275,7 +290,7 @@
                 }for
             }repeat
         }for
-
+        (foo)
         $argValuesList 
         end
     }bind def
