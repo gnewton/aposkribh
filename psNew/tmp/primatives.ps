@@ -23,20 +23,69 @@
                % /stack2array[
                %     [  [/integetype /anytype+] [/anytype+]  ]
                % ]
-
+              /add2[
+                  [ /integertype /integertype]
+                  [ /integertype /integertype]
+                  [ /integertype /integertype]
+                  [ /integertype /integertype]
+                  [ /integertype /integertype]
+              ]
+              
               /r2s[
+                  [ /realtype ]
+                  [ /realtype ]
                   [ /realtype ]
               ]
               
               /n2s[
                   [ /nametype ]
+                  [ /nametype ]
+                  [ /nametype ]
               ]
 
               /b2s[
                   [ /booleantype ]
+                  [ /booleantype ]
+                  [ /booleantype /booleantype ]
               ]
               
           >> def
+
+
+    /randomArrayValue{ % array -> Nth value, where N is random
+        count 0 eq{
+            (/randomArrayValue: Needs one arg, array) /stackunderflow signalerror
+        }if
+
+        0 index type /arraytype ne{
+            (/randomArrayValue: Arg0 not array) /typecheck signalerror
+        }if
+
+        0 index length 0 eq{
+            (/randomArrayValue: Arg0 array cannot be zero length) /rangecheck signalerror
+        }if
+
+        (---M) =
+        dup length 1 sub randomN get =
+        (---Z) =
+        
+    }def
+
+    /randomN{ % N int -> random in 0 to <N range
+        count 0 eq{
+            (/randomN: Needs one arg, int) /stackunderflow signalerror
+        }if
+
+        0 index type /integertype ne{
+            (/randomN: Arg0 not array) /typecheck signalerror
+        }if
+
+        1 dict begin
+
+        /n exch cvr def
+        rand cvr MaxIntReal div n mul cvi
+        end
+    }bind def
 
     /runner{ % lib_dict /procName {proc}
         count 3 lt{
@@ -98,9 +147,6 @@
             (/runner: One arg does not match type) /typecheck signalerror
         }if
 
-        (SSSSSSSSSSSS) =
-        stack
-        (MMMMMMMMMMMMMMMMMM) =
         proc exec
 
         %(/runner:    =======  TODO  =======     Get args from /Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
@@ -229,6 +275,20 @@
     }bind def
 
 
+    /add2{ % /booleantype to string /booleantype --> (true|false)
+        aposkribh.primatives# /add2 {
+        % count 1 lt{
+        %     (/b2s: Empty stack) /stackunderflow signalerror
+        % }if
+
+        % 0 index type /booleantype type not{
+        %     (/b2s: Not /booleantype type on stack) /stackunderflow signalerror
+            % }if
+            add
+        }runner
+        
+    }bind def
+    
     /b2s{ % /booleantype to string /booleantype --> (true|false)
         aposkribh.primatives# /b2s {
         % count 1 lt{
@@ -237,7 +297,7 @@
 
         % 0 index type /booleantype type not{
         %     (/b2s: Not /booleantype type on stack) /stackunderflow signalerror
-        % }if
+            % }if
             {
                 (true)
             }{
@@ -737,7 +797,6 @@
         _val _max gt
         or{
             mark (/checkRange: out of range in: [) _procName (]) (  val=) _val i2s ( min=) _min i2s ( max=) _max i2s ( )strcatmark /rangecheck signalerror
-            quit
         }if
         end
     }def
@@ -783,19 +842,8 @@
     }bind def
 
 
-    (########################) =
-    clear
-    33.3 r2s type =
-
-    /integertype n2s type =
-    /foo  n2s type =
-    (@@@@@@@@@@@@@@@@@@@@@@@@) =
-
-    true  b2s type =
-
     
-    
-    quit
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.primatives# 
 }if

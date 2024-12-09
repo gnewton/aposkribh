@@ -22,61 +22,18 @@ aposkribh.test# begin
 
 test.primatives# begin
 
+(primatives_test START --------------------) =
 
-/checkArgs.Tests{
-
-    %{ 32 [/integertype] (checkArgs)  checkArgs   }    /typecheck       test.E
-    
-%     { [/integertype] (checkArgs) checkArgs         }    /stackunderflow  test.E
-%     { true [/stringtype] (checkArgs) checkArgs     }    /typecheck       test.E
-%     { 1 [/stringtype] (checkArgs) checkArgs        }    /typecheck       test.E
-%     { (foo)  <<>> (checkArgs)    checkArgs         }    /typecheck       test.E
-%     { (o) [/integertype] (checkArgs) checkArgs     }    /typecheck       test.E
-    
-    
-%     { 132 [/integertype] (checkArgs)  checkArgs                 }   [132]      test.V
-% %    { 32 [/numbertype] (checkArgs)  checkArgs                 }   [32]      test.V
-%     { 32 44 [/integertype /integertype]  (checkArgs) checkArgs }   [44 32]   test.V
-}bind def
+clear
+aposkribh.primatives# positiveTests
 
 
-/strcatmark.Tests{
-    { (32.2) (strcatmark)  strcatmark     }      /unmatchedmark  test.E
-    { mark 323  (strcatmark)  strcatmark   }      /typecheck      test.E
-    { mark /foo  (strcatmark)  strcatmark }      /typecheck      test.E
 
-%    { mark (A)(B)  strcatmark }    [(AB) 2 ]      test.V
-}bind def
-
- /strcatmark.Tests2{
-     ( (32.2) (strcatmark)  strcatmark     )      /unmatchedmark  test.E2
-     ( mark 323  (strcatmark)  strcatmark )      /typecheck      test.E2
-     ( mark /foo  (strcatmark)  strcatmark)      /typecheck      test.E2
- }bind def
+(primatives_test END --------------------) =
 
 
- /checkArgs2.Tests{
-     % { 32 [/integertype] (checkArgs2)  checkArgs2 }   [32]      test.V
-     % { 32 [/numbertype] (checkArgs2)  checkArgs2 }    [32]      test.V
-     % { 32 45 66 [/integertype /integertype /integertype] (checkArgs2)  checkArgs2 }   [66 45 32]      test.V
-     % %
-     % {  [/integertype] (checkArgs)  checkArgs2 }   /stackunderflow      test.E
-     % { 32.5 [/integertype] (checkArgs)  checkArgs2 }   /typecheck      test.E
- }def
 
-end % test.primatives# begin
 
-test.primatives# {
-    aposkribh.VERBOSE_TEST{
-        () =
-        (------------------) =
-        exch ===
-    }{
-        exch pop
-    }ifelse
-
-    exec
-}forall
 
 
 end % aposkribh_test#

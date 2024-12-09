@@ -149,7 +149,6 @@
                 (/ZeroOrPositiveInteger: Negative number) /rangecheck signalerror
             }if
         }TR
-
     }bind def
     
     /assertZeroOrPositiveNumber{ % n -> checks to see >= 0
@@ -188,11 +187,25 @@
         }TR
     }bind def
 
+    /assertNonZeroLengthArray{ % n -> checks to see if Nth arg is /arraytype
+        (/assertNonZeroLengthArray: Not IMPLEMENTED) /undefined signalerror
+    }
+    
     /assertArray{ % n -> checks to see if Nth arg is /arraytype
         (/assertArray){
             assertStackIsBigEnoughFromArg0
             index type /arraytype eq not{
                 (/assertArray: Not array) /typecheck signalerror
+            }if
+        }TR
+    }bind def
+
+
+    /assertDict{ % n -> checks to see if Nth arg is /arraytype
+        (/assertDict){
+            assertStackIsBigEnoughFromArg0
+            index type /dicttype eq not{
+                (/assertDict: Not dict) /typecheck signalerror
             }if
         }TR
     }bind def
