@@ -38,10 +38,18 @@
               /b2s[
                   [ /booleantype ]
               ]
+
+              /i2s[
+                  [ /integertype ]
+              ]
+
+              /spaces[
+                  [ /integertype ]
+              ]
               
           >> def
 
-
+    %%% Cannot be used
     /randomArrayValue{ % array -> Nth value, where N is random
         count 0 eq{
             (/randomArrayValue: Needs one arg, array) /stackunderflow signalerror
@@ -59,6 +67,7 @@
         dup length 1 sub randomN get 
     }def
 
+    %%% Cannot be used
     /randomN{ % N int -> random in 0 to <N range
         count 0 eq{
             (/randomN: Needs one arg, int) /stackunderflow signalerror
@@ -76,6 +85,7 @@
         end
     }bind def
 
+    %%% Cannot be used
     /runner{ % lib_dict /procName {proc}
         count 3 lt{
             (/runner: Needs 3 args) /stackunderflow signalerror
@@ -155,7 +165,7 @@
         
     }def
 
-
+    
     /stackTypesMatchArray{ % /arraytype of types--> bookean
         0 index type /arraytype ne{
             (/stackTypesMatchArray Arg0 not /arraytype) /typecheck signalerror
@@ -220,7 +230,7 @@
     }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /stack2array{
+    /nstack2array{ % n -> array of top n items; stack unchanged
         count 1 lt{
             (/stack2array: Empty stack) /stackunderflow signalerror
         }if
@@ -315,13 +325,23 @@
 
         /digits 1 def
         {
-            i 10 lt{
+            i abs 10 lt{
                 exit
             }if
             /i i 10 div store
             /digits digits 1 add store
         }loop
+
+        digits =
+        orig 0 lt{ % Need space in string for minus sign
+            /digits digits 1 add store
+            (7777777777) =
+        }if
+        (MMM) =
+        orig =
+        digits =
         orig digits string cvs
+        (---MMM) =
     }bind def
 
 
@@ -531,22 +551,26 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /spaces{
-        1 assertAtLeastNArgs
-        0 assertInteger
+        aposkribh.primatives# /spaces {
+            1 assertAtLeastNArgs
+            0 assertInteger
 
-        0 index type /integertype not{
-            (/spaces: Not /integertype on stack) /stackunderflow signalerror
-        }if
+            0 index =
+            
+            0 index type /integertype ne{
+                (/spaces: Not /integertype on stack) /stackunderflow signalerror
+            }if
 
-        2 dict begin
-        /_n exch def
-        /str () def
-        0 1 _n{
-            pop
-            /str str ( ) () concatstrings store
-        }for
-        str
-        end
+            2 dict begin
+            /_n exch def
+            /str () def
+            0 1 _n{
+                pop
+                /str str ( ) () concatstrings store
+            }for
+            str
+            end
+        }runner
     }bind def
 
 
