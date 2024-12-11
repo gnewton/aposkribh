@@ -3,6 +3,9 @@
 (assert.ps) run
 (types.ps) run
 
+
+(test.ps)
+{
 % Should not rely on any primative.ps
 %
 /aposkribh.test# where not{
@@ -204,24 +207,29 @@
         1 assertAtLeastNArgs
         0 assertDict
 
-        0 index /Args# known not{
-            (/positiveTests: Dict does not contain /Args# dict) /undefined signalerror
+        0 index /ArgsTypes# known not{
+            (/testLibrary_positive: Dict does not contain /ArgsTypes# dict) /undefined signalerror
         }if
 
         2 dict begin
 
         /_library# exch def
 
-        /allLibProcsWithArgs _library# /Args# get def
+        aposkribh.args# begin
+        _library# argsValidateLibrary
+        end
+
+        /allLibProcsWithArgs _library# /ArgsTypes# get /Args# get def
 
         allLibProcsWithArgs{
             /thisProcArgsTypeList exch def
             /thisProcName exch def
 
-            _library# thisProcName known not{
-                (/positiveTests: Dict does not contain proc: ) thisProcName dup length string cvs  concatstrings /undefined signalerror
-            }if
-
+            aposkribh.args#
+            begin
+            _library# thisProcName argsAssertLibHasProc
+            end
+            
             % Make args list from types list
 
             thisProcArgsTypeList makeTestArgs /testArgs exch  def
@@ -251,6 +259,7 @@
     }bind def
 
     /NumTests 10 def
+
     
     /makeTestArgs{ % array of array of types --> array of array of values of that type
         0 assertArray
@@ -263,6 +272,7 @@
         (m) =
 
         /$argValuesList _thisProcArgsTypeList length NumTests mul array def
+        /$argResultsTypeList _thisProcArgsTypeList length NumTests mul array def
 
         /argValuesListCounter 0 def
         
@@ -270,27 +280,35 @@
             /i exch def
             /thisArgsAndResults _thisProcArgsTypeList i get def
             /thisArgs thisArgsAndResults 0 get def
+            /thisResultsTypes thisArgsAndResults 1 get def
 
+            (thisArgs) ===
             thisArgs ===
+            thisResultsTypes ===
 
             NumTests{
                 /thisArgsValuesArray thisArgs length array def
                 $argValuesList argValuesListCounter thisArgsValuesArray put
-
-                /argValuesListCounter argValuesListCounter 1 add store
+                $argResultsTypeList argValuesListCounter thisResultsTypes put
                 
+                /argValuesListCounter argValuesListCounter 1 add store
+                % ARGS values
                 0 1 thisArgs length 1 sub{
                     /j exch def
                     
                     /ttype  thisArgs j get def
 
+                    % Randomly add type values
                     thisArgsValuesArray j
-                    aposkribh.types# /typesWithExamplars get ttype get randomArrayValue
+                    aposkribh.types# /typesWithExamplars get ttype get randomArrayValue 
                     put
                 }for
+
+
+
             }repeat
         }for
-        (foo)
+        $argResultsTypeList
         $argValuesList 
         end
     }bind def
@@ -302,3 +320,4 @@
     pop % get rid of found dict 
 }ifelse
 
+}aposkribh.libraryLoader

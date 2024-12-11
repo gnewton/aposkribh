@@ -1,0 +1,88 @@
+
+
+
+/aposkribh.args# where not{
+
+    /aposkribh.args# 50 dict def
+
+    aposkribh.args# begin
+
+   /__ArgsTemplate# 10 dict def
+
+
+    __ArgsTemplate# begin
+        /Args#<<>> def % where ArgType info goes
+        
+        /addArgsDict{
+            count 0 eq{
+                (/aposkribh.args#/addArgs: Needs one arg, /dicttype) /stackunderflow signalerror
+            }if
+            
+            0 index type /dicttype ne{
+                (/aposkribh.args#/addArgs: Arg0 not /dicttype) /typecheck signalerror
+            }if
+            %
+            Args# copy pop
+        } def % /addArgs
+            
+        end % __ArgsTemplate# begin
+
+        
+
+        /newArgDict{
+            1 dict begin 
+            /newDict# 10 dict def
+            __ArgsTemplate# newDict#  copy
+            end
+        }bind def
+
+        /argsAssertLibHasProc{
+            count 2 lt{
+                (/aposkribh.args#//assertLibHasProc: Needs 2 args, /dicttype) /stackunderflow signalerror
+            }if
+            
+            0 index type /nametype ne{
+                (/aposkribh.args#//assertLibHasProc: Arg0 not /nametype) /typecheck signalerror
+            }if
+            1 index type /dicttype ne{
+                (/aposkribh.args#//assertLibHasProc: Arg1 not /dicttype) /typecheck signalerror
+            }if
+            %
+            /procName exch def
+            /procDict# exch def
+            
+            procDict# /ArgsTypes# get  /Args# get procName known not{
+                (/assertLibHasProc: Procedure does not exist in /ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
+            }if
+        }bind def
+        
+        
+        /argsValidateLibrary{
+            count 0 eq{
+                    (/aposkribh.args#/validateLibrary: Needs one arg, /dicttype) /stackunderflow signalerror
+                }if
+                
+                0 index type /dicttype ne{
+                    (/aposkribh.args#/validateLibrary: Arg0 not /dicttype) /typecheck signalerror
+                }if
+                2 dict begin
+                /_lib# exch def
+
+
+                _lib# /ArgsTypes# known not{
+                    (validateLibrary: livrary/dictionary missing /ArgsTypes# key ) /undefined signalerror
+                }if
+
+                _lib# /ArgsTypes# get /Args# known not{
+                    (validateLibrary: livrary/dictionary missing /ArgsTypes#/Args#  key ) /undefined signalerror
+                }if
+                end
+        }bind def
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end % aposkribh.args# 
+}if
+
+
+
+

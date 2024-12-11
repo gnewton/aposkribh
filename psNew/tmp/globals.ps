@@ -1,28 +1,97 @@
 
-/aposkribh.GLOBALS where not{
+/aposkribh.libraryLoader_VERBOSE true def % Used to debug aposkribh.libraryLoader
+
+/aposkribh.stack{
+    (----STACK-START----------------------------------------------------------------------------------------------------------------------------------------------) =
+    2 dict begin
+
+    /c count 2 sub def
+    0 1 c {
+        /i exch def
+        i index /v exch def
+        %v ==
+        
+        v type /dicttype eq{
+            ( ) 
+            /ds (<<dict>>  )  def
+            v {
+                pop
+                /k exch def
+                /ds ds k dup length string cvs concatstrings (   ) concatstrings store
+            }forall
+            ds =
+        }{
+            v ==
+        }ifelse
+    }for
+    end
+    (----STACK-END------------------------------------------------------------------------------------------------------------------------------------------------) =
+}bind def
+
+/aposkribh.libraryLoader{
+    count 2 lt{
+        (/aposkribh.fileLoader: Needs 2 args) /stackunderflow signalerror
+    }if
+
+    0 index type /arraytype ne{
+        (/aposkribh.fileLoader: Arg0 not /arraytype) /typecheck signalerror
+    }if
+
+    1 index type /stringtype ne{
+        (/aposkribh.fileLoader: Arg1 not /stringtype) /typecheck signalerror
+    }if
+
+
+    aposkribh.libraryLoader_VERBOSE{
+        1 index (Running: ) exch  concatstrings =
+    }if
+
+    0 index exec
+
+    pop
+    pop
     
-    /aposkribh.VERBOSE false def
-    /aposkribh.VERBOSE_TEST false def
-    
-    /aposkribh.TRACE false def
-    /aposkribh.TRACE_COUNT 0 def
-    /aposkribh.CHECK_ARGS true def
+    count 0 ne{
+        (Stack should be empty:) =
+        () =
 
-    /aposkribh.ASSERTIONS_ON false def
-    /aposkribh.ASSERTIONS_TRACE_ON false def
+        aposkribh.stack
+        
+        
+        () =
+        (/aposkribh.fileLoader: stack not empty after loading file) /typecheck signalerror
+    }if
+}bind def
 
-    /aposkribh.TEST_SHOW_PASSES false def
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % DO NOT EDIT BELOW THIS LINE%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /aposkribh.GLOBALS true def
 
-    /MaxInt 2147483647 def
-    /MaxIntReal 2147483647.0 def
+(globals.ps)
+{
+    /aposkribh.GLOBALS where not{
+        1 index (   Loading: ) exch concatstrings =
+        /aposkribh.VERBOSE false def
+        /aposkribh.VERBOSE_TEST false def
+        
+        /aposkribh.TRACE false def
+        /aposkribh.TRACE_COUNT 0 def
+        /aposkribh.CHECK_ARGS true def
 
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-}{
-    pop % get rid of found dict 
-}ifelse
+        /aposkribh.ASSERTIONS_ON false def
+        /aposkribh.ASSERTIONS_TRACE_ON false def
+
+        /aposkribh.TEST_SHOW_PASSES false def
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % DO NOT EDIT BELOW THIS LINE%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        /aposkribh.GLOBALS true store
+
+        /MaxInt 2147483647 def
+        /MaxIntReal 2147483647.0 def
+
+    }{
+        pop % get rid of found dict 
+    }ifelse
+
+}aposkribh.libraryLoader
+

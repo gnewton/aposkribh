@@ -3,8 +3,9 @@
 
 (types.ps) run
 
-/aposkribh.primatives# where not{
+(args.ps) run
 
+/aposkribh.primatives# where not{
     /aposkribh.primatives# 50 dict def
 
     aposkribh.primatives# begin
@@ -14,70 +15,69 @@
     /anytype+ (do) def
     /anytype* (do) def
 
-    /Args#<<
-              %%%%%%%% TODO with types.ps complex types
-               % /strcatmark [
-               %     [  [/marktype /stringtype*] [/stringtype]   ]% [args] [results]
-               % ] 
+    %/Args# 10 dict def
 
-               % /stack2array[
-               %     [  [/integetype /anytype+] [/anytype+]  ]
-              % ]
-               % /known2[
-               %     [ [/nametype] % Args
-               %       [
-               %           [/booleantype] % Result #1
-               %           [/booleantype /dicttype] % Result #2
-               %       ]
-               %     ]
-               % ]
+    
+    /ArgsTypes# aposkribh.args# begin newArgDict end  def
+    
 
-              %     [ [/nametype]
-              %       [/booleantype /dicttype]
-              %     ]
-              % ]
-              
-              /add2[
-                  [ [ /integertype /integertype] % args
-                    [/integertype] % results on stack
-                  ]
+    ArgsTypes# begin
+    <<
+        /add2
+        [
+            [ [ /integertype /integertype] % args
+              [
+                  [/integertype] % results on stack
               ]
-              
-              /r2s[
+            ]
+        ]
+        /r2s[
                   [ [ /realtype ] % args
-                    [ /stringtype] % results on stack
+                    [
+                        [/stringtype] % results on stack
+                    ]
                   ]
               ]
               
               /n2s[
                   [
                       [ /nametype ]
-                      [ /stringtype] % results on stack
+                      [
+                          [ /stringtype] % results on stack
+                      ]
                   ]
               ]
 
               /b2s[
                   [
                       [ /booleantype ] % args
-                      [ /stringtype] % results on stack
+                      [
+                          [ /stringtype] % results on stack
+                      ]
                   ]
               ]
 
               /i2s[
                   [
                       [ /integertype ]% args
-                      [ /stringtype] % results on stack
+                      [
+                          [ /stringtype] % results on stack
+                      ]
                   ]
               ]
 
               /spaces[
                   [
                       [ /integertype ] % args
-                      [ /stringtype] % results on stack
+                      [
+                          [ /stringtype] % results on stack
+                          [ /intergertype]
+                      ]
                   ]
               ]
-              
-          >> def
+    >> addArgsDict
+    end % ./ArgsTypes# 
+
 
     %%% Cannot be used
     /randomArrayValue{ % array -> Nth value, where N is random
@@ -149,17 +149,20 @@
             (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
         }if
 
-        % Does the main dict have an Args# dict?
-        procDict# /Args# known not{
-            (/runner: /Args# dictionary does not exist in dict) /undefined signalerror
-        }if
+        aposkribh.args#
+        begin
+        procDict# argsValidateLibrary
+        procDict# procName argsAssertLibHasProc
+        end
 
+
+        
         % Does the main/Args# dict have a /procName entry?
-        procDict# /Args# get procName known not{
-            (/runner: Procedure does not exist in /Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
+        procDict# /ArgsTypes# get  /Args# get procName known not{
+            (/runner: Procedure does not exist in /ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror
         }if
 
-        /argTypesAndResults procDict# /Args# get procName get def
+        /argTypesAndResults procDict# /ArgsTypes# get /Args# get procName get def
 
         /argTypes argTypesAndResults 0 get def
 
@@ -383,130 +386,130 @@
     }bind def
 
 
-    /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
-        aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+    % /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
+    %     aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
             
-            count 2 lt{
-                mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
-            }{
-                % Zeroth arg must be stringtype (name of proc being tested)
-                0 index type /stringtype ne{
-                    mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
-                }{
-                    % First index must be array; list of types for args; array order is stack order
-                    1 index type /arraytype ne{
-                        mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
-                    }{
-                        % end args
-                        2 dict
-                        begin
-                        /_procName exch def
-                        /_typesArray exch def
+    %         count 2 lt{
+    %             mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
+    %         }{
+    %             % Zeroth arg must be stringtype (name of proc being tested)
+    %             0 index type /stringtype ne{
+    %                 mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
+    %             }{
+    %                 % First index must be array; list of types for args; array order is stack order
+    %                 1 index type /arraytype ne{
+    %                     mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
+    %                 }{
+    %                     % end args
+    %                     2 dict
+    %                     begin
+    %                     /_procName exch def
+    %                     /_typesArray exch def
 
-                        % Not enought args on stack
-                        count _typesArray length lt{
-                            mark (/checkargs2: ) (checkArgs2) (stack is smaller than array) strcatmark /stackunderflow signalerror
-                        }if
+    %                     % Not enought args on stack
+    %                     count _typesArray length lt{
+    %                         mark (/checkargs2: ) (checkArgs2) (stack is smaller than array) strcatmark /stackunderflow signalerror
+    %                     }if
 
-                        0 1 _typesArray length 1 sub{
-                            /i exch def
-                            aposkribh.types#
-                            begin
-                            i index  _typesArray i get  isType not{
-                                (/checkargs2: Types don't match)  /typecheck signalerror
-                            }if
-                            end
-                        }for
-                        end
-                    }ifelse
-                }ifelse
-            }ifelse
-        }if
-    }bind def
+    %                     0 1 _typesArray length 1 sub{
+    %                         /i exch def
+    %                         aposkribh.types#
+    %                         begin
+    %                         i index  _typesArray i get  isType not{
+    %                             (/checkargs2: Types don't match)  /typecheck signalerror
+    %                         }if
+    %                         end
+    %                     }for
+    %                     end
+    %                 }ifelse
+    %             }ifelse
+    %         }ifelse
+    %     }if
+    % }bind def
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool
-        (/checkArgs START) =
-        %aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
-        false {
-            count 2 lt{
-                mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
-            }{
-                2 dict begin
+    % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool
+    %     (/checkArgs START) =
+    %     %aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
+    %     false {
+    %         count 2 lt{
+    %             mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
+    %         }{
+    %             2 dict begin
 
-                % First index must be array; list of types for args; array order is stack order
-                1 index type /arraytype ne{
-                    mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
-                }{
+    %             % First index must be array; list of types for args; array order is stack order
+    %             1 index type /arraytype ne{
+    %                 mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
+    %             }{
 
-                    % Zeroth arg must be stringtype (name of proc being tested)
-                    0 index type /stringtype ne{
-                        mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
-                    }{
+    %                 % Zeroth arg must be stringtype (name of proc being tested)
+    %                 0 index type /stringtype ne{
+    %                     mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
+    %                 }{
 
-                        % end args
-                        2 dict begin
-                        /_procName exch def
-                        _procName ===
-                        /_typesArray exch def
-                        aposkribh.TRACE{
-                            () =
-                            (--------------- TRACE) =
-                            _procName =
-                            aposkribh.TRACE_COUNT =
-                            stack
-                            (---------------) =
-                            () =
-                            /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 add store                             
-                        }if
+    %                     % end args
+    %                     2 dict begin
+    %                     /_procName exch def
+    %                     _procName ===
+    %                     /_typesArray exch def
+    %                     aposkribh.TRACE{
+    %                         () =
+    %                         (--------------- TRACE) =
+    %                         _procName =
+    %                         aposkribh.TRACE_COUNT =
+    %                         stack
+    %                         (---------------) =
+    %                         () =
+    %                         /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 add store                             
+    %                     }if
 
-                        _typesArray length count ge{
-                            mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
-                        }{
-                            % TODO: Need to check if _typesArray is made up of type types or mark
-                            % See if types match
-                            0 1 _typesArray length 1 sub{
-                                /i exch def
-                                (BAD) =
-                                mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
-                                (BAD 2) =
-                                _typesArray i get =
-                                _typesArray i get /anytype =
-                                _typesArray i get /anytype ne{
-                                    i index type _typesArray i get ne{ % Bad arg: error
-                                        (BAD 3) =
-                                        i =
-                                        i i2s =
-                                        mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
-                                        (BAD 4) =
-                                        % mark
-                                        % (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
-                                        % i i2s (; type is /)
-                                        % i 4 add index type dup length string cvs
-                                        % (; should be /) _typesArray i get dup length string cvs
-                                        % strcatmark
-                                        % /typecheck signalerror
+    %                     _typesArray length count ge{
+    %                         mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
+    %                     }{
+    %                         % TODO: Need to check if _typesArray is made up of type types or mark
+    %                         % See if types match
+    %                         0 1 _typesArray length 1 sub{
+    %                             /i exch def
+    %                             (BAD) =
+    %                             mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
+    %                             (BAD 2) =
+    %                             _typesArray i get =
+    %                             _typesArray i get /anytype =
+    %                             _typesArray i get /anytype ne{
+    %                                 i index type _typesArray i get ne{ % Bad arg: error
+    %                                     (BAD 3) =
+    %                                     i =
+    %                                     i i2s =
+    %                                     mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
+    %                                     (BAD 4) =
+    %                                     % mark
+    %                                     % (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
+    %                                     % i i2s (; type is /)
+    %                                     % i 4 add index type dup length string cvs
+    %                                     % (; should be /) _typesArray i get dup length string cvs
+    %                                     % strcatmark
+    %                                     % /typecheck signalerror
 
 
-                                        (/checkArgs: ERROR:) = _procName = (: arg does not match type: index=)=
-                                        i i2s =(; type is /)=
-                                        (BAD 5) =
-                                        %i 4 add index type dup length string cvs =
-                                        (BAD 6) =
-                                        (; should be /) = _typesArray i get dup length string cvs =
-                                    }if
-                                }if
-                            }for
-                        }ifelse
-                        end
-                    }ifelse
-                }ifelse
-            }ifelse
-        }if
-        aposkribh.TRACE{
-            /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 sub store                             
-        }if
-    }bind def
+    %                                     (/checkArgs: ERROR:) = _procName = (: arg does not match type: index=)=
+    %                                     i i2s =(; type is /)=
+    %                                     (BAD 5) =
+    %                                     %i 4 add index type dup length string cvs =
+    %                                     (BAD 6) =
+    %                                     (; should be /) = _typesArray i get dup length string cvs =
+    %                                 }if
+    %                             }if
+    %                         }for
+    %                     }ifelse
+    %                     end
+    %                 }ifelse
+    %             }ifelse
+    %         }ifelse
+    %     }if
+    %     aposkribh.TRACE{
+    %         /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 sub store                             
+    %     }if
+    % }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     /strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
@@ -875,6 +878,55 @@
     }bind def
 
 
+    /stackTypesMatchOneOfArrayOfArrays{ % [ [] [] ] -> bboolean
+        % Checks to see if stack types match any of the arrays of types results
+        2 assertAtLeastNArgs
+        0 assertArray
+
+        /_a exch def
+
+        /thisMatch null def
+        
+        _a{
+            0 assertArray
+            () =
+            (------------------------------------------------------) =
+            /thisOneMatches true store
+            /atypes exch def
+
+
+            count atypes length lt{% stack smaller than array: no match
+                /thisOneMatches false store
+            }{
+                0 1 atypes length 1 sub{
+                    /i exch def
+                    i =
+                    atypes i get ===
+                    i index  ===
+                    i index type ===
+                    atypes i get /booleantype eq =
+                    i index type /booleantype eq =
+                    (*************) =
+                    stack
+                    (------------) =
+                    i index type  atypes i get  eq =
+                    i index type   atypes i get ne{
+                        /thisOneMatches false store
+                        exit
+                    }if
+                    (mmmmm) =
+                }for
+            }ifelse
+            thisOneMatches{
+                exit
+            }if
+        }forall
+
+        thisOneMatches
+
+    }bind def
+    
+
     /contains{ % array value -> true index|false; first item that matches
         2 assertAtLeastNArgs
         1 assertArray
@@ -903,6 +955,8 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.primatives# 
-}if
+}{
+    pop % get rid of found dict 
+}ifelse
 
 

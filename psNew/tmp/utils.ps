@@ -89,6 +89,31 @@
     }bind def
 
 
+        /dictMatchesTemplate{ % templateDict testDict % testDict must have all the keys as are in templateDict
+            count 2 lt{
+                (/dictMatchesTemplate: Needs 2 args) /stackunderflow signalerror
+            }if
+            0 index type /dicttype ne{
+                (/dictMatchesTemplate: Arg0 not /dicttype) /typecheck signalerror
+            }if
+            1 index type /dicttype ne{
+                (/dictMatchesTemplate: Arg1 not /dicttype) /typecheck signalerror
+            }if
+            %
+
+            2 dict begin
+            /_t# exch def
+            /_d# exch def
+
+            _t#{
+                pop
+                /k exch def
+                k _d# exch known not{
+                    (/dictMatchesTemplate: key missing: [) k dup length string cvs concatstrings (] ) concatstrings     /undefined signalerror
+                }if
+            }forall
+            end
+        }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.util
