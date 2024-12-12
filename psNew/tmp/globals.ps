@@ -1,25 +1,43 @@
 
 /aposkribh.libraryLoader_VERBOSE true def % Used to debug aposkribh.libraryLoader
 
-/aposkribh.stack{
+/aposkribh.stack{ % (filename)
+    count 1 lt{
+        (/aposkribh.stack: Needs one arg, string filename) /stackunderflow signalerror
+    }if
+
+    0 index type /stringtype eq not{
+        0 index type /dicttype eq{
+            0 index aposkribh.printDictKeys
+        }{
+            0 index ===
+        }ifelse
+        
+        (/aposkribh.stack: Arg0 must be string) /typecheck signalerror
+    }if
+
+    %
+    
     (----STACK-START----------------------------------------------------------------------------------------------------------------------------------------------) =
     2 dict begin
+    /filename exch def
 
     /c count 2 sub def
     0 1 c {
         /i exch def
         i index /v exch def
         %v ==
-        
+
         v type /dicttype eq{
-            ( ) 
-            /ds (<<dict>>  )  def
-            v {
-                pop
-                /k exch def
-                /ds ds k dup length string cvs concatstrings (   ) concatstrings store
-            }forall
-            ds =
+            ( )
+            v aposkribh.printDictKeys
+            % /ds (<<dict>>  )  def
+            % v {
+            %     pop
+            %     /k exch def
+            %     /ds ds k dup length string cvs concatstrings (   ) concatstrings store
+            % }forall
+            % ds =
         }{
             v ==
         }ifelse
@@ -28,7 +46,18 @@
     (----STACK-END------------------------------------------------------------------------------------------------------------------------------------------------) =
 }bind def
 
+/aposkribh.printDictKeys{
+    /ds (<<dict>>  )  def
+    {
+        pop
+        /k exch def
+        /ds ds k dup length string cvs concatstrings (   ) concatstrings store
+    }forall
+    ds =
+}bind def
+
 /aposkribh.libraryLoader{
+
     count 2 lt{
         (/aposkribh.fileLoader: Needs 2 args) /stackunderflow signalerror
     }if
@@ -46,18 +75,15 @@
         1 index (Running: ) exch  concatstrings =
     }if
 
-    0 index exec
 
-    pop
-    pop
-    
+    1 index /fileName exch def
+    exec
+
     count 0 ne{
         (Stack should be empty:) =
+        stack
         () =
-
         aposkribh.stack
-        
-        
         () =
         (/aposkribh.fileLoader: stack not empty after loading file) /typecheck signalerror
     }if
@@ -65,13 +91,14 @@
 
 
 
+
 (globals.ps)
 {
     /aposkribh.GLOBALS where not{
-        1 index (   Loading: ) exch concatstrings =
+        (   Loading: ) exch concatstrings =
         /aposkribh.VERBOSE false def
         /aposkribh.VERBOSE_TEST false def
-        
+
         /aposkribh.TRACE false def
         /aposkribh.TRACE_COUNT 0 def
         /aposkribh.CHECK_ARGS true def
@@ -90,6 +117,7 @@
         /MaxIntReal 2147483647.0 def
 
     }{
+        pop
         pop % get rid of found dict 
     }ifelse
 

@@ -1,16 +1,18 @@
+(globals.ps) run
+
+(args.ps)
+{
+
+    /aposkribh.args# where not{
+        (   Loading: ) exch concatstrings =
+        /aposkribh.args# 50 dict def
+
+        aposkribh.args# begin
+
+        /__ArgsTemplate# 10 dict def
 
 
-
-/aposkribh.args# where not{
-
-    /aposkribh.args# 50 dict def
-
-    aposkribh.args# begin
-
-   /__ArgsTemplate# 10 dict def
-
-
-    __ArgsTemplate# begin
+        __ArgsTemplate# begin
         /Args#<<>> def % where ArgType info goes
         
         /addArgsDict{
@@ -24,7 +26,7 @@
             %
             Args# copy pop
         } def % /addArgs
-            
+        
         end % __ArgsTemplate# begin
 
         
@@ -59,29 +61,33 @@
         
         /argsValidateLibrary{
             count 0 eq{
-                    (/aposkribh.args#/validateLibrary: Needs one arg, /dicttype) /stackunderflow signalerror
-                }if
-                
-                0 index type /dicttype ne{
-                    (/aposkribh.args#/validateLibrary: Arg0 not /dicttype) /typecheck signalerror
-                }if
-                2 dict begin
-                /_lib# exch def
+                (/aposkribh.args#/validateLibrary: Needs one arg, /dicttype) /stackunderflow signalerror
+            }if
+            
+            0 index type /dicttype ne{
+                (/aposkribh.args#/validateLibrary: Arg0 not /dicttype) /typecheck signalerror
+            }if
+            2 dict begin
+            /_lib# exch def
 
 
-                _lib# /ArgsTypes# known not{
-                    (validateLibrary: livrary/dictionary missing /ArgsTypes# key ) /undefined signalerror
-                }if
+            _lib# /ArgsTypes# known not{
+                (validateLibrary: livrary/dictionary missing /ArgsTypes# key ) /undefined signalerror
+            }if
 
-                _lib# /ArgsTypes# get /Args# known not{
-                    (validateLibrary: livrary/dictionary missing /ArgsTypes#/Args#  key ) /undefined signalerror
-                }if
-                end
+            _lib# /ArgsTypes# get /Args# known not{
+                (validateLibrary: livrary/dictionary missing /ArgsTypes#/Args#  key ) /undefined signalerror
+            }if
+            end
         }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    end % aposkribh.args# 
-}if
+        end % aposkribh.args# 
+    }{
+        pop
+        pop % get rid of found dict 
+    }ifelse
+}aposkribh.libraryLoader
 
 
 

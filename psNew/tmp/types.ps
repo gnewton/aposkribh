@@ -2,270 +2,276 @@
 (globals.ps) run
 (assert.ps) run
 
-/aposkribh.types# where not{
+(types.ps)
+{
+    /aposkribh.types# where not{
+        (   Loading: ) exch concatstrings =    
+        /aposkribh.types# 50 dict def
 
-    /aposkribh.types# 50 dict def
-
-    aposkribh.assert# begin
-    aposkribh.types# begin
-    
-    /typesWithExamplars
-    <<
-        /arraytype [
-            []
-            [ 23 ]
-            [ 23 44.4]
-            [ 23 44.4 (foo) ]
-            [ 23 44.4 (foo) true]
-            [ 23 44.4 (foo) true  null]
-            [ [] ]
-            [ [3] ]
-            [ [3.0] ]
-            [ [(foo)] ]
-        ]
+        aposkribh.assert# begin
+        aposkribh.types# begin
         
-        /booleantype [
-            true
-            false
-        ]
+        /typesWithExamplars
+        <<
+            /arraytype [
+                []
+                [ 23 ]
+                [ 23 44.4]
+                [ 23 44.4 (foo) ]
+                [ 23 44.4 (foo) true]
+                [ 23 44.4 (foo) true  null]
+                [ [] ]
+                [ [3] ]
+                [ [3.0] ]
+                [ [(foo)] ]
+            ]
+            
+            /booleantype [
+                true
+                false
+            ]
+            
+            /dicttype[
+                <<>>
+                << /v 42>>
+                << (m) 42>>
+                << 232 42>>
+            ]
+            
+            /integertype [
+                10
+                0
+                -10
+                1
+                -1
+            ]
+            
+            /nametype [
+                /nametype
+                /stringtype
+            ]
+            
+            /nulltype
+            [
+                null
+            ]
+
+            /realtype [
+                -1.0
+                -45.6
+                0.0
+                34.5
+                100.0
+            ]
+            
+            /stringtype [
+                ()
+                (This is a longer string that might cause problems..........................................................................)
+                (32)
+                (foo)
+            ]
+        >> def
+
         
-        /dicttype[
-            <<>>
-            << /v 42>>
-            << (m) 42>>
-            << 232 42>>
-        ]
         
-        /integertype [
-            10
-            0
-            -10
-            1
-            -1
-        ]
+        /builtinTypesAsStrings
+        <<
+            /arraytype (arraytype)
+            /booleantype (booleantype)
+            /dicttype (dicttype)
+            /integertype (integertype)
+            /marktype (marktype)
+            /nametype (nametype)
+            /nulltype (nulltype)
+            /realtype (realtype)
+            /stringtype (stringtype)
+        >>def
+
+        /oneOrMore
+        <<
+            /arraytype+ (arraytype)
+            /booleantype+ (booleantype)
+            /dicttype+ (dicttype)
+            /integertype+ (integertype)
+            /marktype (marktype)
+            /nametype (nametype)
+            /nulltype (nulltype)
+            /realtype (realtype)
+            /stringtype (stringtype)
+        >>def
+
+        /zeroOrMore
+        <<
+            /arraytype* (arraytype)
+            /booleantype* (booleantype)
+            /dicttype* (dicttype)
+            /integertype* (integertype)
+            /marktype* (marktype)
+            /nametype* (nametype)
+            /nulltype* (nulltype)
+            /realtype* (realtype)
+            /stringtype* (stringtype)
+        >>def
+
+        /zeroOrOne
+        <<
+            /arraytype? (arraytype)
+            /booleantype? (booleantype)
+            /dicttype? (dicttype)
+            /integertype? (integertype)
+            /marktype? (marktype)
+            /nametype? (nametype)
+            /nulltype? (nulltype)
+            /realtype? (realtype)
+            /stringtype? (stringtype)
+        >>def
+
         
-        /nametype [
-            /nametype
-            /stringtype
-        ]
-        
-        /nulltype
-        [
-            null
-        ]
+        /newtypes# <<%30 dict def % name {}returning bool
+                       /numbertype {isNumberType} % int or real
+                       /numberarraytype {isNumberArrayType} % int or real
+                       /stringarraytype {isStringArrayType} % int or real
 
-        /realtype [
-            -1.0
-            -45.6
-            0.0
-            34.5
-            100.0
-        ]
-        
-        /stringtype [
-            ()
-            (This is a longer string that might cause problems..........................................................................)
-            (32)
-            (foo)
-        ]
-    >> def
+                       % /numberarraytype {
+                       %     5 dict begin
+                       %     type dup /integertype eq exch /realtype eq or
+                       %     end
+                       % } % int or real
+                   >>def
 
-    
-    
-    /builtinTypesAsStrings
-    <<
-        /arraytype (arraytype)
-        /booleantype (booleantype)
-        /dicttype (dicttype)
-        /integertype (integertype)
-        /marktype (marktype)
-        /nametype (nametype)
-        /nulltype (nulltype)
-        /realtype (realtype)
-        /stringtype (stringtype)
-    >>def
-
-    /oneOrMore
-    <<
-        /arraytype+ (arraytype)
-        /booleantype+ (booleantype)
-        /dicttype+ (dicttype)
-        /integertype+ (integertype)
-        /marktype (marktype)
-        /nametype (nametype)
-        /nulltype (nulltype)
-        /realtype (realtype)
-        /stringtype (stringtype)
-    >>def
-
-    /zeroOrMore
-    <<
-        /arraytype* (arraytype)
-        /booleantype* (booleantype)
-        /dicttype* (dicttype)
-        /integertype* (integertype)
-        /marktype* (marktype)
-        /nametype* (nametype)
-        /nulltype* (nulltype)
-        /realtype* (realtype)
-        /stringtype* (stringtype)
-    >>def
-
-    /zeroOrOne
-    <<
-        /arraytype? (arraytype)
-        /booleantype? (booleantype)
-        /dicttype? (dicttype)
-        /integertype? (integertype)
-        /marktype? (marktype)
-        /nametype? (nametype)
-        /nulltype? (nulltype)
-        /realtype? (realtype)
-        /stringtype? (stringtype)
-    >>def
-
-    
-    /newtypes# <<%30 dict def % name {}returning bool
-                   /numbertype {isNumberType} % int or real
-                   /numberarraytype {isNumberArrayType} % int or real
-                   /stringarraytype {isStringArrayType} % int or real
-
-                   % /numberarraytype {
-                   %     5 dict begin
-                   %     type dup /integertype eq exch /realtype eq or
-                   %     end
-                   % } % int or real
-               >>def
-
-    /isNumberType{
-         type dup /integertype eq exch /realtype eq or % int or real
-     }def
+        /isNumberType{
+            type dup /integertype eq exch /realtype eq or % int or real
+        }def
 
 
-    /isNumberArrayType{
-         3 dict
-         begin
-         0 index type /arraytype ne{
-             pop
-             false
-         }{
-             0 index xcheck{
-                 pop
-                 false
-             }{
-                 /_v exch def
-                 _v length 0 eq{
-                     true
-                 }{
-                     true
-                     _v {
-                         isNumberType not{
-                             pop
-                             false
-                             exit
-                         }if
-                     }forall
-                 }ifelse
-             }ifelse
-         }ifelse
-         end % anonymous
-     }def
-
-     /isStringArrayType{
-         3 dict
-         begin
-         /_v exch def
-         _v type /arraytype ne{
-             false
-         }{
-             true
-             _v {
-                 type /stringtype eq not{
-                     pop
-                     false
-                     exit
-                 }if
-             }forall
-         }ifelse
-         end % anonymous
-     }def
-    
-     /isType{
-     %     %[/anytype /nametype] (isType) checkArgs
-          2 dict
-          begin
-         
-          /_t exch def
-          /_v exch def
-          _v _t  isSpecificAddedType{
-              true
-          }{
-              _v type _t eq
-          }ifelse
-     end % anonymous
-    }def
-
-     /isBuiltInType{
-         (     /isBuiltInType{) =
-         2 dict
-         begin
-         /_v exch def
-         [
-             { _v type /stringtype eq }
-             { _v type /integertype eq}
-             { _v type /nametype eq }
-             { _v type /realtype eq}
-             { _v type /booleantype eq}
-             { _v type /dicttype eq}
-         ]orAll
-         (     /isBuiltInType{ END) =
-         end % anonymous
-     }def
-
-     /isSpecificAddedType{
-         2 dict 
-         begin
-         
-        /_t exch def
-        /_v exch def
-
-        aposkribh.types#
-        begin
-        
-        aposkribh.types# /newtypes# get _t known{
-            aposkribh.types# /newtypes# get
+        /isNumberArrayType{
+            3 dict
             begin
-             _v aposkribh.types# /newtypes# get _t get exec
-            end % aposkribh.types# /newtypes# get
-        }{
-            false
-        }ifelse
+            0 index type /arraytype ne{
+                pop
+                false
+            }{
+                0 index xcheck{
+                    pop
+                    false
+                }{
+                    /_v exch def
+                    _v length 0 eq{
+                        true
+                    }{
+                        true
+                        _v {
+                            isNumberType not{
+                                pop
+                                false
+                                exit
+                            }if
+                        }forall
+                    }ifelse
+                }ifelse
+            }ifelse
+            end % anonymous
+        }def
 
-        end % aposkribh.types# 
-        end % anonymous
-    }def
+        /isStringArrayType{
+            3 dict
+            begin
+            /_v exch def
+            _v type /arraytype ne{
+                false
+            }{
+                true
+                _v {
+                    type /stringtype eq not{
+                        pop
+                        false
+                        exit
+                    }if
+                }forall
+            }ifelse
+            end % anonymous
+        }def
+        
+        /isType{
+            %     %[/anytype /nametype] (isType) checkArgs
+            2 dict
+            begin
+            
+            /_t exch def
+            /_v exch def
+            _v _t  isSpecificAddedType{
+                true
+            }{
+                _v type _t eq
+            }ifelse
+            end % anonymous
+        }def
+
+        /isBuiltInType{
+            (     /isBuiltInType{) =
+            2 dict
+            begin
+            /_v exch def
+            [
+                { _v type /stringtype eq }
+                { _v type /integertype eq}
+                { _v type /nametype eq }
+                { _v type /realtype eq}
+                { _v type /booleantype eq}
+                { _v type /dicttype eq}
+            ]orAll
+            (     /isBuiltInType{ END) =
+            end % anonymous
+        }def
+
+        /isSpecificAddedType{
+            2 dict 
+            begin
+            
+            /_t exch def
+            /_v exch def
+
+            aposkribh.types#
+            begin
+            
+            aposkribh.types# /newtypes# get _t known{
+                aposkribh.types# /newtypes# get
+                begin
+                _v aposkribh.types# /newtypes# get _t get exec
+                end % aposkribh.types# /newtypes# get
+            }{
+                false
+            }ifelse
+
+            end % aposkribh.types# 
+            end % anonymous
+        }def
 
 
 
-    /addType{ %nametype {proc}
-        [/arraytype /stringtype] (/addedType) checkArgs
-        0 index xcheck not{
-            (/addType: First arg needs to be executable and return boolean) /stackunderflow signalerror
-        }if
+        /addType{ %nametype {proc}
+            [/arraytype /stringtype] (/addedType) checkArgs
+            0 index xcheck not{
+                (/addType: First arg needs to be executable and return boolean) /stackunderflow signalerror
+            }if
 
-        /_typeTest exch def
-        /_typeName exch def
+            /_typeTest exch def
+            /_typeName exch def
 
 
-        aposkribh.types# /newtypes# known not{
-            (NOOOOOOO) =
-            quit
-        }if
+            aposkribh.types# /newtypes# known not{
+                (NOOOOOOO) =
+                quit
+            }if
 
-        aposkribh.types# /newtypes# get _typeName {_typeTest} put
-    }bind def
-    
-    end % aposkribh.types#
+            aposkribh.types# /newtypes# get _typeName {_typeTest} put
+        }bind def
+        
+        end % aposkribh.types#
 
-    end  % aposkribh_test#
-}if
+        end  % aposkribh_test#
+    }{
+        pop
+        pop % get rid of found dict 
+    }ifelse
+}aposkribh.libraryLoader
