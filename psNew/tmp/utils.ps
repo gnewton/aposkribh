@@ -3,8 +3,11 @@
 (primatives.ps) run
 (types.ps) run
 
-/aposkribh.utils# where not{
 
+
+/aposkribh.utils#
+(utils.ps)
+{
     /aposkribh.utils# 50 dict def
 
     aposkribh.utils# begin
@@ -40,7 +43,7 @@
         % 1:dict: keys are the match; values are the return value
         % 0: executable array {} in []: default fall through return value
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-         [/arraytype /dicttype /arraytype] (/nswitch) checkArgs
+        [/arraytype /dicttype /arraytype] (/nswitch) checkArgs
 
         (HELLO) =
         
@@ -63,7 +66,7 @@
         (END nswitch)
     }bind def
 
-        /a2s{ % anything to string
+    /a2s{ % anything to string
         (a2s---------) =
         count 0 eq{
             mark (/a2s: needs one argument) /undefined signalerror
@@ -89,33 +92,33 @@
     }bind def
 
 
-        /dictMatchesTemplate{ % templateDict testDict % testDict must have all the keys as are in templateDict
-            count 2 lt{
-                (/dictMatchesTemplate: Needs 2 args) /stackunderflow signalerror
-            }if
-            0 index type /dicttype ne{
-                (/dictMatchesTemplate: Arg0 not /dicttype) /typecheck signalerror
-            }if
-            1 index type /dicttype ne{
-                (/dictMatchesTemplate: Arg1 not /dicttype) /typecheck signalerror
-            }if
-            %
+    /dictMatchesTemplate{ % templateDict testDict % testDict must have all the keys as are in templateDict
+        count 2 lt{
+            (/dictMatchesTemplate: Needs 2 args) /stackunderflow signalerror
+        }if
+        0 index type /dicttype ne{
+            (/dictMatchesTemplate: Arg0 not /dicttype) /typecheck signalerror
+        }if
+        1 index type /dicttype ne{
+            (/dictMatchesTemplate: Arg1 not /dicttype) /typecheck signalerror
+        }if
+        %
 
-            2 dict begin
-            /_t# exch def
-            /_d# exch def
+        2 dict begin
+        /_t# exch def
+        /_d# exch def
 
-            _t#{
-                pop
-                /k exch def
-                k _d# exch known not{
-                    (/dictMatchesTemplate: key missing: [) k dup length string cvs concatstrings (] ) concatstrings     /undefined signalerror
-                }if
-            }forall
-            end
-        }bind def
+        _t#{
+            pop
+            /k exch def
+            k _d# exch known not{
+                (/dictMatchesTemplate: key missing: [) k dup length string cvs concatstrings (] ) concatstrings     /undefined signalerror
+            }if
+        }forall
+        end
+    }bind def
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end % aposkribh.util
-}if
 
+}aposkribh.libraryLoader2

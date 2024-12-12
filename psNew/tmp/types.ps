@@ -2,10 +2,9 @@
 (globals.ps) run
 (assert.ps) run
 
+/aposkribh.types#
 (types.ps)
 {
-    /aposkribh.types# where not{
-        (   Loading: ) exch concatstrings =    
         /aposkribh.types# 50 dict def
 
         aposkribh.assert# begin
@@ -270,8 +269,4 @@
         end % aposkribh.types#
 
         end  % aposkribh_test#
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-}aposkribh.libraryLoader
+    }aposkribh.libraryLoader2

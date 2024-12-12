@@ -4,11 +4,9 @@
 
 % Should not rely on anything except globals.ps
 %
-
+/aposkribh.assert#
 (assert.ps)
 {
-    /aposkribh.assert# where not{
-        (   Loading: ) exch concatstrings =
         /aposkribh.assert# 20 dict def
 
         aposkribh.assert# begin
@@ -270,8 +268,4 @@
         }bind def
 
         end  % aposkribh_assert#
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-}aposkribh.libraryLoader
+}aposkribh.libraryLoader2

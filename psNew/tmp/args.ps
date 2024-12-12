@@ -1,10 +1,8 @@
 (globals.ps) run
 
+/aposkribh.args# 
 (args.ps)
 {
-
-    /aposkribh.args# where not{
-        (   Loading: ) exch concatstrings =
         /aposkribh.args# 50 dict def
 
         aposkribh.args# begin
@@ -83,11 +81,7 @@
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.args# 
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-}aposkribh.libraryLoader
+}aposkribh.libraryLoader2
 
 
 

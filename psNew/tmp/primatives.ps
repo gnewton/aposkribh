@@ -1,19 +1,15 @@
 
 (globals.ps) run
-
 (types.ps) run
-
 (args.ps) run
 
 
+/aposkribh.primatives#
 (primatives.ps)
 {
-    /aposkribh.primatives# where not{
-        (   Loading: ) exch concatstrings =
         /aposkribh.primatives# 50 dict def
 
         aposkribh.primatives# begin
-
         /stringtype*  (do) def
         /stringtype+  (do) def
         /anytype+ (do) def
@@ -390,130 +386,6 @@
         }bind def
 
 
-        % /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
-        %     aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
-        
-        %         count 2 lt{
-        %             mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
-        %         }{
-        %             % Zeroth arg must be stringtype (name of proc being tested)
-        %             0 index type /stringtype ne{
-        %                 mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
-        %             }{
-        %                 % First index must be array; list of types for args; array order is stack order
-        %                 1 index type /arraytype ne{
-        %                     mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
-        %                 }{
-        %                     % end args
-        %                     2 dict
-        %                     begin
-        %                     /_procName exch def
-        %                     /_typesArray exch def
-
-        %                     % Not enought args on stack
-        %                     count _typesArray length lt{
-        %                         mark (/checkargs2: ) (checkArgs2) (stack is smaller than array) strcatmark /stackunderflow signalerror
-        %                     }if
-
-        %                     0 1 _typesArray length 1 sub{
-        %                         /i exch def
-        %                         aposkribh.types#
-        %                         begin
-        %                         i index  _typesArray i get  isType not{
-        %                             (/checkargs2: Types don't match)  /typecheck signalerror
-        %                         }if
-        %                         end
-        %                     }for
-        %                     end
-        %                 }ifelse
-        %             }ifelse
-        %         }ifelse
-        %     }if
-        % }bind def
-        
-        % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % /checkArgs{ % (procName) [n types]; also supports 'mark' --> bool
-        %     (/checkArgs START) =
-        %     %aposkribh.CHECK_ARGS{ % Should args be checked at all? Global
-        %     false {
-        %         count 2 lt{
-        %             mark (/checkargs: ) (checkArgs) (: Needs 2 arguments) strcatmark /stackunderflow signalerror
-        %         }{
-        %             2 dict begin
-
-        %             % First index must be array; list of types for args; array order is stack order
-        %             1 index type /arraytype ne{
-        %                 mark (/checkargs: ) (checkArgs) (: 1 stack not /arraytype) strcatmark /typecheck signalerror
-        %             }{
-
-        %                 % Zeroth arg must be stringtype (name of proc being tested)
-        %                 0 index type /stringtype ne{
-        %                     mark (/checkargs: ) (checkArgs) (: 0 stack not /stringtype) strcatmark /typecheck signalerror
-        %                 }{
-
-        %                     % end args
-        %                     2 dict begin
-        %                     /_procName exch def
-        %                     _procName ===
-        %                     /_typesArray exch def
-        %                     aposkribh.TRACE{
-        %                         () =
-        %                         (--------------- TRACE) =
-        %                         _procName =
-        %                         aposkribh.TRACE_COUNT =
-        %                         stack
-        %                         (---------------) =
-        %                         () =
-        %                         /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 add store                             
-        %                     }if
-
-        %                     _typesArray length count ge{
-        %                         mark (/checkArgs: ) _procName (: Number of args in type array greater than number of args in stack) strcatmark /stackunderflow signalerror
-        %                     }{
-        %                         % TODO: Need to check if _typesArray is made up of type types or mark
-        %                         % See if types match
-        %                         0 1 _typesArray length 1 sub{
-        %                             /i exch def
-        %                             (BAD) =
-        %                             mark (/checkArgs: i=) i 16 string cvs (; type is /) i 4 add index type dup length string cvs (; need /) _typesArray i get dup length string cvs verbose2
-        %                             (BAD 2) =
-        %                             _typesArray i get =
-        %                             _typesArray i get /anytype =
-        %                             _typesArray i get /anytype ne{
-        %                                 i index type _typesArray i get ne{ % Bad arg: error
-        %                                     (BAD 3) =
-        %                                     i =
-        %                                     i i2s =
-        %                                     mark (/checkArgs: ERROR:) _procName (: arg does not match type: index=) i i2s (; type is /) i 4 add index type dup length string cvs (; should be /) _typesArray i get dup length string cvs verbose2
-        %                                     (BAD 4) =
-        %                                     % mark
-        %                                     % (/checkArgs: ERROR:) _procName (: arg does not match type: index=)
-        %                                     % i i2s (; type is /)
-        %                                     % i 4 add index type dup length string cvs
-        %                                     % (; should be /) _typesArray i get dup length string cvs
-        %                                     % strcatmark
-        %                                     % /typecheck signalerror
-
-
-        %                                     (/checkArgs: ERROR:) = _procName = (: arg does not match type: index=)=
-        %                                     i i2s =(; type is /)=
-        %                                     (BAD 5) =
-        %                                     %i 4 add index type dup length string cvs =
-        %                                     (BAD 6) =
-        %                                     (; should be /) = _typesArray i get dup length string cvs =
-        %                                 }if
-        %                             }if
-        %                         }for
-        %                     }ifelse
-        %                     end
-        %                 }ifelse
-        %             }ifelse
-        %         }ifelse
-        %     }if
-        %     aposkribh.TRACE{
-        %         /aposkribh.TRACE_COUNT aposkribh.TRACE_COUNT 1 sub store                             
-        %     }if
-        % }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         /strcat{ % string0 string1 separator_string OR [s1 s2 s3] separator_string
@@ -959,10 +831,6 @@
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.primatives# 
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-}aposkribh.libraryLoader
+}aposkribh.libraryLoader2
 
 

@@ -1,7 +1,10 @@
 
-/aposkribh.libraryLoader_VERBOSE true def % Used to debug aposkribh.libraryLoader
+% Used to debug aposkribh.libraryLoader
+%  and track loading of files, libraries
+/aposkribh.libraryLoader_VERBOSE false def 
 
 /aposkribh.stack{ % (filename)
+
     count 1 lt{
         (/aposkribh.stack: Needs one arg, string filename) /stackunderflow signalerror
     }if
@@ -12,7 +15,7 @@
         }{
             0 index ===
         }ifelse
-        
+        stack
         (/aposkribh.stack: Arg0 must be string) /typecheck signalerror
     }if
 
@@ -57,7 +60,6 @@
 }bind def
 
 /aposkribh.libraryLoader{
-
     count 2 lt{
         (/aposkribh.fileLoader: Needs 2 args) /stackunderflow signalerror
     }if
@@ -83,19 +85,66 @@
         (Stack should be empty:) =
         stack
         () =
-        aposkribh.stack
+        (FOO) aposkribh.stack
         () =
-        (/aposkribh.fileLoader: stack not empty after loading file) /typecheck signalerror
+        (/aposkribh.fileLoader: stack not empty after loading file) /stackoverflow signalerror
     }if
 }bind def
 
+/aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
+    count 3 lt{
+        (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
+    }if
 
+    0 index type /arraytype ne{
+        (/aposkribh.fileLoader: Arg0 not /arraytype) /typecheck signalerror
+    }if
 
+    1 index type /stringtype ne{
+        (/aposkribh.fileLoader: Arg1 not /stringtype) /typecheck signalerror
+    }if
 
+    2 index type /nametype ne{
+        (/aposkribh.fileLoader: Arg2 not /nametype) /typecheck signalerror
+    }if
+    %%%%%%%%%%%%%%
+    
+    aposkribh.libraryLoader_VERBOSE{
+        1 index (Running: ) exch  concatstrings =
+    }if
+
+    
+    3 1 roll
+    
+    /fileName exch def
+    /libraryGlobalKey exch def
+    libraryGlobalKey where not{
+        aposkribh.libraryLoader_VERBOSE{
+            ( Loading: ) fileName concatstrings =
+        }if
+        exec
+    }{
+        aposkribh.libraryLoader_VERBOSE{
+            ( -- NOT Loading: ) fileName concatstrings =
+        }if
+        pop % found pop dict
+        pop % pop exec
+    }ifelse
+
+    count 0 ne{
+        (Stack should be empty:) =
+        () =
+        (BAR) aposkribh.stack
+        () =
+        (/aposkribh.fileLoader2: stack not empty after loading file) /stackoverflow signalerror
+    }if
+}bind def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/aposkribh.GLOBALS
 (globals.ps)
 {
-    /aposkribh.GLOBALS where not{
-        (   Loading: ) exch concatstrings =
         /aposkribh.VERBOSE false def
         /aposkribh.VERBOSE_TEST false def
 
@@ -115,11 +164,5 @@
 
         /MaxInt 2147483647 def
         /MaxIntReal 2147483647.0 def
-
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-
-}aposkribh.libraryLoader
+}aposkribh.libraryLoader2
 

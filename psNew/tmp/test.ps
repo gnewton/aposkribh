@@ -4,324 +4,316 @@
 (types.ps) run
 
 
+/aposkribh.test#
 (test.ps)
 {
     %Should not rely on any primative.ps
+    /aposkribh.test# 20 dict def
 
-    /aposkribh.test# where not
-    {
-        (   Loading: ) exch concatstrings =
-        /aposkribh.test# 20 dict def
+    aposkribh.assert# begin
+    aposkribh.test# begin
 
-        aposkribh.assert# begin
-        aposkribh.test# begin
+    /aposkribh.StopOnFail where not{
+        /aposkribh.StopOnFail true def
+    }if
 
-        /aposkribh.StopOnFail where not{
-            /aposkribh.StopOnFail true def
-        }if
-
-        /aposkribh.Testing where not{
-            /aposkribh.Testing true def
-        }if
+    /aposkribh.Testing where not{
+        /aposkribh.Testing true def
+    }if
 
 
-        % simple tests
-        /test.F{ % { } : proc should return true
-            0 assertProc
-            [false] test.V
-        }bind def
+    % simple tests
+    /test.F{ % { } : proc should return true
+        0 assertProc
+        [false] test.V
+    }bind def
+    
+    /test.T{ % { } : proc should return false
+        0 assertProc
+        [true] test.V
+    }bind def
+    
+
+    /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
+        1 assertProc
+        10 dict begin
+        /_expectedStack exch def
+        %
         
-        /test.T{ % { } : proc should return false
-            0 assertProc
-            [true] test.V
-        }bind def
+        dup /procAsLiteral exch cvlit def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.V) =
+            procAsLiteral ===
+        }if
         
-
-        /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
-            1 assertProc
-            10 dict begin
-            /_expectedStack exch def
-            %
-            
-            dup /procAsLiteral exch cvlit def
-
-            aposkribh.VERBOSE_TEST{
-                () =
-                (test.V) =
-                procAsLiteral ===
-            }if
-            
-            {
-                /proc exch def
-                clear
-                {proc} exec
-            }stopped{
+        {
+            /proc exch def
+            clear
+            {proc} exec
+        }stopped{
+            procAsLiteral ===
+            _expectedStack ===
+            (Unexcpected error: ) =
+            $error /errorname get =
+            $error /errorname get
+            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
+        }{
+            _expectedStack arraySameAsStack not{
+                =
                 procAsLiteral ===
                 _expectedStack ===
-                (Unexcpected error: ) =
-                $error /errorname get =
-                $error /errorname get
-                (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
-            }{
-                _expectedStack arraySameAsStack not{
-                    =
-                    procAsLiteral ===
-                    _expectedStack ===
-                    (Stack +) =
-                    stack
-                    (Stack -) =
-                    (Fail: test.V: Results stack does not match)  /invalidexit signalerror
-                }if
-            }ifelse
-
-            end
-            clear
-        }bind def
-
-
-        
-        /test.V2{ % {} [expected values left on stack] : proc should run and return specific values on stack
-            % 0 assertNamed NOT IMPLEMENTED
-            1 assertProc
-            10 dict begin
-            /_expectedStack exch def
-            %
-            
-            dup /procAsLiteral exch cvlit def
-
-            aposkribh.VERBOSE_TEST{
-                () =
-                (test.V) =
-                procAsLiteral ===
+                (Stack +) =
+                stack
+                (Stack -) =
+                (Fail: test.V: Results stack does not match)  /invalidexit signalerror
             }if
-            
-            {
-                /proc exch def
-                clear
-                {proc} exec
-            }stopped{
+        }ifelse
+
+        end
+        clear
+    }bind def
+
+
+    
+    /test.V2{ % {} [expected values left on stack] : proc should run and return specific values on stack
+        % 0 assertNamed NOT IMPLEMENTED
+        1 assertProc
+        10 dict begin
+        /_expectedStack exch def
+        %
+        
+        dup /procAsLiteral exch cvlit def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.V) =
+            procAsLiteral ===
+        }if
+        
+        {
+            /proc exch def
+            clear
+            {proc} exec
+        }stopped{
+            procAsLiteral ===
+            _expectedStack ===
+            (Unexcpected error: ) =
+            $error /errorname get =
+            $error /errorname get
+            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
+        }{
+            _expectedStack arraySameAsStack not{
+                =
                 procAsLiteral ===
                 _expectedStack ===
-                (Unexcpected error: ) =
-                $error /errorname get =
-                $error /errorname get
-                (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
-            }{
-                _expectedStack arraySameAsStack not{
-                    =
-                    procAsLiteral ===
-                    _expectedStack ===
-                    (Stack +) =
-                    stack
-                    (Stack -) =
-                    (Fail: test.V: Results stack does not match)  /invalidexit signalerror
-                }if
-            }ifelse
-            end
-            clear
-        }bind def
-
-
-        /test.E{ % { } /errortype : Should run and throw a specific error
-            % 0 assertNamed NOT IMPLEMENTED
-            1 assertProc
-            
-            10 dict begin
-            /_expectedError exch def
-
-            dup /procAsLiteral exch cvlit def
-
-            aposkribh.VERBOSE_TEST{
-                () =
-                (test.E) =
-                procAsLiteral ===
+                (Stack +) =
+                stack
+                (Stack -) =
+                (Fail: test.V: Results stack does not match)  /invalidexit signalerror
             }if
+        }ifelse
+        end
+        clear
+    }bind def
 
-            {
-                /d exch def
-                clear
-                {d} exec
-            }stopped{
-                /actualError $error /errorname get def
-                
-                actualError _expectedError ne{
-                    (FAIL: Expected error but wrong error) =
-                    procAsLiteral ===
-                    actualError =
-                    _expectedError =
-                    (/test.E: ) /invalidexit signalerror
-                }if
-            }{
-                (FAIL: Expected error but no error) =
+
+    /test.E{ % { } /errortype : Should run and throw a specific error
+        % 0 assertNamed NOT IMPLEMENTED
+        1 assertProc
+        
+        10 dict begin
+        /_expectedError exch def
+
+        dup /procAsLiteral exch cvlit def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.E) =
+            procAsLiteral ===
+        }if
+
+        {
+            /d exch def
+            clear
+            {d} exec
+        }stopped{
+            /actualError $error /errorname get def
+            
+            actualError _expectedError ne{
+                (FAIL: Expected error but wrong error) =
                 procAsLiteral ===
+                actualError =
                 _expectedError =
                 (/test.E: ) /invalidexit signalerror
-            }ifelse
-            end
-            clear
-        }bind def
-
-        /test.E2{ % { } /errortype : Should run and throw a specific error
-            % 0 assertNamed NOT IMPLEMENTED
-            1 assertString
-            
-            10 dict begin
-            
-            /_expectedError exch def
-
-            /proc exch  def
-
-            aposkribh.VERBOSE_TEST{
-                () =
-                (test.E) =
-                proc ===
             }if
+        }{
+            (FAIL: Expected error but no error) =
+            procAsLiteral ===
+            _expectedError =
+            (/test.E: ) /invalidexit signalerror
+        }ifelse
+        end
+        clear
+    }bind def
 
-            {
-                clear
-                proc cvx
-                exec
-            }stopped{
-                /actualError $error /errorname get def
-                
-                actualError _expectedError ne{
-                    (FAIL: Expected error but wrong error) =
-                    proc ===
-                    actualError =
-                    _expectedError =
-                    (/test.E: ) /invalidexit signalerror
-                }if
-            }{
-                (FAIL: Expected error but no error) =
+    /test.E2{ % { } /errortype : Should run and throw a specific error
+        % 0 assertNamed NOT IMPLEMENTED
+        1 assertString
+        
+        10 dict begin
+        
+        /_expectedError exch def
+
+        /proc exch  def
+
+        aposkribh.VERBOSE_TEST{
+            () =
+            (test.E) =
+            proc ===
+        }if
+
+        {
+            clear
+            proc cvx
+            exec
+        }stopped{
+            /actualError $error /errorname get def
+            
+            actualError _expectedError ne{
+                (FAIL: Expected error but wrong error) =
                 proc ===
+                actualError =
                 _expectedError =
                 (/test.E: ) /invalidexit signalerror
-            }ifelse
-            end
-            clear
-        }bind def
-
-        /runTests{
-
-        }bind def
-
-
-        /testLibrary_positive{ % dict to test
-            1 assertAtLeastNArgs
-            0 assertDict
-
-            0 index /ArgsTypes# known not{
-                (/testLibrary_positive: Dict does not contain /ArgsTypes# dict) /undefined signalerror
             }if
+        }{
+            (FAIL: Expected error but no error) =
+            proc ===
+            _expectedError =
+            (/test.E: ) /invalidexit signalerror
+        }ifelse
+        end
+        clear
+    }bind def
 
-            2 dict begin
+    /runTests{
 
-            /_library# exch def
+    }bind def
 
-            aposkribh.args# begin
-            _library# argsValidateLibrary
+
+    /testLibrary_positive{ % dict to test
+        1 assertAtLeastNArgs
+        0 assertDict
+
+        0 index /ArgsTypes# known not{
+            (/testLibrary_positive: Dict does not contain /ArgsTypes# dict) /undefined signalerror
+        }if
+
+        2 dict begin
+
+        /_library# exch def
+
+        aposkribh.args# begin
+        _library# argsValidateLibrary
+        end
+
+        /allLibProcsWithArgs _library# /ArgsTypes# get /Args# get def
+
+        allLibProcsWithArgs{
+            /thisProcArgsTypeList exch def
+            /thisProcName exch def
+
+            aposkribh.args#
+            begin
+            _library# thisProcName argsAssertLibHasProc
             end
+            
+            % Make args list from types list
 
-            /allLibProcsWithArgs _library# /ArgsTypes# get /Args# get def
+            thisProcArgsTypeList makeTestArgs /testArgs exch  def
+            /testResults exch def
 
-            allLibProcsWithArgs{
-                /thisProcArgsTypeList exch def
-                /thisProcName exch def
+            (---) =
+            testResults ===
+            testArgs ===
+            (---) =
+            
+            %thisProcArgsTypeList makeTestArgs{
+            testArgs{
+                () =
+                /args exch def
+                %ff ===
+                (Testing ) thisProcName dup length string cvs concatstrings =
+                ( with args: ) =
+                args ===
+                args aload pop
+                (Results: ) =
+                _library# thisProcName get exec ===
 
-                aposkribh.args#
-                begin
-                _library# thisProcName argsAssertLibHasProc
-                end
-                
-                % Make args list from types list
-
-                thisProcArgsTypeList makeTestArgs /testArgs exch  def
-                /testResults exch def
-
-                (---) =
-                testResults ===
-                testArgs ===
-                (---) =
-                
-                %thisProcArgsTypeList makeTestArgs{
-                testArgs{
-                    () =
-                    /args exch def
-                    %ff ===
-                    (Testing ) thisProcName dup length string cvs concatstrings =
-                    ( with args: ) =
-                    args ===
-                    args aload pop
-                    (Results: ) =
-                    _library# thisProcName get exec ===
-
-                }forall
             }forall
-            
-            end
-        }bind def
-
-        /NumTests 10 def
-
+        }forall
         
-        /makeTestArgs{ % array of array of types --> array of array of values of that type
-            0 assertArray
+        end
+    }bind def
 
-            2 dict begin
-            /_thisProcArgsTypeList exch def
+    /NumTests 10 def
 
-            (M) =
-            _thisProcArgsTypeList ===
-            (m) =
+    
+    /makeTestArgs{ % array of array of types --> array of array of values of that type
+        0 assertArray
 
-            /$argValuesList _thisProcArgsTypeList length NumTests mul array def
-            /$argResultsTypeList _thisProcArgsTypeList length NumTests mul array def
+        2 dict begin
+        /_thisProcArgsTypeList exch def
 
-            /argValuesListCounter 0 def
-            
-            0 1 _thisProcArgsTypeList length 1 sub{
-                /i exch def
-                /thisArgsAndResults _thisProcArgsTypeList i get def
-                /thisArgs thisArgsAndResults 0 get def
-                /thisResultsTypes thisArgsAndResults 1 get def
+        (M) =
+        _thisProcArgsTypeList ===
+        (m) =
 
-                (thisArgs) ===
-                thisArgs ===
-                thisResultsTypes ===
+        /$argValuesList _thisProcArgsTypeList length NumTests mul array def
+        /$argResultsTypeList _thisProcArgsTypeList length NumTests mul array def
 
-                NumTests{
-                    /thisArgsValuesArray thisArgs length array def
-                    $argValuesList argValuesListCounter thisArgsValuesArray put
-                    $argResultsTypeList argValuesListCounter thisResultsTypes put
+        /argValuesListCounter 0 def
+        
+        0 1 _thisProcArgsTypeList length 1 sub{
+            /i exch def
+            /thisArgsAndResults _thisProcArgsTypeList i get def
+            /thisArgs thisArgsAndResults 0 get def
+            /thisResultsTypes thisArgsAndResults 1 get def
+
+            (thisArgs) ===
+            thisArgs ===
+            thisResultsTypes ===
+
+            NumTests{
+                /thisArgsValuesArray thisArgs length array def
+                $argValuesList argValuesListCounter thisArgsValuesArray put
+                $argResultsTypeList argValuesListCounter thisResultsTypes put
+                
+                /argValuesListCounter argValuesListCounter 1 add store
+                % ARGS values
+                0 1 thisArgs length 1 sub{
+                    /j exch def
                     
-                    /argValuesListCounter argValuesListCounter 1 add store
-                    % ARGS values
-                    0 1 thisArgs length 1 sub{
-                        /j exch def
-                        
-                        /ttype  thisArgs j get def
+                    /ttype  thisArgs j get def
 
-                        % Randomly add type values
-                        thisArgsValuesArray j
-                        aposkribh.types# /typesWithExamplars get ttype get randomArrayValue 
-                        put
-                    }for
+                    % Randomly add type values
+                    thisArgsValuesArray j
+                    aposkribh.types# /typesWithExamplars get ttype get randomArrayValue 
+                    put
+                }for
 
 
 
-                }repeat
-            }for
-            $argResultsTypeList
-            $argValuesList 
-            end
-        }bind def
+            }repeat
+        }for
+        $argResultsTypeList
+        $argValuesList 
+        end
+    }bind def
 
-        end  % aposkribh_test#
+    end  % aposkribh_test#
 
-        end % aposkribh.assert#
-    }{
-        pop
-        pop % get rid of found dict 
-    }ifelse
-
-}aposkribh.libraryLoader
+    end % aposkribh.assert#
+}aposkribh.libraryLoader2

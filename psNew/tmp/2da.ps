@@ -1,6 +1,9 @@
+(globals.ps) run
 (primatives.ps) run
 
-/aposkribh_2da# where not{
+/aposkribh_2da#
+(2da.ps)
+{
     /aposkribh_2da# 50 dict def
 
     aposkribh_2da# begin
@@ -20,7 +23,7 @@
         /_j exch def
         /_i exch def
         (getCell) _i 0 nx checkRange
-%        (getCell) _j 0 ny checkRange
+        %        (getCell) _j 0 ny checkRange
         
         _i nx gt
         _j ny gt
@@ -74,5 +77,4 @@
     }def
 
     end %aposkribh_2da# begin
-}if %
-
+}aposkribh.libraryLoader2
