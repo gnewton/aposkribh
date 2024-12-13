@@ -11,9 +11,10 @@
 
 
         __ArgsTemplate# begin
+
         /Args#<<>> def % where ArgType info goes
         
-        /addArgsDict{
+        /addArgsDict{ % dict; Adds entire dict; overwrites existing one
             count 0 eq{
                 (/aposkribh.args#/addArgs: Needs one arg, /dicttype) /stackunderflow signalerror
             }if
@@ -51,13 +52,13 @@
             /procName exch def
             /procDict# exch def
             
-            procDict# /ArgsTypes# get  /Args# get procName known not{
-                (/assertLibHasProc: Procedure does not exist in /ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
+            procDict# /__ArgsTypes# get  /Args# get procName known not{
+                (/assertLibHasProc: Procedure does not exist in /__ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
         }bind def
         
         
-        /argsValidateLibrary{
+        /assertValidateLibrary{
             count 0 eq{
                 (/aposkribh.args#/validateLibrary: Needs one arg, /dicttype) /stackunderflow signalerror
             }if
@@ -69,12 +70,12 @@
             /_lib# exch def
 
 
-            _lib# /ArgsTypes# known not{
-                (validateLibrary: livrary/dictionary missing /ArgsTypes# key ) /undefined signalerror
+            _lib# /__ArgsTypes# known not{
+                (validateLibrary: livrary/dictionary missing /__ArgsTypes# key ) /undefined signalerror
             }if
 
-            _lib# /ArgsTypes# get /Args# known not{
-                (validateLibrary: livrary/dictionary missing /ArgsTypes#/Args#  key ) /undefined signalerror
+            _lib# /__ArgsTypes# get /Args# known not{
+                (validateLibrary: livrary/dictionary missing /__ArgsTypes#/Args#  key ) /undefined signalerror
             }if
             end
         }bind def

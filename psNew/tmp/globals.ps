@@ -1,7 +1,7 @@
 
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
-/aposkribh.libraryLoader_VERBOSE false def 
+/aposkribh.libraryLoader_VERBOSE true def 
 
 /aposkribh.stack{ % (filename)
 
@@ -91,54 +91,56 @@
     }if
 }bind def
 
-/aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
-    count 3 lt{
-        (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
-    }if
-
-    0 index type /arraytype ne{
-        (/aposkribh.fileLoader: Arg0 not /arraytype) /typecheck signalerror
-    }if
-
-    1 index type /stringtype ne{
-        (/aposkribh.fileLoader: Arg1 not /stringtype) /typecheck signalerror
-    }if
-
-    2 index type /nametype ne{
-        (/aposkribh.fileLoader: Arg2 not /nametype) /typecheck signalerror
-    }if
-    %%%%%%%%%%%%%%
-    
-    aposkribh.libraryLoader_VERBOSE{
-        1 index (Running: ) exch  concatstrings =
-    }if
-
-    
-    3 1 roll
-    
-    /fileName exch def
-    /libraryGlobalKey exch def
-    libraryGlobalKey where not{
-        aposkribh.libraryLoader_VERBOSE{
-            ( Loading: ) fileName concatstrings =
+    /aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
+        count 3 lt{
+            (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
         }if
-        exec
-    }{
-        aposkribh.libraryLoader_VERBOSE{
-            ( -- NOT Loading: ) fileName concatstrings =
-        }if
-        pop % found pop dict
-        pop % pop exec
-    }ifelse
 
-    count 0 ne{
-        (Stack should be empty:) =
-        () =
-        (BAR) aposkribh.stack
-        () =
-        (/aposkribh.fileLoader2: stack not empty after loading file) /stackoverflow signalerror
-    }if
-}bind def
+        0 index type /arraytype ne{
+            (/aposkribh.fileLoader: Arg0 not /arraytype) /typecheck signalerror
+        }if
+
+        1 index type /stringtype ne{
+            (/aposkribh.fileLoader: Arg1 not /stringtype) /typecheck signalerror
+        }if
+
+        2 index type /nametype ne{
+            (/aposkribh.fileLoader: Arg2 not /nametype) /typecheck signalerror
+        }if
+        %%%%%%%%%%%%%%
+        
+        aposkribh.libraryLoader_VERBOSE{
+            1 index (Running: ) exch  concatstrings =
+        }if
+        
+        3 1 roll
+        
+        /fileName exch def
+        /libraryGlobalKey exch def
+        libraryGlobalKey where not{
+            aposkribh.libraryLoader_VERBOSE{
+                ( Loading: ) fileName concatstrings =
+            }if
+            exec
+        }{
+            aposkribh.libraryLoader_VERBOSE{
+                ( -- NOT Loading: ) fileName concatstrings =
+            }if
+            pop % found pop dict
+            pop % pop exec
+        }ifelse
+
+        count 0 ne{
+            (Stack should be empty:) =
+            () =
+            (BAR) aposkribh.stack
+            () =
+            (/aposkribh.fileLoader2: stack not empty after loading file) /stackoverflow signalerror
+        }if
+    }bind def
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

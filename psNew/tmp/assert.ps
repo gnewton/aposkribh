@@ -1,5 +1,5 @@
 (globals.ps) run
-
+(library.ps) run
 
 
 % Should not rely on anything except globals.ps
@@ -20,7 +20,7 @@
         }bind def
 
 
-        /TR{ % string {} % traces proc execution
+        /TR{ % string {proc} % traces proc execution
             count 2 lt{
                 (/TR: Needs 2 args) /stackunderflow signalerror
             }if
@@ -85,19 +85,6 @@
                 end
             }TR
         }bind def
-        
-        % /assert0IsPositiveInteger{ % Is the 0th arg a /intergertype
-        %     1 assertAtLeastNArgs
-
-        %     0 index type /integertype eq not{
-        %         (/assert0IsPositiveInteger: Needs integer arg#0) /typecheck signalerror
-        %     }if
-
-        %     0 index 0 lt{
-        %         (/assert0IsPositiveInteger: Needs to be positive integer) /rangecheck signalerror
-        %     }if
-        % }bind def
-
         
         /assertStackIsBigEnoughFromArg0{ % n -> Does the Nth arg item exist (n < count)
             (assertStackIsBigEnoughFromArg0)
@@ -269,3 +256,4 @@
 
         end  % aposkribh_assert#
 }aposkribh.libraryLoader2
+
