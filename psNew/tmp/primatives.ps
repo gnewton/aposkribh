@@ -144,25 +144,25 @@
             % args
             
             3 dict begin
-            /proc exch def
-            /procName exch def
-            /procDict# exch def
+            /_proc exch def
+            /_procName exch def
+            /_procDict# exch def
 
-            procName dup length "_args" concatstrings =
+            _procName dup length "_args" concatstrings =
             
             % Is the proc in the main dict; where its code lives:
-            procDict# procName known not{
+            _procDict# _procName known not{
                 (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
             }if
 
             aposkribh.args#
             begin
-            procDict# assertValidLibrary
-            procDict# procName argsAssertLibHasProc
+            _procDict# assertValidLibrary
+            _procDict# _procName argsAssertLibHasProcDict
             end
 
             
-            /argTypesAndResults procDict# /__ArgsTypes# get /Args# get procName get def
+            /argTypesAndResults _procDict# /__ArgsTypes# get /Args# get _procName get def
 
             /argTypes argTypesAndResults 0 get def
 
@@ -191,9 +191,9 @@
                 (/runner: One arg does not match type) /typecheck signalerror
             }if
 
-            proc exec
-
-            %(/runner:    =======  TODO  =======     Get args from /Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
+            %(/runner:    =======  TODO  =======     Get args from //Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
+            
+            _proc exec
 
             end
 
@@ -827,7 +827,8 @@
             
             end
         }bind def
-        
+
+
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.primatives# 

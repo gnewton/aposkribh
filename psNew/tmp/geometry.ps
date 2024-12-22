@@ -99,6 +99,9 @@
     }bind def
 
     /pointAlongLine{ % from: https://math.stackexchange.com/a/1630886
+        % Find the point on line (x0,y0)-(x1,y1)
+        % that is D distance from (x0,y0)
+        
         (pointAlongLine) =
         /dt exch def
         /y1 exch def
@@ -143,8 +146,6 @@
         ]
     }bind def
 
-
-
     /mirror{
         10 dict begin
         /pp exch def
@@ -179,5 +180,6 @@
         end
     }def
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end %aposkribh.geometry#
 }if

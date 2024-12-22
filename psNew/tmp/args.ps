@@ -39,7 +39,7 @@
             end
         }bind def
 
-        /argsAssertLibHasProc{
+        /argsAssertLibHasProcDict{
             count 2 lt{
                 (/aposkribh.args#//assertLibHasProc: Needs 2 args, /dicttype) /stackunderflow signalerror
             }if
@@ -80,6 +80,20 @@
                 (validateLibrary: livrary/dictionary missing /__ArgsTypes#/Args#  key ) /undefined signalerror
             }if
             end
+        }bind def
+
+        /argsValidateLibrary{
+            count 0 eq{
+                (/argsValidateLibrary: Empty stack) /stackunderflow signalerror
+            }if
+
+            0 index type /dicttype ne{
+                (/argsValidateLibrary: First arg not /dicttype) /typecheck signalerror
+            }if
+            %%
+
+            (/argsValidateLibrary: NOT IMPLEMENTED) /invalidexit signalerror
+            
         }bind def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
