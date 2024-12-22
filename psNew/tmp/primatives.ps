@@ -25,12 +25,28 @@
         __ArgsTypes# begin
 
         <<
+            /known2
+            [
+                [
+                    [ /nametype] %args
+                    [
+                        [
+                            /booleantype
+                        ]
+                        [
+                            /booleantype /dicttype
+                        ]
+                    ]
+                ]
+
+            ]
             /add2
             [
-                [ [ /integertype /integertype] % args
-                  [
-                      [/integertype] % results on stack
-                  ]
+                [
+                    [ /integertype /integertype] % args
+                    [
+                        [/integertype] % results on stack
+                    ]
                 ]
             ]
 
@@ -69,15 +85,15 @@
                 ]
             ]
 
-            /spaces[
-                [
-                    [ /integertype ] % args
-                    [
-                        [ /stringtype] % results on stack
-                        [ /intergertype]
-                    ]
-                ]
-            ]
+            % /spaces[
+            %     [
+            %         [ /integertype ] % args
+            %         [
+            %             [ /stringtype] % results on stack
+            %             [ /intergertype]
+            %         ]
+            %     ]
+            % ]
         >> addArgsDict % Add all of these to the /Args# dict
         
         end % ./__ArgsTypes# 
@@ -374,11 +390,6 @@
                 /digits digits 1 add store
                 (7777777777) =
             }if
-            (MMM) =
-            orig =
-            digits =
-            orig digits string cvs
-            (---MMM) =
         }bind def
 
 

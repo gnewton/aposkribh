@@ -238,11 +238,14 @@
             
             % Make args list from types list
             thisProcArgsTypeList makeTestArgs /testArgs exch  def
-            /testResults exch def
+            /testResultTypes exch def
 
-            testArgs{
+            0 1 testArgs length 1 sub{
+                %testArgs{
                 () =
-                /args exch def
+                /i exch def
+                /args testArgs i get def
+                /resultTypes testResultTypes i get def
                 (Testing ) thisProcName dup length string cvs concatstrings =
                 ( with args: ) =
                 args ===
@@ -250,6 +253,8 @@
                 (Results: ) =
                 {
                     _library# thisProcName get exec === % Run proc with test args
+                    resultTypes ===
+                    %% TODO: Test is stack (results) matches /resultTypes
                 }stopped{
                     % Should not stop
                     (/allLibProcsWithArgs: ERROR: Should not fail ) =
@@ -257,7 +262,7 @@
                     $error /errorname get
                     (/allLibProcsWithArgs: )  exch signalerror
                 }if
-            }forall
+            }for
         }forall
         
         end

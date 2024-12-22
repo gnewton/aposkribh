@@ -11,7 +11,7 @@
 
 
         __ArgsTemplate# begin
-
+        
         /Args#<<>> def % where ArgType info goes
 
         
@@ -62,8 +62,8 @@
                 (/assertLibHasProcDict procDict/__ArgsTypes#/__ArgsTypes# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
 
-            procDict# /__ArgsTypes# get  /Args# get procName known not{
-                (/assertLibHasProcDict: Procedure does not exist in /__ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
+            procDict# procName known not{
+                (/assertLibHasProcDict: Procedure does not exist in dict: ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
 
         }bind def
