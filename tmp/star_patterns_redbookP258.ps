@@ -1,0 +1,193 @@
+
+
+<< /PatternType 1 % Tiling pattern
+   /PaintType 2 % Uncolored
+   /TilingType 1
+   /BBox [0 0 9 9]
+   /XStep 9
+   /YStep 9
+   /PaintProc
+   { pop % Pop pattern dictionary
+     0 12 moveto
+     4 {144 rotate 0 12 lineto} repeat
+     closepath
+     fill
+   } bind
+>> % End prototype pattern dictionary
+
+
+matrix % Identity matrix
+makepattern % Instantiate the pattern
+/Star exch def
+
+140 110 170 100 4 copy % Two copies of rectangle operands
+
+0.9 setgray rectfill % Fill rectangle with gray
+
+[/Pattern /DeviceGray] setcolorspace
+1.0 Star setcolor rectfill % Fill rectangle with white stars
+
+225 185 60 0 360 arc % Build circular path
+0.0 Star setpattern gsave fill grestore % Fill circle with black stars
+0.0 setgray stroke % Stroke black outline
+
+
+0 setlinecap
+    /mmm{
+        %/angle rand cvr 2147483647.0 div 360 mul cvi def
+        /angle 90 def
+
+         
+         
+         % (---------) =
+         % w angle sin mul =
+         
+         % h angle cos div  =
+         % h angle cos div dup mul w w mul sub sqrt =
+
+         % h angle cos div 
+         % h angle cos div dup mul w w mul sub sqrt
+        %10 10
+         0 0 moveto
+          w angle sin mul w mul 
+          h angle cos mul h mul
+          rlineto
+          stroke
+
+          w 0 moveto
+           w angle cos mul w mul neg
+           h angle sin mul h mul
+          %-12 12 
+          rlineto
+          stroke
+
+         
+
+         % w 0 moveto
+         % h angle neg cos div 
+         % h angle cos div dup mul w w mul sub sqrt 
+         % stroke
+    }def
+
+    /w 10 def
+    /h 10 def
+
+/makeHash{
+    (makeHash START) =
+
+    1 dict begin
+    <<
+        
+        /PatternType 1 % Tiling pattern
+        /PaintType 2 % Uncolored
+        /TilingType 1
+        /BBox [0 0 10 10]
+        
+        /XStep 9
+        /YStep 9
+
+       /PaintProc
+       { pop % Pop pattern dictionary
+         mmm
+
+       } 
+    >> % End prototype pattern dictionary
+    (makeHash) =
+    matrix % Identity matrix
+    makepattern % Instantiate the pattern
+    end
+} def
+
+
+
+(1) =
+makeHash
+(3) =
+/Star2 exch def
+
+
+200 200 translate
+
+100 100 moveto
+200 200 rlineto
+stroke
+
+0.9 setgray 140 110 170 100  rectfill % Fill rectangle with gray
+
+(4) =
+gsave
+[/Pattern /DeviceRGB] setcolorspace
+140 110 170 100
+1 0 1 Star2 setcolor rectfill % Fill rectangle with white stars
+grestore
+
+(5) =
+
+newpath
+1 0 0 setrgbcolor
+100 100 moveto
+1000 0 rlineto
+stroke
+
+225 185 60 0 360 arc % Build circular path
+0.0 1 1 Star2 setpattern gsave fill grestore % Fill circle with black stars
+0.0 setgray stroke % Stroke black outline
+($$$$$$$$$$$$$$$$$$$$) =
+
+/foo 10 dict def
+foo begin
+/v 22 
+
+/zkey ("zkey value")
+
+/zproc {v 5 add }
+end
+
+(A)=
+%foo ===
+(A-)=
+
+% foo begin
+% %v =
+% zkey ===
+% zproc ===
+% end
+
+%ofoo /v get =
+(mmm) =
+%v =
+
+/a 10 dict def
+a begin
+/z (this is z) def
+end
+a ===
+a type =
+
+a /z known =
+
+/b <<
+       /ab 22
+       /bb {ab 10 add =}
+       /zb (this is zb)
+       /zc (this is zc) 
+   >> def
+b ===
+b type =
+b /zb known =
+
+a /z get =
+b /zb get =
+b /bb get ===
+b begin
+bb
+end
+
+
+quit
+
+foo /zkey get ===
+foo /zkey get exec =
+foo /zproc get ===
+foo /zproc get exec =
+

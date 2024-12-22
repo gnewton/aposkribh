@@ -32,6 +32,7 @@
                   ]
                 ]
             ]
+
             /r2s[
                 [ [ /realtype ] % args
                   [
@@ -141,11 +142,14 @@
                 (/runner: Arg2 nust be /dicttype) /typecheck signalerror
             }if
             % args
+            
             3 dict begin
             /proc exch def
             /procName exch def
             /procDict# exch def
 
+            procName dup length "_args" concatstrings =
+            
             % Is the proc in the main dict; where its code lives:
             procDict# procName known not{
                 (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
