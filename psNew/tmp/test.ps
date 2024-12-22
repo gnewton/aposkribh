@@ -3,6 +3,8 @@
 (assert.ps) run
 (types.ps) run
 
+(types_examples.ps) run
+
 
 /aposkribh.test#
 (test.ps)
@@ -203,8 +205,11 @@
     }bind def
 
 
-    /testLibrary_Pass{ % dict to test
+    /testLibrary_Pass{
+        % dict to test
         % Given a library, uses its /Args# to generate passing tests
+        (% testLibrary_Pass START) =
+        
         1 assertAtLeastNArgs
         0 assertDict
 
@@ -228,11 +233,11 @@
 
             aposkribh.args#
             begin
-            _library# thisProcName argsAssertLibHasProc
+            _library# thisProcName argsAssertLibHasProcDict
             end
             
             % Make args list from types list
-
+            (A) =
             thisProcArgsTypeList makeTestArgs /testArgs exch  def
             /testResults exch def
 
@@ -241,26 +246,26 @@
             testArgs ===
             (---) =
             
-            %thisProcArgsTypeList makeTestArgs{
             testArgs{
                 () =
                 /args exch def
-                %ff ===
                 (Testing ) thisProcName dup length string cvs concatstrings =
                 ( with args: ) =
                 args ===
                 args aload pop
+                stack
                 (Results: ) =
-                _library# thisProcName get exec ===
-
+                
+                _library# thisProcName get exec === % Run proc with test args
+                (END) =
             }forall
         }forall
         
         end
+        (% testLibrary_Pass END) =
     }bind def
 
-    /NumTests 10 def
-
+    /NumRandomTests 10 def % The number of runs random args are applied
     
     /makeTestArgs{ % array of array of types --> array of array of values of that type
         0 assertArray
@@ -272,22 +277,19 @@
         _thisProcArgsTypeList ===
         (m) =
 
-        /$argValuesList _thisProcArgsTypeList length NumTests mul array def
-        /$argResultsTypeList _thisProcArgsTypeList length NumTests mul array def
+        /$argValuesList _thisProcArgsTypeList length NumRandomTests mul array def
+        /$argResultsTypeList _thisProcArgsTypeList length NumRandomTests mul array def
 
         /argValuesListCounter 0 def
         
         0 1 _thisProcArgsTypeList length 1 sub{
             /i exch def
+
             /thisArgsAndResults _thisProcArgsTypeList i get def
             /thisArgs thisArgsAndResults 0 get def
             /thisResultsTypes thisArgsAndResults 1 get def
 
-            (thisArgs) ===
-            thisArgs ===
-            thisResultsTypes ===
-
-            NumTests{
+            NumRandomTests{
                 /thisArgsValuesArray thisArgs length array def
                 $argValuesList argValuesListCounter thisArgsValuesArray put
                 $argResultsTypeList argValuesListCounter thisResultsTypes put
@@ -296,17 +298,16 @@
                 % ARGS values
                 0 1 thisArgs length 1 sub{
                     /j exch def
-                    
+
                     /ttype  thisArgs j get def
+
 
                     % Randomly add type values
                     thisArgsValuesArray j
-                    aposkribh.types# /typesWithExamplars get ttype get randomArrayValue 
+
+                    aposkribh.types_examples# /typesWithExamplars get ttype get randomArrayValue
                     put
                 }for
-
-
-
             }repeat
         }for
         $argResultsTypeList

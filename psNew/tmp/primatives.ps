@@ -23,6 +23,7 @@
         
 
         __ArgsTypes# begin
+
         <<
             /add2
             [
@@ -77,7 +78,8 @@
                     ]
                 ]
             ]
-        >> addArgsDict
+        >> addArgsDict % Add all of these to the /Args# dict
+        
         end % ./__ArgsTypes# 
 
 
@@ -148,8 +150,6 @@
             /_procName exch def
             /_procDict# exch def
 
-            _procName dup length "_args" concatstrings =
-            
             % Is the proc in the main dict; where its code lives:
             _procDict# _procName known not{
                 (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
@@ -157,7 +157,7 @@
 
             aposkribh.args#
             begin
-            _procDict# assertValidLibrary
+            %_procDict# assertValidLibrary
             _procDict# _procName argsAssertLibHasProcDict
             end
 
@@ -296,11 +296,13 @@
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         /r2s{
+            (r2s START) = 
             aposkribh.primatives# /r2s {
                 %1 assertAtLeastNArgs
                 % 0 assertReal
                 24 string cvs
             }runner
+            (r2s END) =
         }bind def
 
 

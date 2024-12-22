@@ -53,10 +53,19 @@
             %
             /procName exch def
             /procDict# exch def
-            
-            procDict# /__ArgsTypes# get  /Args# get procName known not{
-                (/assertLibHasProc: Procedure does not exist in /__ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
+
+            procDict# /__ArgsTypes# known not{
+                (/assertLibHasProcDict procDict/__ArgsTypes# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
+
+            procDict# /__ArgsTypes# get  /Args# known not{
+                (/assertLibHasProcDict procDict/__ArgsTypes#/__ArgsTypes# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
+            }if
+
+            procDict# /__ArgsTypes# get  /Args# get procName known not{
+                (/assertLibHasProcDict: Procedure does not exist in /__ArgsTypes#/Args# dict: ) procName dup length string cvs concatstrings /undefined signalerror 
+            }if
+
         }bind def
         
         
@@ -92,7 +101,21 @@
             }if
             %%
 
-            (/argsValidateLibrary: NOT IMPLEMENTED) /invalidexit signalerror
+            /_lib exch def
+
+            _lib{
+                dup type /arraytype eq{
+                    dup xcheck ===
+                }if
+                /proc exch def
+                
+                /key exch def
+                key ===
+                /proc ===
+                () =
+            }forall
+
+            %(/argsValidateLibrary: NOT IMPLEMENTED) /invalidexit signalerror
             
         }bind def
 

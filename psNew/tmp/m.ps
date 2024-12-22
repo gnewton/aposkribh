@@ -1,0 +1,36 @@
+
+/raster 3 def
+/mms 2 def
+
+
+5 5 scale
+12 50  translate
+
+newpath 0 0 raster 24 mul raster 16 mul rectstroke
+
+ /x 0 def  /y 0 def
+ {
+  x 15 gt { exit } if
+  { y 23 gt { exit } if
+     x 0.5 add raster mul 
+     y 0.5 add raster mul
+     2.5 mms 0 359 arc stroke
+    /y y 1 add def
+  } loop
+  /x x 1 add def
+ } loop
+
+
+12 50  translate
+newpath 0 0 raster 24 mul raster 16 mul rectstroke
+0 1 15{
+    /x exch def
+    0 1 23{
+        /y exch def
+        x 0.5 add raster mul 
+        y 0.5 add raster mul
+        2.5 mms 0 359 arc stroke
+    }for
+}for % x
+
+showpage
