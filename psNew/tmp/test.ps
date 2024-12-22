@@ -237,15 +237,9 @@
             end
             
             % Make args list from types list
-            (A) =
             thisProcArgsTypeList makeTestArgs /testArgs exch  def
             /testResults exch def
 
-            (---) =
-            testResults ===
-            testArgs ===
-            (---) =
-            
             testArgs{
                 () =
                 /args exch def
@@ -253,11 +247,16 @@
                 ( with args: ) =
                 args ===
                 args aload pop
-                stack
                 (Results: ) =
-                
-                _library# thisProcName get exec === % Run proc with test args
-                (END) =
+                {
+                    _library# thisProcName get exec === % Run proc with test args
+                }stopped{
+                    % Should not stop
+                    (/allLibProcsWithArgs: ERROR: Should not fail ) =
+                    $error /errorname get =
+                    $error /errorname get
+                    (/allLibProcsWithArgs: )  exch signalerror
+                }if
             }forall
         }forall
         
