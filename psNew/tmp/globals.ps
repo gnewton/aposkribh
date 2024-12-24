@@ -1,7 +1,58 @@
 
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
-/aposkribh.libraryLoader_VERBOSE true def 
+/aposkribh.libraryLoader_VERBOSE false def
+
+/aposkribh.COUNTER where not{
+    /aposkribh.COUNTER 0 def
+}{
+    pop
+    (globals.ps) aposkribh.START
+}ifelse
+
+
+/aposkribh.spaces{
+    count 0 eq{
+        (/aposkribh.spaces: Need one arg (int)) /stackunderflow signalerror
+    }if 
+    0 index type /integertype ne{
+        (/aposkribh.spaces: Not /integertype on stack) /typecheck signalerror
+    }if
+
+    2 dict begin
+    /_n exch def
+    /str () def
+    0 1 _n 1 sub{
+        pop
+        /str str ( ) concatstrings store
+    }for
+    str
+    end
+}bind def
+
+/aposkribh.indent{
+    3 mul
+    aposkribh.spaces
+}bind def
+
+
+/aposkribh.START{ % (filename)
+    /_psfilename exch def
+
+    aposkribh.libraryLoader_VERBOSE{
+        aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings =
+        /aposkribh.COUNTER aposkribh.COUNTER 1 add store
+    }if
+}def
+
+/aposkribh.END{ % (filename)
+    /_psfilename exch def
+    aposkribh.libraryLoader_VERBOSE{
+        /aposkribh.COUNTER aposkribh.COUNTER 1 sub store
+        aposkribh.COUNTER aposkribh.indent   (---END: ) concatstrings   _psfilename concatstrings =
+    }if
+
+}def
 
 /aposkribh.stack{ % (filename)
 
@@ -74,7 +125,7 @@
 
 
     aposkribh.libraryLoader_VERBOSE{
-        1 index (Running: ) exch  concatstrings =
+        aposkribh.COUNTER aposkribh.indent 1 index (Running: ) exch concatstrings concatstrings =
     }if
 
 
@@ -91,7 +142,10 @@
     }if
 }bind def
 
-    /aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
+
+
+/aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
+
         count 3 lt{
             (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
         }if
@@ -108,23 +162,22 @@
             (/aposkribh.fileLoader: Arg2 not /nametype) /typecheck signalerror
         }if
         %%%%%%%%%%%%%%
-        
+
         aposkribh.libraryLoader_VERBOSE{
-            1 index (Running: ) exch  concatstrings =
+            1 index aposkribh.COUNTER aposkribh.indent (+Running: ) concatstrings exch  concatstrings =
         }if
-        
         3 1 roll
         
         /fileName exch def
         /libraryGlobalKey exch def
         libraryGlobalKey where not{
             aposkribh.libraryLoader_VERBOSE{
-                ( Loading: ) fileName concatstrings =
+                aposkribh.COUNTER aposkribh.indent (+Loading: ) fileName concatstrings concatstrings =
             }if
             exec
         }{
             aposkribh.libraryLoader_VERBOSE{
-                ( -- NOT Loading: ) fileName concatstrings =
+                aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) fileName concatstrings concatstrings =
             }if
             pop % found pop dict
             pop % pop exec
@@ -147,8 +200,9 @@
 /aposkribh.GLOBALS
 (globals.ps)
 {
-        /aposkribh.VERBOSE false def
-        /aposkribh.VERBOSE_TEST false def
+
+    /aposkribh.VERBOSE false def
+    /aposkribh.VERBOSE_TEST false def
 
         /aposkribh.TRACE false def
         /aposkribh.TRACE_COUNT 0 def
@@ -167,4 +221,6 @@
         /MaxInt 2147483647 def
         /MaxIntReal 2147483647.0 def
 }aposkribh.libraryLoader2
+
+(globals.ps) aposkribh.END
 

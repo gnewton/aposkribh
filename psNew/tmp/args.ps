@@ -1,5 +1,7 @@
 (globals.ps) run
 
+(args.ps) aposkribh.START
+
 /aposkribh.args# 
 (args.ps)
 {
@@ -14,7 +16,7 @@
         
         /Args#<<>> def % where ArgType info goes
 
-        
+
         
         /addArgsDict{ % dict; Adds entire dict; overwrites existing one
             count 0 eq{
@@ -123,6 +125,6 @@
         end % aposkribh.args# 
 }aposkribh.libraryLoader2
 
-
+(args.ps) aposkribh.END
 
 
