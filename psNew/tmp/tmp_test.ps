@@ -1,17 +1,42 @@
+/def2{
+    2 dict begin
+    /proc exch def
+    /procName exch def
+
+
+    /dName () def
+    currentdict /DictName known{
+        /dName currentdict /DictName get def
+    }if
+
+    end
+    procName
+    {
+        /procNameString procName dup length string cvs def
+        
+        (START: ) dName concatstrings  (/) concatstrings procNameString concatstrings =
+        proc
+        (END: ) procNameString concatstrings =
+    }
+    def
+
+}def
+
 /d<<
-        /a 22 def
-        /b 33 
-    >>def % Define dictionary 'd'
+      /DictName (Fred)
+  >>def
 
-d ===      % Print out contents of d; Prints /b 33 but no /a
 
-d begin    % Push d onto the dictionary stack
-a =        % Prints value of d/a '22'
-b =        % Prints value of d/b '33'
-end        % Pop d off of the dictionary stack
+d begin
 
-d /b get =  % Prints value of d/b '33'
-d /a get =  % Error /undefine. Cannot find /a in d
+/foo{
+    (Hello) =
+}def2
+
+foo
+
+
+end % d end
 
 
 
