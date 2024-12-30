@@ -1,23 +1,53 @@
+
+(primatives.ps) run
+
+
+
 /def2{
     2 dict begin
-    /proc exch def
-    /procName exch def
-
+    cvlit /proc exch def
+    /procName exch dup length string cvs def
 
     /dName () def
     currentdict /DictName known{
         /dName currentdict /DictName get def
+        dName =
     }if
 
+    currentdict /DictName known =
+
+    %/TestBefore { {= (BEGIN - /TestBefore) = } cvlit} def
+    /TestBefore { {/Value exch def (BEGIN - /TestBefore: ) Value dup length string cvs concatstrings =} cvlit} def
+
+
+    %/Before [procName] {= (BEGIN) = } cvlit aposkribh.primatives# /mergeArrays get exec def
+    /Before [procName] {aposkribh.primatives# begin ABefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
+    %/Before [procName] TestBefore cvlit aposkribh.primatives# /mergeArrays get exec def
+    /End [procName] {aposkribh.primatives# begin AAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
+
+    (Before=) =
+    Before ===
+    Before type ===
+
+    %/proc [procName] proc aposkribh.primatives# /mergeArrays get exec store
+%    /proc {= (BEGIN) =} cvlit proc aposkribh.primatives# /mergeArrays get exec store
+
+    /proc Before proc aposkribh.primatives# /mergeArrays get exec store
+    %/proc before proc aposkribh.primatives# /mergeArrays get exec store
+    proc ===
+
+    %/proc proc {(END) = } cvlit aposkribh.primatives# /mergeArrays get exec store
+    /proc proc End cvlit aposkribh.primatives# /mergeArrays get exec store
+
+
+
+    
+    
+
+    % Actual def taking place
+    procName % /proc
+    proc cvx %  /body of proc
     end
-    procName
-    {
-        /procNameString procName dup length string cvs def
-        
-        (START: ) dName concatstrings  (/) concatstrings procNameString concatstrings =
-        proc
-        (END: ) procNameString concatstrings =
-    }
     def
 
 }def
@@ -29,11 +59,29 @@
 
 d begin
 
-/foo{
-    (Hello) =
-}def2
+DictName ===
 
-foo
+(A) =
+/fooProc{
+    (CONTENTS - /fooProc) =
+}def2
+(B) =
+
+fooProc
+
+
+currentdict {== == () = } forall
+
+/dicts countdictstack array def
+
+dicts dictstack
+
+dicts{
+    () =
+    (------------------------------------------------------------------------------------) =
+    {== == () = } forall
+}forall
+
 
 
 end % d end

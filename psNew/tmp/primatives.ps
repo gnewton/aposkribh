@@ -26,21 +26,21 @@
         __ArgsTypes# begin
 
         <<
-            /known2
-            [
-                [
-                    [ /nametype] %args
-                    [
-                        [
-                            /booleantype
-                        ]
-                        [
-                            /booleantype /dicttype
-                        ]
-                    ]
-                ]
+            % /known2
+            % [
+            %     [
+            %         [ /nametype] %args
+            %         [
+            %             [
+            %                 /booleantype
+            %             ]
+            %             [
+            %                 /booleantype /dicttype
+            %             ]
+            %         ]
+            %     ]
 
-            ]
+            % ]
             /add2
             [
                 [
@@ -374,6 +374,7 @@
             1 assertAtLeastNArgs
             0 assertInteger
 
+            2 dict begin
             /i exch def
             /orig i def
 
@@ -386,11 +387,13 @@
                 /digits digits 1 add store
             }loop
 
-            digits =
             orig 0 lt{ % Need space in string for minus sign
                 /digits digits 1 add store
-                (7777777777) =
             }if
+            
+            orig digits string cvs % leave on stack
+
+            end
         }bind def
 
 
@@ -843,6 +846,39 @@
         }bind def
 
 
+        /mergeArrays{
+            8 dict begin
+            
+            /y exch def
+            y type /arraytype ne{
+                (Error: /mergeArrays: Second arg not array) =
+                quit
+            }if
+
+            /x exch def
+            x type /arraytype ne{
+                (Error: /mergeArrays: First arg not array) =
+                quit
+            }if
+            
+            /z x length y length add array def
+            
+            z 0 x putinterval
+            z x length y putinterval
+            
+            z
+            end
+        }def
+
+        /ABefore{ % procName
+            /procName exch def
+            (A-Before:: Start: ) procName concatstrings =
+        }def
+
+        /AAfter{ % procName
+            /procName exch def
+            (A-After:: End: ) procName concatstrings =
+        }def
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.primatives# 
