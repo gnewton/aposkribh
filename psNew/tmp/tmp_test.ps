@@ -4,17 +4,20 @@
 
 
 /def2{
+    /dName () def
+    currentdict /__DictName known{
+        /dName currentdict /__DictName get def
+        dName =
+    }if
+    currentdict /__DictName known =
+    
     2 dict begin
     cvlit /proc exch def
     /procName exch dup length string cvs def
 
-    /dName () def
-    currentdict /DictName known{
-        /dName currentdict /DictName get def
-        dName =
-    }if
 
-    currentdict /DictName known =
+    
+
 
     %/TestBefore { {= (BEGIN - /TestBefore) = } cvlit} def
     /TestBefore { {/Value exch def (BEGIN - /TestBefore: ) Value dup length string cvs concatstrings =} cvlit} def
@@ -50,16 +53,17 @@
     end
     def
 
+    currentdict /dName undef
 }def
 
 /d<<
-      /DictName (Fred)
+      /__DictName (Fred)
   >>def
 
 
 d begin
 
-DictName ===
+__DictName ===
 
 (A) =
 /fooProc{
@@ -72,19 +76,33 @@ fooProc
 
 currentdict {== == () = } forall
 
-/dicts countdictstack array def
+% /dicts countdictstack array def
 
-dicts dictstack
+% dicts dictstack
 
-dicts{
-    () =
-    (------------------------------------------------------------------------------------) =
-    {== == () = } forall
-}forall
+% dicts{
+%     () =
+%     (------------------------------------------------------------------------------------) =
+%     {== == () = } forall
+% }forall
 
 
 
 end % d end
+
+
+
+newpath
+100 100 moveto
+200 200 rlineto
+
+0 setlinewidth
+199.1 199 instroke =
+
+serialnumber =
+revision =
+product =
+languagelevel =
 
 
 

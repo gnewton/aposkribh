@@ -1,7 +1,13 @@
 
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
-/aposkribh.libraryLoader_VERBOSE false def
+
+
+/aposkribh.libraryLoader_VERBOSE where not{
+    /aposkribh.libraryLoader_VERBOSE true def
+}{
+    pop % throw away the found dict
+}ifelse
 
 /aposkribh.COUNTER where not{
     /aposkribh.COUNTER 0 def
@@ -9,6 +15,24 @@
     pop
     (globals.ps) aposkribh.START
 }ifelse
+
+/aposkribh.run{  %does 'run' on array of strings/filenames
+    % count 0 eq{
+    %     (/aposkribh.run: Need one arg: []string) /stackunderflow signalerror
+    % }if 
+    % 0 index type /arraytype ne{
+    %     (/aposkribh.run: Not []stringtype on stack) /typecheck signalerror
+    % }if
+    %
+    
+    {
+        dup
+         aposkribh.libraryLoader_VERBOSE{
+             (aposkribh.run: ) exch concatstrings =
+         }if
+        run
+    }forall
+}bind def
 
 
 /aposkribh.spaces{
