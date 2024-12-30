@@ -1,6 +1,11 @@
 
+(globals.ps) (init.ps) run
+
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
+
+
+(====================== ) aposkribh.PSFile concatstrings =
 
 
 /aposkribh.libraryLoader_VERBOSE where not{
@@ -9,6 +14,17 @@
     pop % throw away the found dict
 }ifelse
 
+aposkribh.libraryLoader_VERBOSE{
+    () =
+    /aposkribh.COUNTER where{
+        pop % Get rid of found dict
+        aposkribh.COUNTER aposkribh.indent (---START: globals.ps ---------------------------------------) concatstrings =
+
+    }{
+        (---START: globals.ps ---------------------------------------) =
+    }ifelse
+}if
+
 /aposkribh.COUNTER where not{
     /aposkribh.COUNTER 0 def
 }{
@@ -16,22 +32,34 @@
     (globals.ps) aposkribh.START
 }ifelse
 
-/aposkribh.run{  %does 'run' on array of strings/filenames
-    % count 0 eq{
-    %     (/aposkribh.run: Need one arg: []string) /stackunderflow signalerror
-    % }if 
-    % 0 index type /arraytype ne{
-    %     (/aposkribh.run: Not []stringtype on stack) /typecheck signalerror
-    % }if
-    %
-    
-    {
-        dup
+/aposkribh.run{  %executes 'run' on array of strings/filenames
+     count 2 lt{
+         (/aposkribh.run: Need 2 args: string-filename []string) /stackunderflow signalerror
+     }if 
+     0 index type /arraytype ne{
+         (/aposkribh.run: Arg0 Not []stringtype) /typecheck signalerror
+     }if
+     1 index type /stringtype ne{
+         (/aposkribh.run: Arg1 Not stringtype (filename)) /typecheck signalerror
+     }if
+     %%
+
+     /files exch def
+     /baseFile exch def
+
+     files
+     {
+         /filename exch def
          aposkribh.libraryLoader_VERBOSE{
-             (aposkribh.run: ) exch concatstrings =
-         }if
-        run
+             () =
+             (*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+         }{
+             pop % Remove unused dup
+         }ifelse
+         
+         filename run
     }forall
+
 }bind def
 
 
@@ -64,7 +92,8 @@
     /_psfilename exch def
 
     aposkribh.libraryLoader_VERBOSE{
-        aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings =
+        () =
+        aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings ( ---------------------------------------) concatstrings =
         /aposkribh.COUNTER aposkribh.COUNTER 1 add store
     }if
 }def

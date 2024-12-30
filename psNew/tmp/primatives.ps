@@ -2,12 +2,7 @@
 (globals.ps) run
 (primatives.ps) aposkribh.START
 
-[(library.ps) (types.ps) (args.ps)] aposkribh.run
-
-(library.ps) run
-(types.ps) run
-(args.ps) run
-
+(primatives.ps) [(library.ps) (types.ps) (args.ps)] aposkribh.run
 
 /aposkribh.primatives#
 (primatives.ps)
@@ -22,9 +17,9 @@
 
         %/Args# 10 dict def
 
-        
+        (M) =
         /__ArgsTypes# aposkribh.args# begin newArgDict end  def
-        
+        (J) =
 
         __ArgsTypes# begin
 
