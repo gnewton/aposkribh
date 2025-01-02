@@ -1,12 +1,6 @@
 
 
-(assert.ps) (init.ps) run
-
-
-(globals.ps) run
-
-(assert.ps) aposkribh.START
-(library.ps) run
+(assert.ps) [(globals.ps) (library.ps)] (init.ps) run
 
 
 % Should not rely on anything except globals.ps
@@ -263,7 +257,5 @@
 
         end  % aposkribh_assert#
 }aposkribh.libraryLoader2
-
-(assert.ps) aposkribh.END
 
 aposkribh.PSFile.END

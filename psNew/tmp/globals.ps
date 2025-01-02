@@ -1,5 +1,5 @@
 
-(globals.ps) (init.ps) run
+(globals.ps) [] (init.ps) run
 
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
@@ -26,35 +26,9 @@ aposkribh.libraryLoader_VERBOSE{
     /aposkribh.COUNTER 0 def
 }{
     pop
-    (globals.ps) aposkribh.START
+
 }ifelse
 
-/aposkribh.run{  %executes 'run' on array of strings/filenames
-     count 2 lt{
-         (/aposkribh.run: Need 2 args: string-filename []string) /stackunderflow signalerror
-     }if 
-     0 index type /arraytype ne{
-         (/aposkribh.run: Arg0 Not []stringtype) /typecheck signalerror
-     }if
-     1 index type /stringtype ne{
-         (/aposkribh.run: Arg1 Not stringtype (filename)) /typecheck signalerror
-     }if
-     %%
-
-     /files exch def
-     /baseFile exch def
-
-     files
-     {
-         /filename exch def
-         aposkribh.libraryLoader_VERBOSE{
-             %() =
-             %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
-         }if
-         filename run
-    }forall
-
-}bind def
 
 
 /aposkribh.spaces{
@@ -82,17 +56,8 @@ aposkribh.libraryLoader_VERBOSE{
 }bind def
 
 
-/aposkribh.START{ % (filename)
-    /_psfilename exch def
 
-    aposkribh.libraryLoader_VERBOSE{
-        %() =
-        %aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings ( ---------------------------------------) concatstrings =
-        /aposkribh.COUNTER aposkribh.COUNTER 1 add store
-    }if
-}def
-
-/aposkribh.END{ % (filename)
+/aposkribh.END22{ % (filename)
     /_psfilename exch def
     aposkribh.libraryLoader_VERBOSE{
         /aposkribh.COUNTER aposkribh.COUNTER 1 sub store
@@ -213,7 +178,7 @@ aposkribh.libraryLoader_VERBOSE{
         (/aposkribh.fileLoader2: Number of dictionaries on the dictstack should not change when loading a library: ) fileName concatstrings /dictstackoverflow signalerror
     }if
 
-    }bind def
+}bind def
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /aposkribh.GLOBALS
@@ -241,6 +206,6 @@ aposkribh.libraryLoader_VERBOSE{
         /MaxIntReal 2147483647.0 def
 }aposkribh.libraryLoader2
 
-(globals.ps) aposkribh.END
+
 
 aposkribh.PSFile.END
