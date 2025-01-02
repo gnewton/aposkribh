@@ -5,9 +5,6 @@
 %  and track loading of files, libraries
 
 
-(====================== ) aposkribh.PSFile concatstrings =
-
-
 /aposkribh.libraryLoader_VERBOSE where not{
     /aposkribh.libraryLoader_VERBOSE true def
 }{
@@ -15,13 +12,13 @@
 }ifelse
 
 aposkribh.libraryLoader_VERBOSE{
-    () =
+
     /aposkribh.COUNTER where{
         pop % Get rid of found dict
-        aposkribh.COUNTER aposkribh.indent (---START: globals.ps ---------------------------------------) concatstrings =
+        %aposkribh.COUNTER aposkribh.indent (---START: globals.ps ---------------------------------------) concatstrings =
 
     }{
-        (---START: globals.ps ---------------------------------------) =
+        %(---START: globals.ps ---------------------------------------) =
     }ifelse
 }if
 
@@ -51,12 +48,9 @@ aposkribh.libraryLoader_VERBOSE{
      {
          /filename exch def
          aposkribh.libraryLoader_VERBOSE{
-             () =
-             (*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
-         }{
-             pop % Remove unused dup
-         }ifelse
-         
+             %() =
+             %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+         }if
          filename run
     }forall
 
@@ -92,8 +86,8 @@ aposkribh.libraryLoader_VERBOSE{
     /_psfilename exch def
 
     aposkribh.libraryLoader_VERBOSE{
-        () =
-        aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings ( ---------------------------------------) concatstrings =
+        %() =
+        %aposkribh.COUNTER aposkribh.indent (---START: ) concatstrings   _psfilename concatstrings ( ---------------------------------------) concatstrings =
         /aposkribh.COUNTER aposkribh.COUNTER 1 add store
     }if
 }def
@@ -102,7 +96,7 @@ aposkribh.libraryLoader_VERBOSE{
     /_psfilename exch def
     aposkribh.libraryLoader_VERBOSE{
         /aposkribh.COUNTER aposkribh.COUNTER 1 sub store
-        aposkribh.COUNTER aposkribh.indent   (---END: ) concatstrings   _psfilename concatstrings =
+        %aposkribh.COUNTER aposkribh.indent   (---END: ) concatstrings   _psfilename concatstrings =
     }if
 
 }def
@@ -163,39 +157,6 @@ aposkribh.libraryLoader_VERBOSE{
     ds =
 }bind def
 
-/aposkribh.libraryLoader{
-    count 2 lt{
-        (/aposkribh.fileLoader: Needs 2 args) /stackunderflow signalerror
-    }if
-
-    0 index type /arraytype ne{
-        (/aposkribh.fileLoader: Arg0 not /arraytype) /typecheck signalerror
-    }if
-
-    1 index type /stringtype ne{
-        (/aposkribh.fileLoader: Arg1 not /stringtype) /typecheck signalerror
-    }if
-
-
-    aposkribh.libraryLoader_VERBOSE{
-        aposkribh.COUNTER aposkribh.indent 1 index (Running: ) exch concatstrings concatstrings =
-    }if
-
-
-    1 index /fileName exch def
-    exec
-
-    count 0 ne{
-        (Stack should be empty:) =
-        stack
-        () =
-        (FOO) aposkribh.stack
-        () =
-        (/aposkribh.fileLoader: stack not empty after loading file) /stackoverflow signalerror
-    }if
-}bind def
-
-
 
 /aposkribh.libraryLoader2{ % libraryglobal-/nametype filename-/stringtype proc-{exec}
     /numDictsAtStart countdictstack def
@@ -220,7 +181,7 @@ aposkribh.libraryLoader_VERBOSE{
 
     
     aposkribh.libraryLoader_VERBOSE{
-        1 index aposkribh.COUNTER aposkribh.indent (+Running: ) concatstrings exch  concatstrings =
+        %1 index aposkribh.COUNTER aposkribh.indent (+Running: ) concatstrings exch  concatstrings =
     }if
     3 1 roll
 
@@ -228,12 +189,13 @@ aposkribh.libraryLoader_VERBOSE{
     /libraryGlobalKey exch def
     libraryGlobalKey where not{
         aposkribh.libraryLoader_VERBOSE{
-            aposkribh.COUNTER aposkribh.indent (+Loading: ) fileName concatstrings concatstrings =
+            aposkribh.PSFile aposkribh.cat ( ###Loading#####) concatstrings =
+            %aposkribh.COUNTER aposkribh.indent (+Loading: ) fileName concatstrings concatstrings =
         }if
         exec
     }{
         aposkribh.libraryLoader_VERBOSE{
-            aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) fileName concatstrings concatstrings =
+            %aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) fileName concatstrings concatstrings =
         }if
         pop % found pop dict
         pop % pop exec
@@ -252,10 +214,6 @@ aposkribh.libraryLoader_VERBOSE{
     }if
 
     }bind def
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /aposkribh.GLOBALS
@@ -285,3 +243,4 @@ aposkribh.libraryLoader_VERBOSE{
 
 (globals.ps) aposkribh.END
 
+aposkribh.PSFile.END
