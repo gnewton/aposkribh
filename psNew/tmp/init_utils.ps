@@ -1,0 +1,87 @@
+/aposkribh.run{  %Applies 'run' on array of strings/filenames
+     count 2 lt{
+         (/aposkribh.run: Need 2 args: string-filename []string) /stackunderflow signalerror
+     }if 
+     0 index type /arraytype ne{
+         (/aposkribh.run: Arg0 Not []stringtype) /typecheck signalerror
+     }if
+     1 index type /stringtype ne{
+         (/aposkribh.run: Arg1 Not stringtype (filename)) /typecheck signalerror
+     }if
+     %%
+
+     /files exch def
+     /baseFile exch def
+
+     files
+     {
+         /filename exch def
+         aposkribh.libraryLoader_VERBOSE{
+             %() =
+             %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+         }if
+         filename run
+    }forall
+
+}bind def
+
+/aposkribh.append{ % value array -> array with value added to end
+    count 2 lt{
+        (/append: Needs 2 args, any, array) /stackunderflow signalerror
+    }def
+    1 index type /arraytype ne{
+        (/append: 2nd arg not /arraytype) /typecheck
+    }if
+    %%%
+    
+    2 dict begin
+    /_v exch def
+    /_a exch def
+        
+    /$newArray _a length 1 add array def
+
+    0 1 _a length 1 sub{
+        /i exch def
+        $newArray i _a i get  put
+    }for
+
+    $newArray _a length _v put
+
+    $newArray
+    end
+}bind def
+
+/aposkribh.cat{ % array[strings] -> string
+    count 0 eq{
+        (/cat: Needs 1 arg: array[strings]) /stackunderflow signalerror
+    }def
+    0 index type /arraytype ne{
+        (/cat: Arg not /arraytype) /typecheck
+    }if
+    %%%
+    1 dict begin
+    
+    /_a exch def
+    /delim ( - ) def
+    /$s () def
+
+    0 1 _a length 1 sub{
+        /i exch def
+        i 0 ne{
+            /$s $s delim concatstrings store
+        }if
+        /$s $s _a i get concatstrings store
+    }for
+
+    $s
+    end
+
+}bind def
+
+/aposkribh.log_location{
+    (File: ) aposkribh.location concatstrings =
+}bind def
+
+/aposkribh.location{ 
+    aposkribh.PSFile aposkribh.cat
+}bind def

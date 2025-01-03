@@ -67,20 +67,24 @@
             {
                 % Needs N on the stack
                 count 0 eq{
+                    aposkribh.log_location =
                     (/assertAtLeastNArgs: Need at least one arg) /stackunderflow signalerror
                 }if
 
                 0 index type /integertype ne{
+                    aposkribh.log_location =
                     (/assertAtLeastNArgs: Arg needs to be /integertype) /rangecheck signalerror
                 }if
 
                 1 dict begin
                 /n exch def
                 n 0 lt{
+                    aposkribh.log_location =
                     (/assertAtLeastNArgs: Arg needs to be >=0) /rangecheck signalerror
                 }if
 
                 count n lt{
+                    aposkribh.log_location =
                     (/assertAtLeastNArgs: Not enough args) /stackunderflow signalerror
                 }if
                 end
@@ -256,6 +260,6 @@
         }bind def
 
         end  % aposkribh_assert#
-}aposkribh.libraryLoader2
+}aposkribh.libraryLoader
 
 aposkribh.PSFile.END

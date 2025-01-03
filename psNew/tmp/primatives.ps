@@ -97,14 +97,17 @@
         %%% Cannot be used
         /randomArrayValue{ % array -> Nth value, where N is random
             count 0 eq{
+                aposkribh.log_location
                 (/randomArrayValue: Needs one arg, array) /stackunderflow signalerror
             }if
 
             0 index type /arraytype ne{
+                aposkribh.log_location
                 (/randomArrayValue: Arg0 not array) /typecheck signalerror
             }if
 
             0 index length 0 eq{
+                aposkribh.log_location
                 (/randomArrayValue: Arg0 array cannot be zero length) /rangecheck signalerror
             }if
             %
@@ -212,7 +215,10 @@
         }def
 
         
-        /stackTypesMatchArray{ % /arraytype of types--> bookean
+        /stackTypesMatchArray{ % /arraytype of types--> boolean
+            count 0 eq{
+                (/stackTypesMatchArray needs 1 arg; /arraytype) /typecheck signalerror
+            }if
             0 index type /arraytype ne{
                 (/stackTypesMatchArray Arg0 not /arraytype) /typecheck signalerror
             }if
@@ -876,10 +882,10 @@
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.primatives# 
-}aposkribh.libraryLoader2
+}aposkribh.libraryLoader
 
 
 %(primatives.ps) aposkribh.END
 
-aposkribh.PSFile.END
+
 
