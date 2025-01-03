@@ -71,6 +71,7 @@
                 ]
             ]
 
+
             /i2s[
                 [
                     [ /integertype ]% args
@@ -157,7 +158,7 @@
             2 index type /dicttype ne{
                 (/runner: Arg2 nust be /dicttype) /typecheck signalerror
             }if
-            % args
+            % args end %%%%%%%%%%%%%%
             
             3 dict begin
             /_proc exch def

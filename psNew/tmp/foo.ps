@@ -1,0 +1,117 @@
+(init_utils.ps) run
+
+/stuff<<
+
+          /b2s[
+              <<
+                  /args [ /booleantype /arraytype] 
+                  /results [ /stringtype ]
+              >>
+
+              <<
+                  /args [ /integertype /integertype] 
+                  /results [ /stringtype ]
+              >>
+
+              <<
+                  /args [ /integertype /integertype /integertype] 
+                  /results [ /booleantype ]
+              >>
+          ]
+          
+      >> def
+
+
+stuff{
+    /d exch def
+    /k exch def
+    k =
+    d ===
+    d {
+        /p exch def
+        /pargs p /args get def
+        /presults p /results get def
+        pargs ===
+        presults ===
+        () =
+    }forall
+
+}forall
+
+
+
+
+/argsMatch{ %procs-args-dict# procKey --> true array of possible results | false
+    /possibleResults [] def
+    
+    /_procKey exch def
+    /_d exch def
+    (/argsMatch) =
+    _d ===
+    (KEY) =
+    _procKey ===
+
+    _d _procKey get ===
+
+    /match false def
+
+    (S) =
+    pstack
+    (-S) =
+
+    _d _procKey get{
+        () =
+        (A) =
+        /resArgs# exch def
+        /largs resArgs# /args get def
+        /lresults resArgs# /results get def
+        largs ===
+        lresults ===
+        (--) =
+        pstack
+        /allMatch true def
+        (COunt=) =
+        count =
+        largs length =
+
+        count largs length lt{
+            /allMatch false store
+        }{
+            0 1 largs length 1 sub{
+                (B) =
+                /i exch def
+                (Defined args) =
+                largs i get =
+                (ARG) =
+                i index type =
+                (EQ) =
+                i index type largs i get  eq =
+                i index type largs i get  ne{
+                    /allMatch false store
+                }if
+            }for
+
+            allMatch{
+                /match true store
+                (MATCH) =
+                /possibleResults possibleResults lresults aposkribh.append store
+            }if
+        }ifelse
+    }forall
+    (ZZ) =
+    match{
+        possibleResults
+        true
+    }{
+        false
+    }ifelse
+    
+}bind def
+
+1 2 stuff /b2s argsMatch %true array of possible results | false
+{
+    (TRUE) =
+    ===
+}{
+    (FALSE) =
+}ifelse
