@@ -1,80 +1,43 @@
 
-(primatives.ps) run
+(tmp_test.ps) [ (primatives.ps) (library.ps)] (init.ps) run
 
+/CD# currentdict def
 
+(MMMMM) =
+(d#-lib) aposkribh.library#  begin newLibrary end  ===
+() =
+(d#-lib) aposkribh.library#  begin newLibrary end  type ===
+/d#  (d#-lib) aposkribh.library# begin newLibrary end def
+d# ===
+clear
 
-/def2{
-    /dName () def
-    currentdict /__DictName known{
-        /dName currentdict /__DictName get def
-        dName =
-    }if
-    currentdict /__DictName known =
-    
-    2 dict begin
-    cvlit /proc exch def
-    /procName exch dup length string cvs def
+(JJJJJ) =
+d# ===
+(JJJJJ) =
 
-
-    
-
-
-    %/TestBefore { {= (BEGIN - /TestBefore) = } cvlit} def
-    /TestBefore { {/Value exch def (BEGIN - /TestBefore: ) Value dup length string cvs concatstrings =} cvlit} def
-
-
-    %/Before [procName] {= (BEGIN) = } cvlit aposkribh.primatives# /mergeArrays get exec def
-    /Before [procName] {aposkribh.primatives# begin ABefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
-    %/Before [procName] TestBefore cvlit aposkribh.primatives# /mergeArrays get exec def
-    /End [procName] {aposkribh.primatives# begin AAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
-
-    (Before=) =
-    Before ===
-    Before type ===
-
-    %/proc [procName] proc aposkribh.primatives# /mergeArrays get exec store
-%    /proc {= (BEGIN) =} cvlit proc aposkribh.primatives# /mergeArrays get exec store
-
-    /proc Before proc aposkribh.primatives# /mergeArrays get exec store
-    %/proc before proc aposkribh.primatives# /mergeArrays get exec store
-    proc ===
-
-    %/proc proc {(END) = } cvlit aposkribh.primatives# /mergeArrays get exec store
-    /proc proc End cvlit aposkribh.primatives# /mergeArrays get exec store
-
-
-
-    
-    
-
-    % Actual def taking place
-    procName % /proc
-    proc cvx %  /body of proc
-    end
-    def
-
-    currentdict /dName undef
-}def
-
-/d<<
-      /__DictName (Fred)
-  >>def
-
-
-d begin
+d# begin
 
 __DictName ===
 
+
+
 (A) =
+(*********************) =
 /fooProc{
+    2 add =
     (CONTENTS - /fooProc) =
 }def2
-(B) =
+d# ===
+(B------------) =
 
-fooProc
+12 fooProc
 
+(--------------) =
 
-currentdict {== == () = } forall
+d# ===
+
+(--------------) =
+%currentdict {== == () = } forall
 
 % /dicts countdictstack array def
 
@@ -86,23 +49,48 @@ currentdict {== == () = } forall
 %     {== == () = } forall
 % }forall
 
+aposkribh.primatives#  begin
+d# 0 printDict
+end
+quit
+end
 
 
-end % d end
+currentdict CD# eq ===
+
+currentdict /d# where ===
+currentdict eq =
 
 
 
-newpath
-100 100 moveto
-200 200 rlineto
 
-0 setlinewidth
-199.1 199 instroke =
 
-serialnumber =
-revision =
-product =
-languagelevel =
+
+
+
+% newpath
+% 100 100 moveto
+% 200 200 rlineto
+
+% 0 setlinewidth
+% 199.1 199 instroke =
+
+% serialnumber =
+% revision =
+% product =
+% languagelevel =
+
+% end % d end
+% % d# begin
+% % /m aposkribh.library#  /newLibrary get def
+
+% % m (age) 32 put
+% % m ===
+
+% % m m eq =
+
+% % /mm aposkribh.library#  /newLibrary get def
+
 
 
 

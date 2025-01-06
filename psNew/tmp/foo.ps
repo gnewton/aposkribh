@@ -4,17 +4,17 @@
 
           /b2s[
               <<
-                  /args [ /booleantype /arraytype] 
+                  /args [/m  /booleantype /arraytype] 
                   /results [ /stringtype ]
               >>
 
               <<
-                  /args [ /integertype /integertype] 
+                  /args [/integertype /integertype] 
                   /results [ /stringtype ]
               >>
 
               <<
-                  /args [ /integertype /integertype /integertype] 
+                  /args [/integertype /integertype /integertype] 
                   /results [ /booleantype ]
               >>
           ]
@@ -22,96 +22,86 @@
       >> def
 
 
-stuff{
-    /d exch def
-    /k exch def
-    k =
-    d ===
-    d {
-        /p exch def
-        /pargs p /args get def
-        /presults p /results get def
-        pargs ===
-        presults ===
-        () =
-    }forall
-
-}forall
 
 
 
 
 /argsMatch{ %procs-args-dict# procKey --> true array of possible results | false
+    count 2 lt{
+        (/argsMatch: Needs 2 args, dict procKey) /stackunderflow signalerror
+    }if
+
+    0 index type /nametype ne{
+        (/argsMatch: 1st arg must be /nametype, proc name) /typecheck signalerror
+    }if
+
+    1 index type /dicttype ne{
+        (/argsMatch: 2nd arg must be /dicttype) /typecheck signalerror
+    }if
+
+    %%%%
+    2 dict begin
+    
     /possibleResults [] def
     
     /_procKey exch def
     /_d exch def
-    (/argsMatch) =
-    _d ===
-    (KEY) =
-    _procKey ===
-
-    _d _procKey get ===
 
     /match false def
 
-    (S) =
-    pstack
-    (-S) =
+    
+    _d _procKey known not{
+        (/argsMatch: procKey not found: ) _procKey dup length string cvs concatstrings  /undefined signalerror
+    }if
 
-    _d _procKey get{
-        () =
-        (A) =
+    _d _procKey get{ % Each arg/results pairs for this proc
         /resArgs# exch def
+
+
+        resArgs# /args known not{
+            (/argsMatch: /args not found in: ) _procKey dup length string cvs concatstrings  /undefined signalerror
+        }if
         /largs resArgs# /args get def
+
+        resArgs# /results known not{
+            (/argsMatch: /results not found in: ) _procKey dup length string cvs concatstrings  /undefined signalerror
+        }if
         /lresults resArgs# /results get def
-        largs ===
-        lresults ===
-        (--) =
-        pstack
+
         /allMatch true def
-        (COunt=) =
-        count =
-        largs length =
 
         count largs length lt{
-            /allMatch false store
+            /allMatch false store % Not enought args on stack
         }{
-            0 1 largs length 1 sub{
-                (B) =
+            0 1 largs length 1 sub{ % Walk through arg array and stack args
                 /i exch def
-                (Defined args) =
-                largs i get =
-                (ARG) =
-                i index type =
-                (EQ) =
-                i index type largs i get  eq =
                 i index type largs i get  ne{
                     /allMatch false store
                 }if
             }for
 
-            allMatch{
-                /match true store
-                (MATCH) =
-                /possibleResults possibleResults lresults aposkribh.append store
+            allMatch{ % Add results to results array
+                /match true store % At least one matches
+                /possibleResults possibleResults lresults aposkribh.append store 
             }if
         }ifelse
     }forall
-    (ZZ) =
+
     match{
         possibleResults
         true
     }{
         false
     }ifelse
-    
+    end
 }bind def
 
-1 2 stuff /b2s argsMatch %true array of possible results | false
+
+3 1 2 stuff /b2s argsMatch %true array of possible results | false
 {
     (TRUE) =
     ===
 }{
     (FALSE) =
 }ifelse
+

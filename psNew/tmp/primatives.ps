@@ -871,16 +871,36 @@
             end
         }def
 
-        /ABefore{ % procName
+        /execBefore{ % procName
             /procName exch def
-            (A-Before:: Start: ) procName concatstrings =
+            /dictName exch def
+            () =
+            (execBefore:: Start: ) dictName concatstrings (/) concatstrings procName concatstrings =
         }def
 
-        /AAfter{ % procName
+        /execAfter{ % procName
             /procName exch def
-            (A-After:: End: ) procName concatstrings =
+            /dictName exch def
+
+            (execAfter:: End: ) dictName concatstrings (/) concatstrings procName concatstrings =
+            () =
         }def
 
+        /printDict{
+            /_depth exch def
+            /_dict# exch def
+
+            _dict#
+            {
+                cvlit /value exch def
+                /key exch def
+                key =
+                value  =
+                () =
+            }forall
+
+        }bind def
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         end % aposkribh.primatives# 
 }aposkribh.libraryLoader
