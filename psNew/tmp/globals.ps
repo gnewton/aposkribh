@@ -152,6 +152,8 @@ aposkribh.libraryLoader_VERBOSE{
     /_fileName exch def
     /_libraryGlobalKey exch def
 
+    count /numStackAtStart exch  def
+
     %%%%%  See if library name argument already defined (and loaded)
     _libraryGlobalKey where not{ 
         aposkribh.libraryLoader_VERBOSE{
@@ -166,16 +168,33 @@ aposkribh.libraryLoader_VERBOSE{
         pop % found pop dict
     }ifelse
 
-    count 0 ne{
-        (Stack should be empty:) =
-        () =
-        (BAR) aposkribh.stack
-        () =
-        (/aposkribh.fileLoader2: stack not empty after loading file) /stackoverflow signalerror
-    }if
+    % count 0 ne{
+    %     (Stack should be empty:) =
+    %     () =
+    %     (BAR) aposkribh.stack
+    %     () =
+    %     (/aposkribh.libraryLoader: stack not empty after loading file) /stackoverflow signalerror
+    % }if
 
     numDictsAtStart countdictstack ne{
-        (/aposkribh.fileLoader2: Number of dictionaries on the dictstack should not change when loading a library: ) _fileName concatstrings /dictstackoverflow signalerror
+        (/aposkribh.libraryLoader: Number of dictionaries on the dictstack should not change when loading a library: ) _fileName concatstrings /dictstackoverflow signalerror
+    }if
+
+    count numStackAtStart ne{
+        (% Stack start) =
+        pstack
+        (% Stack end) =
+        count ( Start Count=) exch 4 string cvs concatstrings =
+
+        (   End Count=) numStackAtStart 4 string cvs concatstrings = 
+        
+        count numStackAtStart gt{
+            (/aposkribh.libraryLoader: Stack larger than before loading file: ) _fileName concatstrings /stackoverflow signalerror
+        }if
+        
+        count numStackAtStart lt{
+            (/aposkribh.libraryLoader: Stack smaller than before loading file: ) _fileName concatstrings /stackunderflow signalerror
+        }if
     }if
 
 }bind def
@@ -187,6 +206,8 @@ aposkribh.libraryLoader_VERBOSE{
 
     /aposkribh.VERBOSE false def
     /aposkribh.VERBOSE_TEST false def
+
+    /aposkribh.library.TRACE true def
 
         /aposkribh.TRACE false def
         /aposkribh.TRACE_COUNT 0 def

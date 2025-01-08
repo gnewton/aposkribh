@@ -6,15 +6,62 @@
         /aposkribh.library# 50 dict def
 
         aposkribh.library# begin
-        /__DictName (aposkribh.library#) def
 
-        
+        /aposkribh.NATIVE_LIB true def
+
         /zz{
             /tmp# <<
                       (name) (Freddd)
                   >> def
             tmp#
         }def
+
+        /execBefore{ % procName
+            aposkribh.library.TRACE not{
+                pop
+                pop
+            }{
+                count 2 lt{
+                    (aposkribh.library#execBefore: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
+                }if
+                0 index type /stringtype ne{
+                    (aposkribh.library#execBefore: 1st arg not stringtype) /typecheck signalerror
+                }if
+                1 index type /stringtype ne{
+                    (aposkribh.library#execBefore: 2nd arg not stringtype) /typecheck signalerror
+                }if
+                %%
+                /procName exch def
+                /dictName exch def
+                %%
+                () =
+                (execBefore:: Start: ) dictName concatstrings (/) concatstrings procName concatstrings =
+            }ifelse
+        }def % /execBefore
+
+        /execAfter{ % procName
+            aposkribh.library.TRACE not{
+                pop
+                pop
+            }{
+                count 2 lt{
+                    (aposkribh.library#execAfter: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
+                }if
+                0 index type /stringtype ne{
+                    (aposkribh.library#execAfter: 1st arg not stringtype) /typecheck signalerror
+                }if
+                1 index type /stringtype ne{
+                    (aposkribh.library#execAfter: 2nd arg not stringtype) /typecheck signalerror
+                }if
+                %%
+                /procName exch def
+                /dictName exch def
+
+                (execAfter:: End: ) dictName concatstrings (/) concatstrings procName concatstrings =
+                () =
+            }ifelse
+        }def % /execAfter
+
 
         /newLibrary{
             count 0 eq{
@@ -27,9 +74,8 @@
 
             /_dictName exch def
 
-            (DICT: ) _dictName concatstrings =
+
             %%%
-            
             <<
                 /__DictName _dictName
 
@@ -49,9 +95,7 @@
                     /dName () def
                     currentdict /__DictName known{
                         /dName currentdict /__DictName get def
-                        dName =
                     }if
-                    currentdict /__DictName known =
 
                     /dictName  currentdict /__DictName get def
                     
@@ -60,23 +104,24 @@
                     /procName exch dup length string cvs def
 
                     % Add before exec
-                    /Before [dictName procName] {aposkribh.primatives# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                    /Before [dictName procName] {aposkribh.library# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
                     /proc Before proc aposkribh.primatives# /mergeArrays get exec store
 
                     % Add after exec
-                    /After [dictName procName] {aposkribh.primatives# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                    /After [dictName procName] {aposkribh.library# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
                     /proc proc After cvlit aposkribh.primatives# /mergeArrays get exec store
 
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     % Actual def of proc taking place
                     procName % /proc
                     proc cvx %  /body of proc
                     end % End anonymous dict
-                    def
-
+                    def % procName
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     currentdict /dName undef
                 }
             >>
-        }def
+        }def % newLibrary
 
         
         end % aposkribh.library#
