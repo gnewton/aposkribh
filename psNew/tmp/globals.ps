@@ -1,6 +1,14 @@
+() =
+(globals.ps START) =
 
+/aposkribh.globals# where{
+    pop
+}{
+    /aposkribh.globals# 10 dict def 
+
+    (A)  =
 (globals.ps) [] (init.ps) run
-
+    (B)  =
 % Used to debug aposkribh.libraryLoader
 %  and track loading of files, libraries
 
@@ -155,15 +163,16 @@ aposkribh.libraryLoader_VERBOSE{
     count /numStackAtStart exch  def
 
     %%%%%  See if library name argument already defined (and loaded)
+    _libraryGlobalKey =
     _libraryGlobalKey where not{ 
         aposkribh.libraryLoader_VERBOSE{
             aposkribh.PSFile aposkribh.cat ( ###Loading#####) concatstrings =
-            %aposkribh.COUNTER aposkribh.indent (+Loading: ) fileName concatstrings concatstrings =
+            aposkribh.COUNTER aposkribh.indent (+Loading: ) _fileName concatstrings concatstrings =
         }if
         _proc
     }{
         aposkribh.libraryLoader_VERBOSE{
-            %aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) fileName concatstrings concatstrings =
+            aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) _fileName concatstrings concatstrings =
         }if
         pop % found pop dict
     }ifelse
@@ -227,6 +236,8 @@ aposkribh.libraryLoader_VERBOSE{
     /MaxIntReal 2147483647.0 def
 }aposkribh.libraryLoader
 
-
+}ifelse
 
 aposkribh.PSFile.END
+
+(globals.ps END) =

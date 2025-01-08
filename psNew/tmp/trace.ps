@@ -1,6 +1,6 @@
-(trace.ps) [(globals.ps)] (init.ps) run
+(trace.ps) [(globals.ps) (assert.ps)] (init.ps) run
 
-/aposkribh.library#
+/aposkribh.trace#
 (trace.ps)
 {
     /aposkribh.trace# 50 dict def
@@ -46,8 +46,7 @@
 
     end % aposkribh.trace#
 
-    }aposkribh.libraryLoader
-
+}aposkribh.libraryLoader
 
 aposkribh.PSFile.END
 
