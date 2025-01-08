@@ -1,5 +1,9 @@
 
-(init.ps START) =
+/aposkribh.libraryLoader_LOADED_FILES# where not{
+    /aposkribh.libraryLoader_LOADED_FILES# <<>> def  % EDIT
+}{
+    pop % throw away the found dict
+}ifelse
 
 /aposkribh.libraryLoader_VERBOSE where not{
     /aposkribh.libraryLoader_VERBOSE true def  % EDIT
@@ -29,6 +33,8 @@
     1 index type =
     (init.ps: 2nd arg not /stringtype) /typecheck signalerror
 }if
+
+%%%%
 
 /psfilenames exch def
 /filename exch def
@@ -122,6 +128,3 @@ count 0 ne{
     (init.ps: stack is not empty) /stackunderflow signalerror
 }if
 
-%( ZZZ init.ps END) =
-
-(init.ps END) =

@@ -1,10 +1,10 @@
 () =
 (globals.ps START) =
 
-/aposkribh.globals# where{
+/aposkribh.globals# where {
     pop
 }{
-    /aposkribh.globals# 10 dict def 
+
 
     (A)  =
 (globals.ps) [] (init.ps) run
@@ -212,7 +212,8 @@ aposkribh.libraryLoader_VERBOSE{
 /aposkribh.globals#
 (globals.ps)
 {
-
+    /aposkribh.globals# <<>> def
+    (globals.ps PROC START) =
     /aposkribh.VERBOSE false def
     /aposkribh.VERBOSE_TEST false def
 
@@ -234,6 +235,8 @@ aposkribh.libraryLoader_VERBOSE{
     
     /MaxInt 2147483647 def
     /MaxIntReal 2147483647.0 def
+
+    (globals.ps PROC END) =
 }aposkribh.libraryLoader
 
 }ifelse

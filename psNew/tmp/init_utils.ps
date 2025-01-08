@@ -16,11 +16,16 @@
      files
      {
          /filename exch def
-         aposkribh.libraryLoader_VERBOSE{
-             %() =
-             %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+
+         aposkribh.libraryLoader_LOADED_FILES# filename known not{
+             aposkribh.libraryLoader_LOADED_FILES# filename true put
+             
+             aposkribh.libraryLoader_VERBOSE{
+                 () =
+                 (*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+             }if
+             filename run
          }if
-         filename run
     }forall
 
 }bind def
@@ -76,6 +81,28 @@
     $s
     end
 
+}bind def
+
+/aposkribh.array_contains{
+    count 2 lt{
+        (aposkribh.array_contains: Needs 2 args (value array)) /stackunderflow signalerror
+    }if
+
+    1 index type /arraytype eq not{
+        (aposkribh.array_contains: Arg1 needs to be array) /typecheck signalerror
+    }if
+
+    2 dict begin
+    /_v exch def
+    /_a exch def
+
+    false
+    _a{
+        _v eq{
+            true exit
+        }if
+    }forall
+    end
 }bind def
 
 /aposkribh.log_location{
