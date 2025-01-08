@@ -57,14 +57,16 @@
                     cvlit /proc exch def
                     /procName exch dup length string cvs def
 
-                    % Add before exec
-                    /Before [dictName procName] {aposkribh.trace# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
-                    /proc Before proc aposkribh.primatives# /mergeArrays get exec store
+                    aposkribh.trace.TRACE {
+                        % Add before exec
+                        /Before [dictName procName] {aposkribh.trace# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                        /proc Before proc aposkribh.primatives# /mergeArrays get exec store
 
-                    % Add after exec
-                    /After [dictName procName] {aposkribh.trace# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
-                    /proc proc After cvlit aposkribh.primatives# /mergeArrays get exec store
-
+                        % Add after exec
+                        /After [dictName procName] {aposkribh.trace# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                        /proc proc After cvlit aposkribh.primatives# /mergeArrays get exec store
+                    }if
+                    
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     % Actual def of proc taking place
                     procName % /proc

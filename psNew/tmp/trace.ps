@@ -7,50 +7,40 @@
     
     aposkribh.trace# begin
 
-    /execBefore{ % procName
-        aposkribh.trace.TRACE not{
-            pop
-            pop
-        }{
-            count 2 lt{
-                (aposkribh.trace#execBefore: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
-            }if
-            0 index type /stringtype ne{
-                (aposkribh.trace#execBefore: 1st arg not stringtype) /typecheck signalerror
-            }if
-            1 index type /stringtype ne{
-                (aposkribh.trace#execBefore: 2nd arg not stringtype) /typecheck signalerror
-            }if
-            %%
-            /procName exch def
-            /dictName exch def
-            %%
-            () =
-            (execBefore:: Start: ) dictName concatstrings (/) concatstrings procName concatstrings =
-        }ifelse
+    /execBefore{ % procName dictName
+        count 2 lt{
+            (aposkribh.trace#execBefore: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
+        }if
+        0 index type /stringtype ne{
+            (aposkribh.trace#execBefore: 1st arg not stringtype) /typecheck signalerror
+        }if
+        1 index type /stringtype ne{
+            (aposkribh.trace#execBefore: 2nd arg not stringtype) /typecheck signalerror
+        }if
+        %%
+        /procName exch def
+        /dictName exch def
+        %%
+        () =
+        (execBefore:: Start: ) dictName concatstrings (/) concatstrings procName concatstrings =
     }def % /execBefore
 
-    /execAfter{ % procName
-        aposkribh.trace.TRACE not{
-            pop
-            pop
-        }{
-            count 2 lt{
-                (aposkribh.trace#execAfter: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
-            }if
-            0 index type /stringtype ne{
-                (aposkribh.trace#execAfter: 1st arg not stringtype) /typecheck signalerror
-            }if
-            1 index type /stringtype ne{
-                (aposkribh.trace#execAfter: 2nd arg not stringtype) /typecheck signalerror
-            }if
-            %%
-            /procName exch def
-            /dictName exch def
-
-            (execAfter:: End: ) dictName concatstrings (/) concatstrings procName concatstrings =
-            () =
-        }ifelse
+    /execAfter{ % procName dictName
+        count 2 lt{
+            (aposkribh.trace#execAfter: Needs 2 arg, string1 - name of proc; string2 - name of library) /stackunderflow signalerror
+        }if
+        0 index type /stringtype ne{
+            (aposkribh.trace#execAfter: 1st arg not stringtype) /typecheck signalerror
+        }if
+        1 index type /stringtype ne{
+            (aposkribh.trace#execAfter: 2nd arg not stringtype) /typecheck signalerror
+        }if
+        %%
+        /procName exch def
+        /dictName exch def
+        
+        (execAfter:: End: ) dictName concatstrings (/) concatstrings procName concatstrings =
+        () =
     }def % /execAfter
 
 
