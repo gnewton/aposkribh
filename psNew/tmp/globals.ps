@@ -1,245 +1,239 @@
-() =
-(globals.ps START) =
 
-/aposkribh.globals# where {
+
+/aposkribh.globals# where { %#A
     pop
 }{
+    (globals.ps) [] (init.ps) run
+    % Used to debug aposkribh.libraryLoader
+    %  and track loading of files, libraries
 
 
-    (A)  =
-(globals.ps) [] (init.ps) run
-    (B)  =
-% Used to debug aposkribh.libraryLoader
-%  and track loading of files, libraries
-
-
-aposkribh.libraryLoader_VERBOSE{
-
-    /aposkribh.COUNTER where{
-        pop % Get rid of found dict
-        %aposkribh.COUNTER aposkribh.indent (---START: globals.ps ---------------------------------------) concatstrings =
-
-    }{
-        %(---START: globals.ps ---------------------------------------) =
-    }ifelse
-}if
-
-/aposkribh.COUNTER where not{
-    /aposkribh.COUNTER 0 def
-}{
-    pop
-
-}ifelse
-
-
-
-/aposkribh.spaces{
-    count 0 eq{
-        (/aposkribh.spaces: Need one arg (int)) /stackunderflow signalerror
-    }if 
-    0 index type /integertype ne{
-        (/aposkribh.spaces: Not /integertype on stack) /typecheck signalerror
-    }if
-
-    2 dict begin
-    /_n exch def
-    /str () def
-    0 1 _n 1 sub{
-        pop
-        /str str ( ) concatstrings store
-    }for
-    str
-    end
-}bind def
-
-/aposkribh.indent{
-    3 mul
-    aposkribh.spaces
-}bind def
-
-
-
-/aposkribh.END22{ % (filename)
-    /_psfilename exch def
     aposkribh.libraryLoader_VERBOSE{
-        /aposkribh.COUNTER aposkribh.COUNTER 1 sub store
-        %aposkribh.COUNTER aposkribh.indent   (---END: ) concatstrings   _psfilename concatstrings =
-    }if
 
-}def
+        /aposkribh.COUNTER where{
+            pop % Get rid of found dict
+            %aposkribh.COUNTER aposkribh.indent (---START: globals.ps ---------------------------------------) concatstrings =
 
-/aposkribh.stack{ % (filename)
-
-    count 1 lt{
-        (/aposkribh.stack: Needs one arg, string filename) /stackunderflow signalerror
-    }if
-
-    0 index type /stringtype eq not{
-        0 index type /dicttype eq{
-            0 index aposkribh.printDictKeys
         }{
-            0 index ===
+            %(---START: globals.ps ---------------------------------------) =
         }ifelse
-        stack
-        (/aposkribh.stack: Arg0 must be string) /typecheck signalerror
     }if
 
-    %
-    
-    (----STACK-START----------------------------------------------------------------------------------------------------------------------------------------------) =
-    2 dict begin
-    /filename exch def
-
-    /c count 2 sub def
-    0 1 c {
-        /i exch def
-        i index /v exch def
-        %v ==
-
-        v type /dicttype eq{
-            ( )
-            v aposkribh.printDictKeys
-            % /ds (<<dict>>  )  def
-            % v {
-            %     pop
-            %     /k exch def
-            %     /ds ds k dup length string cvs concatstrings (   ) concatstrings store
-            % }forall
-            % ds =
-        }{
-            v ==
-        }ifelse
-    }for
-    end
-    (----STACK-END------------------------------------------------------------------------------------------------------------------------------------------------) =
-}bind def
-
-/aposkribh.printDictKeys{
-    /ds (<<dict>>  )  def
-    {
-        pop
-        /k exch def
-        /ds ds k dup length string cvs concatstrings (   ) concatstrings store
-    }forall
-    ds =
-}bind def
-
-
-% 
-/aposkribh.libraryLoader{ % libraryGlobalKey#-/nametype filename-/stringtype proc-{exec}
-    %
-    % The number of dicts on dict stack at start: should be the same at the end of loading the library
-    /numDictsAtStart countdictstack def
-    
-    count 3 lt{
-        (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
-    }if
-
-    0 index type /arraytype ne{ % proc
-        (/aposkribh.fileLoader: Arg0 not /arraytype; should be {proc}) /typecheck signalerror
-    }if
-
-    1 index type /stringtype ne{ % filename
-        (/aposkribh.fileLoader: Arg1 not /stringtype; should be ps filename) /typecheck signalerror
-    }if
-
-    2 index type /nametype ne{ % lib dict name
-        (/aposkribh.fileLoader: Arg2 not /nametype; should be name of dict) /typecheck signalerror
-    }if
-
-    %%%%%%%%%%%%%%
-    
-    aposkribh.libraryLoader_VERBOSE {
-        aposkribh.libraryLoader_VERBOSE_LOADING_ONLY not{
-            1 index aposkribh.COUNTER aposkribh.indent (+Running: ) concatstrings exch  concatstrings =
-        }if
-    }if
-    %3 1 roll
-
-    /_proc exch def
-    /_fileName exch def
-    /_libraryGlobalKey exch def
-
-    count /numStackAtStart exch  def
-
-    %%%%%  See if library name argument already defined (and loaded)
-    _libraryGlobalKey =
-    _libraryGlobalKey where not{ 
-        aposkribh.libraryLoader_VERBOSE{
-            aposkribh.PSFile aposkribh.cat ( ###Loading#####) concatstrings =
-            aposkribh.COUNTER aposkribh.indent (+Loading: ) _fileName concatstrings concatstrings =
-        }if
-        _proc
+    /aposkribh.COUNTER where not{
+        /aposkribh.COUNTER 0 def
     }{
-        aposkribh.libraryLoader_VERBOSE{
-            aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) _fileName concatstrings concatstrings =
-        }if
-        pop % found pop dict
+        pop
+
     }ifelse
 
-    % count 0 ne{
-    %     (Stack should be empty:) =
-    %     () =
-    %     (BAR) aposkribh.stack
-    %     () =
-    %     (/aposkribh.libraryLoader: stack not empty after loading file) /stackoverflow signalerror
-    % }if
 
-    numDictsAtStart countdictstack ne{
-        (/aposkribh.libraryLoader: Number of dictionaries on the dictstack should not change when loading a library: ) _fileName concatstrings /dictstackoverflow signalerror
-    }if
 
-    count numStackAtStart ne{
-        (% Stack start) =
-        pstack
-        (% Stack end) =
-        count ( Start Count=) exch 4 string cvs concatstrings =
-
-        (   End Count=) numStackAtStart 4 string cvs concatstrings = 
-        
-        count numStackAtStart gt{
-            (/aposkribh.libraryLoader: Stack larger than before loading file: ) _fileName concatstrings /stackoverflow signalerror
+    /aposkribh.spaces{
+        count 0 eq{
+            (/aposkribh.spaces: Need one arg (int)) /stackunderflow signalerror
+        }if 
+        0 index type /integertype ne{
+            (/aposkribh.spaces: Not /integertype on stack) /typecheck signalerror
         }if
-        
-        count numStackAtStart lt{
-            (/aposkribh.libraryLoader: Stack smaller than before loading file: ) _fileName concatstrings /stackunderflow signalerror
+
+        2 dict begin
+        /_n exch def
+        /str () def
+        0 1 _n 1 sub{
+            pop
+            /str str ( ) concatstrings store
+        }for
+        str
+        end
+    }bind def
+
+    /aposkribh.indent{
+        3 mul
+        aposkribh.spaces
+    }bind def
+
+
+
+    /aposkribh.END22{ % (filename)
+        /_psfilename exch def
+        aposkribh.libraryLoader_VERBOSE{
+            /aposkribh.COUNTER aposkribh.COUNTER 1 sub store
+            %aposkribh.COUNTER aposkribh.indent   (---END: ) concatstrings   _psfilename concatstrings =
         }if
-    }if
 
-}bind def
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    }def
 
-/aposkribh.globals#
-(globals.ps)
-{
-    /aposkribh.globals# <<>> def
-    (globals.ps PROC START) =
-    /aposkribh.VERBOSE false def
-    /aposkribh.VERBOSE_TEST false def
+    /aposkribh.stack{ % (filename)
 
-    /aposkribh.trace.TRACE true def
+        count 1 lt{
+            (/aposkribh.stack: Needs one arg, string filename) /stackunderflow signalerror
+        }if
 
-    /aposkribh.TRACE false def
-    /aposkribh.TRACE_COUNT 0 def
-    /aposkribh.CHECK_ARGS true def
-    
-    /aposkribh.ASSERTIONS_ON false def
-    /aposkribh.ASSERTIONS_TRACE_ON false def
-    
-    /aposkribh.TEST_SHOW_PASSES false def
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % DO NOT EDIT BELOW THIS LINE%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    /aposkribh.globals true store
-    
-    /MaxInt 2147483647 def
-    /MaxIntReal 2147483647.0 def
+        0 index type /stringtype eq not{
+            0 index type /dicttype eq{
+                0 index aposkribh.printDictKeys
+            }{
+                0 index ===
+            }ifelse
+            stack
+            (/aposkribh.stack: Arg0 must be string) /typecheck signalerror
+        }if
 
-    (globals.ps PROC END) =
-}aposkribh.libraryLoader
+        %
+        
+        (----STACK-START----------------------------------------------------------------------------------------------------------------------------------------------) =
+        2 dict begin
+        /filename exch def
 
-}ifelse
+        /c count 2 sub def
+        0 1 c {
+            /i exch def
+            i index /v exch def
+            %v ==
+
+            v type /dicttype eq{
+                ( )
+                v aposkribh.printDictKeys
+                % /ds (<<dict>>  )  def
+                % v {
+                %     pop
+                %     /k exch def
+                %     /ds ds k dup length string cvs concatstrings (   ) concatstrings store
+                % }forall
+                % ds =
+            }{
+                v ==
+            }ifelse
+        }for
+        end
+        (----STACK-END------------------------------------------------------------------------------------------------------------------------------------------------) =
+    }bind def
+
+    /aposkribh.printDictKeys{
+        /ds (<<dict>>  )  def
+        {
+            pop
+            /k exch def
+            /ds ds k dup length string cvs concatstrings (   ) concatstrings store
+        }forall
+        ds =
+    }bind def
+
+
+    % 
+    /aposkribh.libraryLoader{ % libraryGlobalKey#-/nametype filename-/stringtype proc-{exec}
+        %
+        % The number of dicts on dict stack at start: should be the same at the end of loading the library
+        /numDictsAtStart countdictstack def
+        
+        count 3 lt{
+            (/aposkribh.fileLoader: Needs 3 args: libraryglobal-/nametype filename-/stringtype proc-{exec}) /stackunderflow signalerror
+        }if
+
+        0 index type /arraytype ne{ % proc
+            (/aposkribh.fileLoader: Arg0 not /arraytype; should be {proc}) /typecheck signalerror
+        }if
+
+        1 index type /stringtype ne{ % filename
+            (/aposkribh.fileLoader: Arg1 not /stringtype; should be ps filename) /typecheck signalerror
+        }if
+
+        2 index type /nametype ne{ % lib dict name
+            (/aposkribh.fileLoader: Arg2 not /nametype; should be name of dict) /typecheck signalerror
+        }if
+
+        %%%%%%%%%%%%%%
+        
+        aposkribh.libraryLoader_VERBOSE {
+            aposkribh.libraryLoader_VERBOSE_LOADING_ONLY not{
+                1 index aposkribh.COUNTER aposkribh.indent (+Running: ) concatstrings exch  concatstrings =
+            }if
+        }if
+        %3 1 roll
+
+        /_proc exch def
+        /_fileName exch def
+        /_libraryGlobalKey exch def
+
+        count /numStackAtStart exch  def
+
+        %%%%%  See if library name argument already defined (and loaded)
+        _libraryGlobalKey where not{ 
+            aposkribh.libraryLoader_VERBOSE{
+                aposkribh.PSFile aposkribh.cat ( ###Loading#####) concatstrings =
+                %aposkribh.COUNTER aposkribh.indent (+Loading: ) _fileName concatstrings concatstrings =
+            }if
+            _proc
+        }{
+            aposkribh.libraryLoader_VERBOSE{
+                aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) _fileName concatstrings concatstrings =
+            }if
+            pop % found pop dict
+        }ifelse
+
+        % count 0 ne{
+        %     (Stack should be empty:) =
+        %     () =
+        %     (BAR) aposkribh.stack
+        %     () =
+        %     (/aposkribh.libraryLoader: stack not empty after loading file) /stackoverflow signalerror
+        % }if
+
+        numDictsAtStart countdictstack ne{
+            (/aposkribh.libraryLoader: Number of dictionaries on the dictstack should not change when loading a library: ) _fileName concatstrings /dictstackoverflow signalerror
+        }if
+
+        count numStackAtStart ne{
+            (% Stack start) =
+            pstack
+            (% Stack end) =
+            count ( Start Count=) exch 4 string cvs concatstrings =
+
+            (   End Count=) numStackAtStart 4 string cvs concatstrings = 
+            
+            count numStackAtStart gt{
+                (/aposkribh.libraryLoader: Stack larger than before loading file: ) _fileName concatstrings /stackoverflow signalerror
+            }if
+            
+            count numStackAtStart lt{
+                (/aposkribh.libraryLoader: Stack smaller than before loading file: ) _fileName concatstrings /stackunderflow signalerror
+            }if
+        }if
+
+    }bind def
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    /aposkribh.globals#
+    (globals.ps)
+    {
+        /aposkribh.globals# <<>> def
+        (globals.ps PROC START) =
+        /aposkribh.VERBOSE false def
+        /aposkribh.VERBOSE_TEST false def
+
+        /aposkribh.trace.TRACE true def
+
+        /aposkribh.TRACE false def
+        /aposkribh.TRACE_COUNT 0 def
+        /aposkribh.CHECK_ARGS true def
+        
+        /aposkribh.ASSERTIONS_ON false def
+        /aposkribh.ASSERTIONS_TRACE_ON false def
+        
+        /aposkribh.TEST_SHOW_PASSES false def
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % DO NOT EDIT BELOW THIS LINE%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        /aposkribh.globals true store
+        
+        /MaxInt 2147483647 def
+        /MaxIntReal 2147483647.0 def
+
+        (globals.ps PROC END) =
+    }aposkribh.libraryLoader
+
+}ifelse% #A
 
 aposkribh.PSFile.END
 

@@ -1,10 +1,26 @@
 
+%2 dict begin
 
 (tmp_test.ps START) =
 (tmp_test.ps) [ (primatives.ps) (assert.ps) (globals.ps) (library.ps)] (init.ps) run
 
 /CD# currentdict def
 
+/aposkribh.library# where{
+    (--KNOWN  aposkribh.library#) =
+    pop
+}{
+    (--NOT KNOWN  aposkribh.library#) =
+}ifelse
+
+/aposkribh.primatives# where{
+    (--KNOWN  aposkribh.primatives#) =
+    pop
+}{
+    (--NOT KNOWN  aposkribh.primatives#) =
+}ifelse
+
+/aposkribh.primatives#
 
 /d#  (d#-lib) aposkribh.library# begin newLibrary end def
 
@@ -50,6 +66,7 @@ end
 % % m m eq =
 
 % % /mm aposkribh.library#  /newLibrary get def
+
 
 
 

@@ -10,10 +10,10 @@
      }if
      %%
 
-     /files exch def
-     /baseFile exch def
+     /_files exch def
+     /_baseFile exch def
 
-     files
+     _files
      {
          /filename exch def
 
@@ -21,8 +21,8 @@
              aposkribh.libraryLoader_LOADED_FILES# filename true put
              
              aposkribh.libraryLoader_VERBOSE{
-                 () =
-                 (*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
+                 %() =
+                 %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
              }if
              filename run
          }if
