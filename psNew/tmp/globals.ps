@@ -166,7 +166,7 @@
             _proc
         }{
             aposkribh.libraryLoader_VERBOSE{
-                aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) _fileName concatstrings concatstrings =
+                %aposkribh.COUNTER aposkribh.indent ( #### Already loaded: ) _fileName concatstrings concatstrings =
             }if
             pop % found pop dict
         }ifelse
@@ -207,7 +207,7 @@
     (globals.ps)
     {
         /aposkribh.globals# <<>> def
-        (globals.ps PROC START) =
+
         /aposkribh.VERBOSE false def
         /aposkribh.VERBOSE_TEST false def
 
@@ -230,11 +230,10 @@
         /MaxInt 2147483647 def
         /MaxIntReal 2147483647.0 def
 
-        (globals.ps PROC END) =
+
     }aposkribh.libraryLoader
 
 }ifelse% #A
 
 aposkribh.PSFile.END
 
-(globals.ps END) =

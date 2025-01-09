@@ -1,43 +1,111 @@
 
-%2 dict begin
+
+/printDictKeys{
+    (<<) =
+    {
+        type /v exch dup length string cvs def
+
+        /k exch def
+        k type /booleantype eq {
+            (    /) k 10 string cvs (: /) concatstrings v concatstrings concatstrings =
+
+        }{
+            (    /) k dup length string cvs (: /) concatstrings v concatstrings concatstrings =
+        }ifelse
+    }forall
+    (>>) =
+}bind def
+
+/printDictKeys2{
+    2 dict begin
+    /s (  ) def
+
+    1 add /depth  exch def
+
+    depth 3 eq{
+        pop
+    }{
+
+        (<<) =
+        {
+            dup /V exch def
+            type /v exch dup length string cvs def
+
+            /k exch def
+            k type /booleantype eq {
+                /s s k 10 string cvs (: /) concatstrings v concatstrings concatstrings  store
+
+            }{
+                /s s  k dup length string cvs concatstrings (: /)  concatstrings v  concatstrings   store
+            }ifelse
+
+            v (dicttype) eq{
+                V depth 1 add printDictKeys2
+            }if
+
+            s length 120 gt{
+                s =
+                /s (  ) store
+            }{
+                /s s (    --    ) concatstrings store
+            }ifelse
+            
+        }forall
+        (>>) =
+        end
+    }ifelse
+}bind def
+
+/Now#  <<>> def
+
+
+
+Now# begin
+
+/CC{
+    currentdict Now# eq not{
+        (NOOOOOOOOOOOO) =
+        quit
+    }{
+        currentdict  0 printDictKeys2
+    }ifelse
+}def
+
+Now# printDictKeys
+
+
+
+
+CC
 
 (tmp_test.ps START) =
+CC
 (tmp_test.ps) [ (primatives.ps) (assert.ps) (globals.ps) (library.ps)] (init.ps) run
+(------------------------) =
+CC
 
-/CD# currentdict def
 
-/aposkribh.library# where{
-    (--KNOWN  aposkribh.library#) =
-    pop
-}{
-    (--NOT KNOWN  aposkribh.library#) =
-}ifelse
 
-/aposkribh.primatives# where{
-    (--KNOWN  aposkribh.primatives#) =
-    pop
-}{
-    (--NOT KNOWN  aposkribh.primatives#) =
-}ifelse
-
-/aposkribh.primatives#
 
 /d#  (d#-lib) aposkribh.library# begin newLibrary end def
 
 
-clear
+currentdict Now# eq not{
+    (NOOOOOOOOOOOO) =
+}if
 
+% d# begin
 
-d# begin
+% /fooProc{
+%     2 add =
+%     (CONTENTS - /fooProc) =
+% }def2
 
-/fooProc{
-    2 add =
-    (CONTENTS - /fooProc) =
-}def2
+% 12 fooProc
 
-12 fooProc
+% end
 
-
+end
 
 quit
 end
