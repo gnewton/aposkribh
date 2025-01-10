@@ -1,59 +1,127 @@
+/spaces{
+    count 0 eq{
+        (/spaces: Need one arg (int)) /stackunderflow signalerror
+    }if 
+    0 index type /integertype ne{
+        (/spaces: Not /integertype on stack) /typecheck signalerror
+    }if
 
-
-/printDictKeys{
-    (<<) =
-    {
-        type /v exch dup length string cvs def
-
-        /k exch def
-        k type /booleantype eq {
-            (    /) k 10 string cvs (: /) concatstrings v concatstrings concatstrings =
-
-        }{
-            (    /) k dup length string cvs (: /) concatstrings v concatstrings concatstrings =
-        }ifelse
-    }forall
-    (>>) =
+    2 dict begin
+    /_n exch def
+    /str () def
+    0 1 _n 1 sub{
+        pop
+        /str str ( ) concatstrings store
+    }for
+    str
+    end
 }bind def
 
-/printDictKeys2{
+/makeArrayTypeString{
     2 dict begin
-    /s (  ) def
+     /s (/arraytype ) def
+     0 index xcheck{
+         /s s (- exe) concatstrings store
+     }if
+    pop
+    s
+    end
+}def
 
-    1 add /depth  exch def
+/printDict{
+    %(/printDict START) =
+    2 dict begin
+    /_maxDepth exch def
+    1 add /_depth  exch def
+    /_Dict# exch def
+    %%%
 
-    depth 3 eq{
-        pop
-    }{
+    _depth _maxDepth le{
+        %/s _depth 3 string cvs _depth 2 add spaces concatstrings def
+        /s _depth 2 add spaces  def
+        _depth spaces (<<) concatstrings =
+        %s (<<) concatstrings =
 
-        (<<) =
-        {
-            dup /V exch def
-            type /v exch dup length string cvs def
+        _Dict#{
+            /_Value 1 array def
+            0 index _Value exch 0 exch  put
 
-            /k exch def
-            k type /booleantype eq {
-                /s s k 10 string cvs (: /) concatstrings v concatstrings concatstrings  store
+            /_Key 1 array def
+            1 index _Key exch 0 exch put
 
+            /typeToString
+            <<
+                (nametype) {
+                            dup length string cvs
+                }
+
+                (arraytype) {
+                    %dup length string cvs
+                    makeArrayTypeString
+                }
+
+                (stringtype) {
+                    % leave on stasck
+                }
+
+                (integertype) {
+                    %dup length string cvs
+                    12 string cvs
+                }
+
+                (booleantype) {
+                    {
+                        (true)
+                    }{
+                        (false)
+                    }ifelse
+                }
+                (dicttype) {
+                    %dup length string cvs
+                    pop
+                    (/dicttype)
+                    
+                }
+                (realtype) {
+                    %dup length string cvs
+                    16 string cvs
+                }
+            >>def
+
+            /keyTypeAsString _Key 0 get type dup length string cvs def
+
+
+
+            typeToString keyTypeAsString known{
+                s (Key: )  concatstrings
+
+                _Key 0 get   typeToString keyTypeAsString get exec 
+                concatstrings =
             }{
-                /s s  k dup length string cvs concatstrings (: /)  concatstrings v  concatstrings   store
+                (NOT FOUND) =
+                quit
             }ifelse
 
-            v (dicttype) eq{
-                V depth 1 add printDictKeys2
+
+            /valueTypeAsString _Value 0 get type dup length string cvs def
+
+            typeToString valueTypeAsString known{
+                s (-Value: )  concatstrings
+                _Value 0 get   typeToString valueTypeAsString get exec
+                concatstrings =
+
+            }{
+                (NOT FOUND) =
+                quit
+            }ifelse
+
+            _Value 0 get type /dicttype eq{
+                _Value 0 get  _depth 1 add _maxDepth printDict
             }if
-
-            s length 120 gt{
-                s =
-                /s (  ) store
-            }{
-                /s s (    --    ) concatstrings store
-            }ifelse
-            
         }forall
-        (>>) =
-        end
-    }ifelse
+        _depth spaces (>>) concatstrings =
+    }if
+    end
 }bind def
 
 /Now#  <<>> def
@@ -62,37 +130,15 @@
 
 Now# begin
 
-/CC{
-    currentdict Now# eq not{
-        (NOOOOOOOOOOOO) =
-        quit
-    }{
-        currentdict  0 printDictKeys2
-    }ifelse
-}def
-
-Now# printDictKeys
-
-
-
-
-CC
 
 (tmp_test.ps START) =
-CC
+
 (tmp_test.ps) [ (primatives.ps) (assert.ps) (globals.ps) (library.ps)] (init.ps) run
 (------------------------) =
-CC
 
+Now# 0 5 printDict
 
-
-
-/d#  (d#-lib) aposkribh.library# begin newLibrary end def
-
-
-currentdict Now# eq not{
-    (NOOOOOOOOOOOO) =
-}if
+quit
 
 % d# begin
 
