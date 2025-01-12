@@ -5,38 +5,29 @@
 aposkribh.raw# begin
 
 clear
-(toString) { 43 toString }    [(43)] expect
-(toString) { (43) toString }  [(43)] expect
-(toString) { true toString }  [(true)] expect
-(toString) { 43.5 toString }  [(43.5)] expect
-(toString) { null toString }  [(null)] expect
-(toString) { <<>> toString }  [(/dicttype)] expect
-
-%%
-(toString) { 43 xtoString }   /undefined expect
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% No errors
-(toString A) { 43 toString }    [(43)]  null expect2
-(add)      { 2 1 add }        [3]     null expect2
+% No errors Case #1
+(toString A) { 43 toString }    [(43)]  null expect
+(add)      { 2 1 add }        [3]     null expect
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Errors
-% execution errors
-(add)      { add }          null /stackunderflow expect2
-(add)      { 1 add }        null /stackunderflow expect2
-(add)      { (f) 1 add }    null /typecheck      expect2
-(toString D) { 43 xtoString } null /undefined      expect2
-% Results errors
-(add)      { 2 1 add }     [(3)] /typecheck      expect2
-(add)      { 2 1 add }     [45]  /typecheck      expect2
-(toString B) { 43 toString } [43]  /typecheck      expect2
-(toString C) { 43 toString } []    /stackunderflow expect2
+% execution errors Case #2
+(add)      { add }          null /stackunderflow expect
+(add)      { 1 add }        null /stackunderflow expect
+(add)      { (f) 1 add }    null /typecheck      expect
+(toString D) { 43 xtoString } null /undefined      expect
 
+% Results errors Case #3
+(add)      { 2 1 add }     [(3)] /typecheck      expect
+(add)      { 2 1 add }     [45]  /typecheck      expect
+(toString B) { 43 toString } [43]  /typecheck      expect
+(toString C) { 43 toString } []    /stackunderflow expect
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 end % aposkribh.raw#

@@ -4,37 +4,8 @@
 
 aposkribh.raw# begin
 
-/expect{ % {proc-withargs} [return stack] OR {proc-withargs} /error-name
-    count 3 lt{
-        (/expect: Need 2 args: name-of-proc-tested-string, proc,  [results-array] OR /error-name ) /stackunderflow signalerror
-    }if
 
-    2 index type /stringtype ne{
-        (/expect: 3rd arg needs to be /stringtype) /typecheck signalerror
-    }if
-    
-    1 index type /arraytype ne{
-        (/expect: 2nd arg needs to be /arraytype \(executable proc\)) /typecheck signalerror
-    }if
-
-    1 index xcheck not{
-        (/expect: 2nd arg needs to be executable proc) /typecheck signalerror
-    }if
-
-    0 index type /arraytype eq{
-        expectResults
-    }{
-        0 index type /nametype eq{
-            expectError
-        }{
-            (/expect: 2nd arg needs to be results array OR /error-name) /typecheck signalerror
-        }ifelse
-    }ifelse
-
-    clear
-}bind def
-
-/expect2{ % (procName) {proc-withargs} [return stack] /error-name
+/expect{ % (procName) {proc-withargs} [return stack] /error-name
     % 3 cases:
     %  1 - No error expected: errors is null
     %      (add)      { 2 1 add }        [3]     null   expect2
@@ -74,8 +45,7 @@ aposkribh.raw# begin
         }if
         
         0 index type /nulltype eq{
-            (Case #1: No error expected \(execution and results OK\)) =
-            expectResults2
+            expectResults
         }{
             0 index type /nametype ne{
                 (/expect2: 1st arg must be /nametype expect results error) /stackunderflow signalerror
@@ -88,7 +58,7 @@ aposkribh.raw# begin
     clear
 }bind def
 
-/expectResults2{
+/expectResults{
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
@@ -100,28 +70,12 @@ aposkribh.raw# begin
         mark (FAIL: ) procName ( should not product error) strcatmark  $error /errorname get signalerror
     }if
 
-    procName resultsArray verifyResults2
-    end
-    
-}def
-
-
-/expectResults{
-    2 dict begin
-    2 index /procName exch def
-    1 index /proc exch def
-    0 index /resultsArray exch def
-    clear
-    {
-        proc 
-    }stopped{ % Not supposed to happen
-        mark (FAIL: ) procName ( should not product error) strcatmark  $error /errorname get signalerror
-    }if
-
     procName resultsArray verifyResults
     end
     
 }def
+
+
 
 /verifyResults{
     count 2 lt{
@@ -138,44 +92,6 @@ aposkribh.raw# begin
     %%%%%
     /_resultsArray exch def
     /_procName exch def
-    () =
-    _procName =
-    _resultsArray ==
-    (S) =
-    stack
-    (s) =
-
-    count _resultsArray length gt{
-        mark (FAIL: ) procName (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
-    }if
-
-    count _resultsArray length lt{
-        mark (FAIL: ) procName (: less args on stack than in results array) strcatmark  /stackunderoverflow signalerror
-    }if
-    
-}def
-
-/verifyResults2{
-    count 2 lt{
-        (/verifyResults: Need 2 args: name-of-proc-tested-string, resultsArray) /stackunderflow signalerror 
-    }if
-
-    0 index type /arraytype eq not{
-        (/verifyResults: 1st arg needs to be /arraytype) /typecheck signalerror
-    }if
-
-    1 index type /stringtype eq not{
-        (/verifyResults: 2nd arg needs to be /stringtype) /typecheck signalerror
-    }if
-    %%%%%
-    /_resultsArray exch def
-    /_procName exch def
-    () =
-    _procName =
-    _resultsArray ==
-    (S) =
-    stack
-    (s) =
 
     count _resultsArray length gt{
         mark (FAIL: ) procName (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
@@ -186,9 +102,10 @@ aposkribh.raw# begin
     }if
     
     _resultsArray arrayMatchesStack not{
-        (S) =
+        (Stack) =
         stack
-        (S) =
+        (End stack) =
+        (Results array) =
         _resultsArray ==
         mark (FAIL:2 ) procName (: expected results array does not match stack) strcatmark /undefinedresult signalerror
     }if
@@ -398,8 +315,6 @@ convertToString# readonly pop
 }bind def % /printDict
 
 /arrayMatchesStack{
-    (========================) =
-    (arrayMatchesStack)  =
     count 1 lt{
         (/arrayMatchesStack: Need 1 arg: /arraytype) /stackunderflow signalerror
     }if
