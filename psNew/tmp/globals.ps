@@ -109,17 +109,6 @@
         (----STACK-END------------------------------------------------------------------------------------------------------------------------------------------------) =
     }bind def
 
-    /aposkribh.printDictKeys{
-        /ds (<<dict>>  )  def
-        {
-            pop
-            /k exch def
-            /ds ds k dup length string cvs concatstrings (   ) concatstrings store
-        }forall
-        ds =
-    }bind def
-
-
     % 
     /aposkribh.libraryLoader{ % libraryGlobalKey#-/nametype filename-/stringtype proc-{exec}
         %

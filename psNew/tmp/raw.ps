@@ -1,0 +1,453 @@
+
+
+/aposkribh.raw# 50 dict def
+
+aposkribh.raw# begin
+
+/expect{ % {proc-withargs} [return stack] OR {proc-withargs} /error-name
+    count 3 lt{
+        (/expect: Need 2 args: name-of-proc-tested-string, proc,  [results-array] OR /error-name ) /stackunderflow signalerror
+    }if
+
+    2 index type /stringtype ne{
+        (/expect: 3rd arg needs to be /stringtype) /typecheck signalerror
+    }if
+    
+    1 index type /arraytype ne{
+        (/expect: 2nd arg needs to be /arraytype \(executable proc\)) /typecheck signalerror
+    }if
+
+    1 index xcheck not{
+        (/expect: 2nd arg needs to be executable proc) /typecheck signalerror
+    }if
+
+    0 index type /arraytype eq{
+        expectResults
+    }{
+        0 index type /nametype eq{
+            expectError
+        }{
+            (/expect: 2nd arg needs to be results array OR /error-name) /typecheck signalerror
+        }ifelse
+    }ifelse
+
+    clear
+}bind def
+
+/expect2{ % (procName) {proc-withargs} [return stack] /error-name
+    % 3 cases:
+    %  1 - No error expected: errors is null
+    %      (add)      { 2 1 add }        [3]     null   expect2
+    %  2 - Execution error expected: [return-stack] is null; error has error
+    %      (add)      { add }          null /stackunderflow expect2
+    %  3 - Results arrors: no nulls
+    %      (add)      { 2 1 add }     [(3)] /typecheck      expect2
+
+    () =
+    count 4 ne{
+        (/expect2: Need 4 args: name-of-proc-tested-string, proc,  [results-array] /error-name ) /stackunderflow signalerror
+    }if
+
+    3 index type /stringtype ne{
+        (/expect2: 4th arg needs to be /stringtype) /typecheck signalerror
+    }if
+    
+    2 index type /arraytype ne{
+        (/expect2: 3rd arg needs to be /arraytype \(executable proc\)) /typecheck signalerror
+    }if
+
+    2 index xcheck not{
+        (/expect2: 3rd arg needs to be executable proc) /typecheck signalerror
+    }if
+
+    1 index type /nulltype eq{
+        0 index type /nametype ne{
+            (/expect2: 1st arg must be /nametype expect execution error) /stackunderflow signalerror
+        }{
+            (Case #2: Execution error expected) =
+        }ifelse
+    }{
+        % Both below cases require arg1 to be /arraytype
+
+        1 index type /arraytype ne{
+            (/expect2: Need 2nd arg must be /arraytype for no errors / or results wrong error) /stackunderflow signalerror
+        }if
+        
+        0 index type /nulltype eq{
+            (Case #1: No error expected \(execution and results OK\)) =
+            expectResults2
+        }{
+            0 index type /nametype ne{
+                (/expect2: 1st arg must be /nametype expect results error) /stackunderflow signalerror
+            }{
+                (Case #3: No execution error but results are wrong) =
+            }ifelse
+        }ifelse
+    }ifelse
+
+    clear
+}bind def
+
+/expectResults2{
+    2 dict begin
+    3 index /procName exch def
+    2 index /proc exch def
+    1 index /resultsArray exch def
+    clear
+    {
+        proc 
+    }stopped{ % Not supposed to happen
+        mark (FAIL: ) procName ( should not product error) strcatmark  $error /errorname get signalerror
+    }if
+
+    procName resultsArray verifyResults2
+    end
+    
+}def
+
+
+/expectResults{
+    2 dict begin
+    2 index /procName exch def
+    1 index /proc exch def
+    0 index /resultsArray exch def
+    clear
+    {
+        proc 
+    }stopped{ % Not supposed to happen
+        mark (FAIL: ) procName ( should not product error) strcatmark  $error /errorname get signalerror
+    }if
+
+    procName resultsArray verifyResults
+    end
+    
+}def
+
+/verifyResults{
+    count 2 lt{
+        (/verifyResults: Need 2 args: name-of-proc-tested-string, resultsArray) /stackunderflow signalerror 
+    }if
+
+    0 index type /arraytype eq not{
+        (/verifyResults: 1st arg needs to be /arraytype) /typecheck signalerror
+    }if
+
+    1 index type /stringtype eq not{
+        (/verifyResults: 2nd arg needs to be /stringtype) /typecheck signalerror
+    }if
+    %%%%%
+    /_resultsArray exch def
+    /_procName exch def
+    () =
+    _procName =
+    _resultsArray ==
+    (S) =
+    stack
+    (s) =
+
+    count _resultsArray length gt{
+        mark (FAIL: ) procName (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
+    }if
+
+    count _resultsArray length lt{
+        mark (FAIL: ) procName (: less args on stack than in results array) strcatmark  /stackunderoverflow signalerror
+    }if
+    
+}def
+
+/verifyResults2{
+    count 2 lt{
+        (/verifyResults: Need 2 args: name-of-proc-tested-string, resultsArray) /stackunderflow signalerror 
+    }if
+
+    0 index type /arraytype eq not{
+        (/verifyResults: 1st arg needs to be /arraytype) /typecheck signalerror
+    }if
+
+    1 index type /stringtype eq not{
+        (/verifyResults: 2nd arg needs to be /stringtype) /typecheck signalerror
+    }if
+    %%%%%
+    /_resultsArray exch def
+    /_procName exch def
+    () =
+    _procName =
+    _resultsArray ==
+    (S) =
+    stack
+    (s) =
+
+    count _resultsArray length gt{
+        mark (FAIL: ) procName (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
+    }if
+
+    count _resultsArray length lt{
+        mark (FAIL: ) procName (: less args on stack than in results array) strcatmark  /stackunderoverflow signalerror
+    }if
+    
+    _resultsArray arrayMatchesStack not{
+        (S) =
+        stack
+        (S) =
+        _resultsArray ==
+        mark (FAIL:2 ) procName (: expected results array does not match stack) strcatmark /undefinedresult signalerror
+    }if
+    
+}def
+
+/expectError{
+    2 index /procName exch def
+    0 index /expectedError exch def
+    {
+        1 index exec
+    }stopped{
+        % Expected: OK
+    }{
+        % Should not succeed
+        mark (FAIL: ) procName ( should produce error [) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
+    }ifelse
+}def
+
+%%% Mapping from type to string for conversion
+/convertToString#
+<<
+    (nametype) {
+        dup length string cvs (/) exch concatstrings
+    }
+
+    (arraytype) {
+        %dup length string cvs
+        array2string
+    }
+
+    (stringtype) {
+        string2string % shortens really long strings
+    }
+
+    (integertype) {
+        %dup length string cvs
+        12 string cvs
+    }
+
+    (booleantype) {
+        {
+            (true)
+        }{
+            (false)
+        }ifelse
+    }
+
+    (dicttype) {
+        pop
+        (/dicttype)
+        
+    }
+
+    (nulltype) {
+        pop
+        (null)
+    }
+
+    (realtype) {
+        %dup length string cvs
+        16 string cvs
+    }
+>>def
+
+convertToString# readonly pop
+
+
+/toString{
+    count 0 eq{
+        (/toString: Need one arg ) /stackunderflow signalerror
+    }if
+    
+    /thisType 1 array def
+    0 index type dup length string cvs thisType exch 0 exch put
+
+    convertToString# thisType 0 get known{
+        convertToString#  thisType 0 get get exec 
+    }{
+        (/toString: type not known: ) thisType 0 get dup length string cvs concatstrings /undefinedresult signalerror
+        quit
+    }ifelse
+}def
+
+
+
+/spacesCache# <<
+             >> def
+
+/spaces{
+    count 0 eq{
+        (/spaces: Need one arg (int)) /stackunderflow signalerror
+    }if 
+    0 index type /integertype ne{
+        (/spaces: Not /integertype on stack) /typecheck signalerror
+    }if
+
+    2 dict begin
+    /_n exch def
+
+    spacesCache# _n known{
+        spacesCache# _n get
+    }{
+        /str () def
+        0 1 _n 1 sub{
+            pop
+            /str str ( ) concatstrings store
+        }for
+        spacesCache# _n str put
+        str
+    }ifelse
+    end
+}bind def
+
+
+/string2string{
+    count 0 eq{
+        (/string2string: Need one arg (string)) /stackunderflow signalerror
+    }if 
+    0 index type /stringtype ne{
+        (/string2string: 1st arg must be string) /typecheck signalerror
+    }if
+    %%%%%%%%%
+    
+    2 dict begin
+    (\() exch
+
+    /l 0 def
+    dup length 80 gt{
+        dup length 80 sub /l exch store
+        0 80 getinterval
+    }if
+    (\)) concatstrings concatstrings
+
+    dup length 80 gt{
+        mark ( [...) l 10 string cvs concatstrings ( characters not shown...]) strcatmark
+        (M) =
+    }if
+    end
+}def
+
+/array2string{
+    2 dict begin
+     /s (/arraytype ) def
+     0 index xcheck{
+         /s s (+x) concatstrings store
+     }{
+         dup length 5 string cvs /s exch s exch  ( Size: ) exch concatstrings concatstrings  store
+     }ifelse
+    pop
+    s
+    end
+}def
+
+/printDict{
+    count 3 lt{
+        (/printDict: Needs 3 args, dict int int) /stackunderflow signalerror
+    }if
+    
+    0 index type /integertype ne{
+        (/printDict: 1st arg must be integer) /typecheck signalerror
+    }if
+
+    1 index type /integertype ne{
+        (/printDict: 2nd arg must be integer) /typecheck signalerror
+    }if
+
+    2 index type /dicttype ne{
+        (/printDict: 3rd arg must be dictionary) /typecheck signalerror
+    }if
+
+    %%%
+    2 dict begin
+    /_maxDepth exch def
+    /_depth  exch def
+    /_Dict# exch def
+    %%%
+
+    _depth _maxDepth le{
+        %/s _depth 3 string cvs _depth 2 add spaces concatstrings def
+        /s _depth 3 add spaces  def
+        _depth 1 add spaces (<<) concatstrings =
+        %s (<<) concatstrings =
+
+        _Dict#{
+            /_Value 1 array def
+            0 index _Value exch 0 exch  put
+
+            /_Key 1 array def
+            1 index _Key exch 0 exch put
+
+            % s (Key: ) concatstrings  _Key 0 get  toString  concatstrings =
+            % s ( Value: ) concatstrings _Value 0 get  toString concatstrings =
+
+            mark s  _Key 0 get  toString  
+            ( |  ) 
+            _Value 0 get  toString strcatmark =
+            
+
+            _Value 0 get type /dicttype eq{
+                _Value 0 get  _depth 2 add _maxDepth printDict
+            }if
+        }forall
+        _depth 1 add spaces (>>) concatstrings =
+    }if
+    end
+}bind def % /printDict
+
+/arrayMatchesStack{
+    (========================) =
+    (arrayMatchesStack)  =
+    count 1 lt{
+        (/arrayMatchesStack: Need 1 arg: /arraytype) /stackunderflow signalerror
+    }if
+
+    0 index type /arraytype ne{
+        (/arrayMatchesStack: 1st arg not /arraytype, is: ) 0 index type dup length string cvs concatstrings /typecheck signalerror
+    }if
+    %
+
+    1 dict begin
+    /_a exch def
+    /matches true def
+    
+    count _a length lt{
+        /matches false store
+    }{
+        0 1 _a length 1 sub{
+            /i exch def
+            i index _a i get ne{
+                /matches false store
+                exit
+            }if
+        }for
+    }ifelse
+    matches
+    end
+}def
+
+
+/strcatmark{ % mark (s1) (s2)...(sn) -> (s1s2....sn)
+    {
+        counttomark
+    }stopped{
+        % No mark
+        (/strcatmark: Missing 'mark') /unmatchedmark signalerror
+    }if
+    pop %
+    
+    2 dict begin
+    
+    /$str () def
+    0 1 counttomark 3 sub {
+        index $str concatstrings /$str exch store
+    }for
+    cleartomark
+    $str 
+    end
+}bind def
+
+
+end % aposkribh.raw# 

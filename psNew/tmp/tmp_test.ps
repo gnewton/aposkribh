@@ -1,130 +1,14 @@
-/spaces{
-    count 0 eq{
-        (/spaces: Need one arg (int)) /stackunderflow signalerror
-    }if 
-    0 index type /integertype ne{
-        (/spaces: Not /integertype on stack) /typecheck signalerror
-    }if
+(raw.ps) run
 
-    2 dict begin
-    /_n exch def
-    /str () def
-    0 1 _n 1 sub{
-        pop
-        /str str ( ) concatstrings store
-    }for
-    str
-    end
-}bind def
+aposkribh.raw#  begin
 
-/makeArrayTypeString{
-    2 dict begin
-     /s (/arraytype ) def
-     0 index xcheck{
-         /s s (- exe) concatstrings store
-     }if
-    pop
-    s
-    end
-}def
+/Now#  <<
+           (This is a string key) (This is a string value)
+           (This is a string key for a long string) (012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890)
+           
+           (A null type) null
 
-/printDict{
-    %(/printDict START) =
-    2 dict begin
-    /_maxDepth exch def
-    1 add /_depth  exch def
-    /_Dict# exch def
-    %%%
-
-    _depth _maxDepth le{
-        %/s _depth 3 string cvs _depth 2 add spaces concatstrings def
-        /s _depth 2 add spaces  def
-        _depth spaces (<<) concatstrings =
-        %s (<<) concatstrings =
-
-        _Dict#{
-            /_Value 1 array def
-            0 index _Value exch 0 exch  put
-
-            /_Key 1 array def
-            1 index _Key exch 0 exch put
-
-            /typeToString
-            <<
-                (nametype) {
-                            dup length string cvs
-                }
-
-                (arraytype) {
-                    %dup length string cvs
-                    makeArrayTypeString
-                }
-
-                (stringtype) {
-                    % leave on stasck
-                }
-
-                (integertype) {
-                    %dup length string cvs
-                    12 string cvs
-                }
-
-                (booleantype) {
-                    {
-                        (true)
-                    }{
-                        (false)
-                    }ifelse
-                }
-                (dicttype) {
-                    %dup length string cvs
-                    pop
-                    (/dicttype)
-                    
-                }
-                (realtype) {
-                    %dup length string cvs
-                    16 string cvs
-                }
-            >>def
-
-            /keyTypeAsString _Key 0 get type dup length string cvs def
-
-
-
-            typeToString keyTypeAsString known{
-                s (Key: )  concatstrings
-
-                _Key 0 get   typeToString keyTypeAsString get exec 
-                concatstrings =
-            }{
-                (NOT FOUND) =
-                quit
-            }ifelse
-
-
-            /valueTypeAsString _Value 0 get type dup length string cvs def
-
-            typeToString valueTypeAsString known{
-                s (-Value: )  concatstrings
-                _Value 0 get   typeToString valueTypeAsString get exec
-                concatstrings =
-
-            }{
-                (NOT FOUND) =
-                quit
-            }ifelse
-
-            _Value 0 get type /dicttype eq{
-                _Value 0 get  _depth 1 add _maxDepth printDict
-            }if
-        }forall
-        _depth spaces (>>) concatstrings =
-    }if
-    end
-}bind def
-
-/Now#  <<>> def
+       >> def
 
 
 
@@ -134,54 +18,45 @@ Now# begin
 (tmp_test.ps START) =
 
 (tmp_test.ps) [ (primatives.ps) (assert.ps) (globals.ps) (library.ps)] (init.ps) run
+
+
 (------------------------) =
 
 Now# 0 5 printDict
 
-quit
+<<
+    (ZZ) 34
+    34.4 (Hello)
+    (a) [1 2 3]
+    (dict-1) <<
+                 22 45
+                 (fr) 56.5
+             >> 
+>> 0 5 printDict
 
-% d# begin
 
-% /fooProc{
-%     2 add =
-%     (CONTENTS - /fooProc) =
-% }def2
+ 100 toString =
+ /foo toString =
+ null toString =
+ -55.5 toString =
+ (foo) toString =
 
-% 12 fooProc
+ <<
+    (a) 34
+    (age) 434
+    (name) (Fred)
+>>toString =
 
-% end
+{
+    (hello) =
+}toString
+
+[1 2 3] toString =
+
+
+(************************************) =
+spacesCache# 0 5 printDict
+
+[ 2 3 add 4 5 sub (foo-) (bar) concatstrings] ===
 
 end
-
-quit
-end
-
-
-
-% newpath
-% 100 100 moveto
-% 200 200 rlineto
-
-% 0 setlinewidth
-% 199.1 199 instroke =
-
-% serialnumber =
-% revision =
-% product =
-% languagelevel =
-
-% end % d end
-% % d# begin
-% % /m aposkribh.library#  /newLibrary get def
-
-% % m (age) 32 put
-% % m ===
-
-% % m m eq =
-
-% % /mm aposkribh.library#  /newLibrary get def
-
-
-
-
-
