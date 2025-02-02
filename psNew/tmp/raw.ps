@@ -18,17 +18,17 @@ aposkribh.raw# begin
           >>def
 
 
-/mustExist{
+/requires{
     count 2 lt{
-                (/mustExist: Needs two args) /stackunderflow signalerror
+                (/requires: Needs two args) /stackunderflow signalerror
     }if
 
     0 index type /nametype ne{
-        (/mustExist: Arg1 needs to be /nametype) /typecheck signalerror
+        (/requires: Arg1 needs to be /nametype) /typecheck signalerror
     }if
 
     1 index type /arraytype ne{
-        (/mustExist: Arg2 needs to be /arraytype) /typecheck signalerror
+        (/requires: Arg2 needs to be /arraytype) /typecheck signalerror
     }if
     
     %%%%%%%%%%%%%%
@@ -40,14 +40,14 @@ aposkribh.raw# begin
     {
         /v exch def
         v type /nametype ne{
-            (/mustExist: Items in array need to be /nametype  -- ) _procName dup length string cvs concatstrings /typecheck signalerror
+            (/requires: Items in array need to be /nametype  -- ) _procName dup length string cvs concatstrings /typecheck signalerror
         }if
 
         v where{
             % OK
             pop % dict
         }{
-            (/) procName dup length string cvs concatstrings (: needed reference does not exist:/) concatstrings v dup length string cvs concatstrings ( -- [ /mustExist ]) concatstrings /undefined signalerror
+            (/) procName dup length string cvs concatstrings (: needed reference does not exist:/) concatstrings v dup length string cvs concatstrings ( -- [ /requires ]) concatstrings /undefined signalerror
         }ifelse
     } forall
     
@@ -73,11 +73,14 @@ aposkribh.raw# begin
     % 3 cases:
     %  1 - No error expected: errors is null
     %      (add)      { 2 1 add }        [3]     null   expect
-    %  2 - Execution error expected: [return-stack] is null; error has error
+    
+    %  2 - Execution error expected: [return-stack] is null; error is the expected execution error
     %      (add)      { add }          null /stackunderflow expect
-    %  3 - Results arrors: no nulls
+    
+    %  3 - Results errors expected (no execution errors): no nulls; error is the excpected error of the results
     %      (add)      { 2 1 add }     [(3)] /typecheck      expect
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     count 4 ne{
         (/expect: Need 4 args: name-of-proc-tested-string, proc,  [results-array] /error-name ) /stackunderflow signalerror
     }if
@@ -116,7 +119,7 @@ aposkribh.raw# begin
             0 index type /nametype ne{ % Case #3
                 (/expect: 1st arg must be /nametype expect results error) /stackunderflow signalerror
             }{
-                (Case #3: No execution error but results are wrong) =
+                % Case #3: No execution error but results should be incorrect
                 expectIncorrectResults
             }ifelse
         }ifelse
@@ -129,6 +132,8 @@ aposkribh.raw# begin
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
+    2 index cvlit array2string =
+
     1 index /resultsArray exch def
     clear
     {
@@ -261,7 +266,6 @@ aposkribh.raw# begin
     }
 
     (realtype) {
-        %dup length string cvs
         16 string cvs
     }
 >>def
@@ -325,14 +329,12 @@ convertToString# readonly pop
     %%%%%%%%%
     
     2 dict begin
-    (\() exch
 
     /l 0 def
     dup length 80 gt{
         dup length 80 sub /l exch store
         0 80 getinterval
     }if
-    (\)) concatstrings concatstrings
 
     dup length 80 gt{
         mark ( [...) l 10 string cvs concatstrings ( characters not shown...]) strcatmark
@@ -353,6 +355,8 @@ convertToString# readonly pop
     s
     end
 }def
+
+
 
 /printDict{
     count 3 lt{
@@ -427,7 +431,17 @@ convertToString# readonly pop
     }{
         0 1 _a length 1 sub{
             /i exch def
-            i index _a i get ne{
+	    
+	    i index type
+	    _a i get type ne % Needed because /foo == (foo) is true!
+	    {
+                /matches false store
+                exit
+            }if
+	    
+            i index
+	    _a i get ne
+	    {
                 /matches false store
                 exit
             }if
@@ -435,7 +449,7 @@ convertToString# readonly pop
     }ifelse
     matches
     end
-}def
+}bind def
 
 
 /strcatmark{ % mark (s1) (s2)...(sn) -> (s1s2....sn)

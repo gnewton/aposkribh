@@ -10,11 +10,17 @@ clear
 
 % No errors Case #1
 (toString) { 43 toString }                          [(43)]  null expect
+(toString) { true toString }                        [(true)]  null expect
+(toString) { 45.5 toString }                        [(45.5)]  null expect
+(toString) { (foo) toString }                       [(foo)]  null expect
+(toString) { /foo toString }                       [(/foo)]  null expect
+(toString) { <<>> toString }                       [(/dicttype)]  null expect
+(toString) { null toString }                       [(null)]  null expect
 
 (add)      { 2 1 add }                               [3]     null expect
 (add)      { 2 1 add pop }                               []     null expect
                     
-(mustExist) { [/add /sub /mul] /thisProc mustExist } [] null expect
+(requires) { [/add /sub /mul] /thisProc requires } [] null expect
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Errors
@@ -24,9 +30,12 @@ clear
 (add)      { (f) 1 add }    null /typecheck      expect
 (toString) { 43 xtoString } null /undefined      expect
 
-(mustExist) { [/foo /bar /counters#] /thisProc mustExist } null /undefined expect
+(requires) { [/foo /bar /counters#] /thisProc requires } null /undefined expect
+(requires) { [/foo]  /add requires } null /undefined expect
+(requires) { 32  /add requires } null /undefined expect
 
 % Results errors Case #3
+(add)      { 2 1 add }     [7] /typecheck      expect
 (add)      { 2 1 add }     [(3)] /typecheck      expect
 (add)      { 2 1 add }     [45]  /typecheck      expect
 (toString) { 43 toString } [43]  /typecheck      expect
