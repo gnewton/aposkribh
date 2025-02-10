@@ -44,7 +44,7 @@ aposkribh.raw# begin
         }if
 
         v where{
-            % OK
+            % We can find this proc
             pop % dict
         }{
             (/) procName dup length string cvs concatstrings (: needed reference does not exist:/) concatstrings v dup length string cvs concatstrings ( -- [ /requires ]) concatstrings /undefined signalerror
@@ -116,7 +116,8 @@ aposkribh.raw# begin
         0 index type /nulltype eq{ % Case #1
             expectCorrectResults
         }{
-            0 index type /nametype ne{ % Case #3
+            %0 index type /nametype ne{ % Case #3
+            0 index /null ne{ % Case #3
                 (/expect: 1st arg must be /nametype expect results error) /stackunderflow signalerror
             }{
                 % Case #3: No execution error but results should be incorrect
@@ -132,25 +133,25 @@ aposkribh.raw# begin
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
-    2 index cvlit array2string =
+    2 index proc2string /procAsString exch def
 
     1 index /resultsArray exch def
     clear
     {
         proc 
-    }stopped{ % Not supposed to happen
+    }stopped{ % Not supposed to happen: proc should run OK but produce incorrect results
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( should not product error) strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsString  (}  )( should not product error) strcatmark  $error /errorname get signalerror
     }if
 
     {
-        procName resultsArray verifyResults
+        procName procAsString resultsArray verifyResults
     }stopped{
         % Should happen
-
+        % Verify results generates a signal error
     }{
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( should produce error: Did not!) strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsString  (}  )( should produce RESULTS error: Did not!) strcatmark  $error /errorname get signalerror
         quit
     }ifelse
     
@@ -161,16 +162,17 @@ aposkribh.raw# begin
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
+    2 index proc2string /procAsString exch def
     1 index /resultsArray exch def
     clear
     {
         proc 
     }stopped{ % Not supposed to happen
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( should not produce error) strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsString  (}  ) ( should not produce error) strcatmark  $error /errorname get signalerror
     }if
 
-    procName resultsArray verifyResults
+    procName procAsString resultsArray verifyResults
 
     end
     
@@ -179,8 +181,8 @@ aposkribh.raw# begin
 
 
 /verifyResults{
-    count 2 lt{
-        (/verifyResults: Need 2 args: name-of-proc-tested-string, resultsArray) /stackunderflow signalerror 
+    count 3 lt{
+        (/verifyResults: Need 2 args: name-of-proc-tested-string, procAsString, resultsArray) /stackunderflow signalerror 
     }if
 
     0 index type /arraytype eq not{
@@ -190,29 +192,35 @@ aposkribh.raw# begin
     1 index type /stringtype eq not{
         (/verifyResults: 2nd arg needs to be /stringtype) /typecheck signalerror
     }if
+
+    2 index type /stringtype eq not{
+        (/verifyResults: 3rd arg needs to be /stringtype) /typecheck signalerror
+    }if
     %%%%%
     /_resultsArray exch def
+    /_procAsString exch def
     /_procName exch def
 
     count _resultsArray length gt{
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS  (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
+        mark (FAIL: ) procName (-#) counterValueS  ( proc={ ) procAsString  (}  )   (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
     }if
 
     count _resultsArray length lt{
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS (: less args on stack than in results array) strcatmark  /stackunderflow signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsString  (}  )  (: less args on stack than in results array) strcatmark  /stackunderflow signalerror
     }if
     
     _resultsArray arrayMatchesStack not{
         procName counterValue /counterValueS exch  def
-        mark (FAIL ) procName (-#) counterValueS  (: expected results array does not match stack) strcatmark /undefinedresult signalerror
+        mark (FAIL ) procName (-#) counterValueS  ( proc={ ) procAsString  (}  ) (: expected results array does not match stack) strcatmark /undefinedresult signalerror
     }if
     
 }def
 
 /expectExecutionError{
     3 index /procName exch def
+    2 index proc2string /procAsString exch def
     0 index /expectedError exch def
     {
         2 index exec
@@ -221,7 +229,7 @@ aposkribh.raw# begin
     }{
         % Should not succeed
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( should produce error [/) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsString  (}  )  ( should produce error [/) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
     }ifelse
 }def
 
@@ -229,7 +237,20 @@ aposkribh.raw# begin
 /convertToString#
 <<
     (nametype) {
-        dup length string cvs (/) exch concatstrings
+        
+        %dup length string cvs (/) exch concatstrings
+        1 dict begin
+        dup length string cvs /v exch def
+        
+        % Turns out that [ and ] are of type /nametype!!
+        v ([) ne
+        v (]) ne
+        and{
+            /v (/) v concatstrings store
+        }if
+        v
+        end
+
     }
 
     (arraytype) {
@@ -351,7 +372,8 @@ convertToString# readonly pop
      }{
          dup length 5 string cvs /s exch s exch  ( Size: ) exch concatstrings concatstrings  store
      }ifelse
-    pop
+     pop
+
     s
     end
 }def
@@ -472,5 +494,26 @@ convertToString# readonly pop
     end
 }bind def
 
+
+/proc2string{
+    3 dict begin
+    0 index length /l exch def
+    /s () def
+    /v 1 array def
+    %/n 0 def
+    0 index{
+        %n =
+        %/n n 1 add store
+        
+        v  0 3 2 roll put
+        %v 0 get type =
+        %v 0 get  =
+        %() =
+        /s s v 0 get toString concatstrings ( ) concatstrings def
+    }forall
+    pop
+    s
+    end
+}bind def
 
 end % aposkribh.raw# 
