@@ -11,11 +11,12 @@ clear
 % No errors Case #1
 
 %(toString) { 43 toString n (N)}                          [(43)]  null expect
-(toString) { true toString }                        [(true)]  null expect
+(toString) { true (mmm) toString}                         [(true)]  null expect
 (toString) { 45.5 toString }                        [(45.5)]  null expect
 (toString) { (foo) toString }                       [(foo)]  null expect
 (toString) { /foo toString }                       [(/foo)]  null expect
 (toString) { <<>> toString }                       [(/dicttype)]  null expect
+(toString) { << 23 45>> toString }                       [(/dicttype)]  null expect
 (toString) { null toString }                       [(null)]  null expect
 
 (concatstrings) { (a-)(b)  concatstrings}                 [(a-b)]  null expect
@@ -44,7 +45,39 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+(**********************) =
 
+clear
+<< 23 45
+   (m) (jj)
+>> proc2string =
+
+{
+    /foo 10 def
+}proc2string =
+
+{
+    /foo 10 def
+    /bar 10 array def
+    /bbb [1 2 3] def
+    1 1 1 {
+        2 add
+    }for
+}proc2string =
+
+
+(**********************) =
+
+{ true n toString /foo add (mm) [a f b] 1 2 3{ () =} for} proc2string =
+
+% 45 toPSString =
+% (45) toPSString =
+% /null toPSString =
+% 45.6 toPSString =
+% true toPSString =
+% /foo toPSString =
+% [1 2 3] toPSString =
+% << >> toPSString =
 
 end % aposkribh.raw#
 
