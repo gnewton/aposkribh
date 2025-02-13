@@ -78,7 +78,7 @@ aposkribh.raw# begin
     %      (add)      { add }          null /stackunderflow expect
     
     %  3 - Results errors expected (no execution errors): no nulls; error is the excpected error of the results
-    %      (add)      { 2 1 add }     [(3)] /typecheck      expect
+    %      (add)      { 2 1 add }     [(3)] /null      expect
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     count 4 ne{
@@ -129,7 +129,7 @@ aposkribh.raw# begin
     clear
 }bind def
 
-/expectIncorrectResults{
+/expectIncorrectResults{ % Case #3
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
@@ -158,7 +158,7 @@ aposkribh.raw# begin
     end
 }bind def
 
-/expectCorrectResults{
+/expectCorrectResults{  % Case #1
     2 dict begin
     3 index /procName exch def
     2 index /proc exch def
@@ -219,20 +219,32 @@ aposkribh.raw# begin
     end
 }def
 
-/expectExecutionError{
+/expectExecutionError{  % Case #2
     3 dict begin
     3 index /procName exch def
     2 index proc2string /procAsPSString exch def
     0 index /expectedError exch def
+    /procArray 1 array def
+    2 index procArray exch 0 exch put
+
+    clear
     {
-        2 index exec
+        procArray  0 get exec
     }stopped{
         % Expected: OK
+        expectedError  $error /errorname get ne{
+            procName counterValue /counterValueS exch  def
+            
+            mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )  ( produces wrong error /)  $error /errorname get  dup length string cvs
+            (; should product: /) expectedError dup length string cvs
+            strcatmark /undefinedresult  signalerror
+        }if
     }{
         % Should not succeed
         procName counterValue /counterValueS exch  def
         mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )  ( should produce error [/) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
     }ifelse
+    
     end
 }def
 
@@ -552,7 +564,7 @@ convertToString# readonly pop
 
 
 /proc2string{
-    (--------------------) =
+
     3 dict begin
     0 index length /l exch def
     %/s ({\n) def
@@ -564,14 +576,14 @@ convertToString# readonly pop
             /s s ( ) concatstrings  store
         }if
         
-        n =
+        %n =
         /n n 1 add store
         
         v  0 3 2 roll put
-        v 0 get type =
-        v 0 get  =
+        % v 0 get type =
+        % v 0 get  =
         
-        () =
+        % () =
         /vAsString v 0 get toPSString def
 
         /s s vAsString concatstrings  store

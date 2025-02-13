@@ -1,0 +1,22 @@
+(raw.ps) run
+
+
+aposkribh.raw# begin
+
+clear
+
+% No errors Case #1
+(exch) { 1 2 exch}                         [1 2]  null expect
+
+
+% execution errors Case #2
+(add)      { 2 1  add}          null /stackunderflow expect
+
+(exch) {1 2 exch}             null /stackunderflow expect
+
+% Results errors Case #3
+(add)      { 2 1 add }     [33]    /null      expect
+
+
+
+end % aposkribh.raw# 
