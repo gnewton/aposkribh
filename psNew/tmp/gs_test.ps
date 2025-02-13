@@ -10,9 +10,11 @@ clear
 
 
 % execution errors Case #2
-(add)      { 2 1  add}          null /stackunderflow expect
+(add)      {  1  add}          null /stackunderflow expect
+(add)      {  (m) (n)  add}          null /typecheck expect
 
-(exch) {1 2 exch}             null /stackunderflow expect
+(exch) { 2 exch}             null /stackunderflow expect
+
 
 % Results errors Case #3
 (add)      { 2 1 add }     [33]    /null      expect
