@@ -9,25 +9,28 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % No errors Case #1
+[
+     [ (toString) { true toString}               [(true)] ]  
+     [ (toString) { true toString}               [(true)] ]
+     [ (toString) { 45.5 toString }              [(45.5)] ]
+     [ (toString) { (foo) toString }             [(foo)]  ]
+     [ (toString) { /foo toString }              [(/foo)] ]     
+     [ (toString) { <<>> toString }              [(/dicttype)] ]
+     [ (toString) { << 23 45>> toString }        [(/dicttype)] ]
+     [ (toString) { null toString }              [(null)]      ]
+     [ (concatstrings) { (a-)(b)  concatstrings} [(a-b)]       ]
+     [ (add)      { 2 1 add }                    [3]           ]
+     [ (add)      { 2 1 add pop }                []            ]
+     [ (requires) { [/add /sub /mul] /thisProc requires } []   ]
+ ]
+expectCorrectResultsN
 
-%(toString) { 43 toString n (N)}                          [(43)]  null expect
-(toString) { true toString}                         [(true)]  null expect
-(toString) { 45.5 toString }                        [(45.5)]  null expect
-(toString) { (foo) toString }                       [(foo)]  null expect
-(toString) { /foo toString }                       [(/foo)]  null expect
-(toString) { <<>> toString }                       [(/dicttype)]  null expect
-(toString) { << 23 45>> toString }                       [(/dicttype)]  null expect
-(toString) { null toString }                       [(null)]  null expect
-
-(concatstrings) { (a-)(b)  concatstrings}                 [(a-b)]  null expect
-(add)      { 2 1 add }                               [3]     null expect
-(add)      { 2 1 add pop }                               []     null expect
-                    
-(requires) { [/add /sub /mul] /thisProc requires } [] null expect
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Errors
 % execution errors Case #2
+% (add)      {  1  add}          /stackunderflow expectExecutionError
+
 (add)      {  1  add}          null /stackunderflow expect
 (add)      {  add }            null /stackunderflow expect
 (add)      { (f) 1 add }       null /typecheck      expect
@@ -36,12 +39,15 @@ clear
 (requires) { [/foo]  /add requires } null /undefined expect
 (requires) { 32  /add requires }     null /typecheck expect
 
-% Results errors Case #3
-(add)      { 2 1 add }     [33]    /null      expect
-(add)      { 2 1 add }     [(3)]  /null      expect
-(add)      { 2 1 add }     [45]   /null      expect
-(toString) { 43 toString } [(439)]  /null      expect
-(toString) { 43 toString } []     /null expect
+% Results errors Case #3: Results errors
+(add)      { 2 1 add }     [33]    expectIncorrectResults2
+%(add)      { 2 1 add }     [33]   expectExecutionError
+(add)      { 2 1 add }     [33]    expectIncorrectResults2
+(add)      { 2 1 add }     [33]    expectIncorrectResults2
+(add)      { 2 1 add }     [(3)]  expectIncorrectResults2
+(add)      { 2 1 add }     [45]   expectIncorrectResults2
+(toString) { 43 toString } [(439)] expectIncorrectResults2
+(toString) { 43 toString } []     expectIncorrectResults2
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
