@@ -55,11 +55,14 @@ aposkribh.raw# begin
 }bind def
 
 /counterValue{
+    1 dict begin
     /procName exch def
-    counters# procName get 3 string cvs 
+    counters# procName get 3 string cvs
+    end
  }def
 
 /counter{
+    1 dict begin
     % creates or increments counter for procName
     /procName exch def
     counters# procName known{
@@ -67,6 +70,7 @@ aposkribh.raw# begin
     }{
         counters# procName 1 put
     }ifelse
+    end
 } bind def
 
 %     % 3 cases:
@@ -118,11 +122,13 @@ aposkribh.raw# begin
     1 index proc2string /procAsPSString exch def
 
     0 index /resultsArray exch def
+    procName counter
     clear
     {
         proc 
     }stopped{ % Not supposed to happen: proc should run OK but produce incorrect results
         procName counterValue /counterValueS exch  def
+
         mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should not product error) strcatmark  $error /errorname get signalerror
     }if
 
@@ -250,6 +256,7 @@ aposkribh.raw# begin
     1 index procArray exch 0 exch put
 
     clear
+    procName counter
     {
         procArray  0 get exec
     }stopped{

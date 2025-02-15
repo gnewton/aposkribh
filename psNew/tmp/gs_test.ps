@@ -6,18 +6,22 @@ aposkribh.raw# begin
 clear
 
 % No errors Case #1
-(exch) { 1 2 exch}                         [1 2]  null expect
+[
+    [(exch) { 1 2 exch}                         [1 2]  ]
+]expectCorrectResultsN
 
 
 % execution errors Case #2
-(add)      {  1  add}          null /stackunderflow expect
-(add)      {  (m) (n)  add}          null /typecheck expect
-
-(exch) { 2 exch}             null /stackunderflow expect
-
+[
+    [ (add)   {  1  add}       /stackunderflow ]
+    [ (add)   {  (m) (n)  add} /typecheck      ]
+    [ (exch)  { 2 exch}        /stackunderflow ]
+]expectExecutionErrorsN
 
 % Results errors Case #3
-(add)      { 2 1 add }     [33]    /null      expect
+[
+    [ (add)      { 2 1 add }     [33] ]
+] expectIncorrectResultsN
 
 
 
