@@ -129,7 +129,7 @@ aposkribh.raw# begin
     }stopped{ % Not supposed to happen: proc should run OK but produce incorrect results
         procName counterValue /counterValueS exch  def
 
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should not product error) strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should not product error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
     }if
 
     {
@@ -140,7 +140,6 @@ aposkribh.raw# begin
     }{
         procName counterValue /counterValueS exch  def
         mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should produce RESULTS error: Did not!) strcatmark  $error /errorname get signalerror
-        quit
     }ifelse
     end
     clear
@@ -191,7 +190,7 @@ aposkribh.raw# begin
         proc 
     }stopped{ % Not supposed to happen
         procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  ) ( should not produce error) strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  ) ( should not produce error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
     }if
 
 
@@ -560,7 +559,7 @@ convertToString# readonly pop
             }if
 	    
             i index
-	    _a i get ne
+	    _a i get equals not
 	    {
                 /matches false store
                 exit
@@ -633,5 +632,85 @@ convertToString# readonly pop
     {
     }forall
 }def
+
+
+/equals#
+<<
+    (nametype){
+        eq
+    }
+
+    (realtype){
+        eq
+    }
+    (stringtype){
+        eq
+    }
+    (integertype){
+        eq
+    }
+    (floattype){
+        eq
+    }
+    (nulltype){
+        eq
+    }
+    (booleantype){
+        eq
+    }
+    (arraytype){
+        arrayEqualsArray
+    }
+>>def
+
+/equals{
+    count 2 lt{
+        (/equals: Needs 2 args) /stackunderfill signalerror
+    }if
+
+    2 dict begin
+    /v1 exch def
+    /v2 exch def
+
+    v1 type v2 type ne{
+        false
+    }{
+
+        /thisType 1 array def
+        v1 type dup length string cvs thisType exch 0 exch put
+        equals# thisType 0 get known{
+            v1 v2 equals#  thisType 0 get get exec 
+        }{
+            (/equals: type not known: ) thisType 0 get dup length string cvs concatstrings /undefinedresult signalerror
+        }ifelse
+    }ifelse
+    end
+}bind def
+
+
+
+/arrayEqualsArray{
+    2 dict begin
+    /a1 exch def
+    /a2 exch def
+
+    false
+    a1 length a2 length eq{
+        pop
+        true
+        0 1 a1 length 1 sub{
+            /i exch def
+            a1 i get a2 i get equals not{
+                pop
+                false
+                exit
+            }if
+        }for
+    }if
+    
+    end
+}bind def
+
+clear
 
 end % aposkribh.raw# 
