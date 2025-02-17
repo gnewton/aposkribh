@@ -264,7 +264,7 @@ aposkribh.raw# begin
             procName counterValue /counterValueS exch  def
             
             mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )  ( produces wrong error /)  $error /errorname get  dup length string cvs
-            (; should product: /) expectedError dup length string cvs
+            (; expected error: /) expectedError dup length string cvs
             strcatmark /undefinedresult  signalerror
         }if
     }{
