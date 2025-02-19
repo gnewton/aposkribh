@@ -4,6 +4,7 @@
 
 aposkribh.raw# begin
 
+
 clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,6 +23,23 @@ clear
      [ (add)      { 2 1 add }                    [3]           ]
      [ (add)      { 2 1 add pop }                []            ]
      [ (requires) { [/add /sub /mul] /thisProc requires } []   ]
+     [ (toPSString) { 23 toPSString } [(23)]   ]
+     [ (toPSString) { 23.0 toPSString } [(23.0)]   ]
+     [ (toPSString) { /foo toPSString } [(/foo)]   ]
+     [ (toPSString) { [1 2 3] toPSString } [([1 2 3])]   ]
+     [ (toPSString) { true toPSString } [(true)]   ]
+     [ (toPSString) { null toPSString } [(/null)]   ]
+     [ (spaces) { 2 spaces } [(  )]   ]
+     [ (arrayMatchesStack) { 1 2 3 [3 2 1] arrayMatchesStack} [true 3 2 1] ]
+     [ (strcatmark) { mark (A)(B)(2) strcatmark}  [ (AB2) ]  ]
+     [ (equals) { 5 5 equals}  [ true ]  ]
+     [ (equals) { 2 5 equals}  [ false ]  ]
+     [ (equals) { (m) 5 equals}  [ false ]  ]
+     [ (arrayEqualsArray)     {[2] [2] arrayEqualsArray}   [true] ]
+     [ (arrayEqualsArray)     {[] [2] arrayEqualsArray}   [false] ]
+     [ (arrayEqualsArray)     {[3] [2] arrayEqualsArray}   [false] ]
+
+     
 ]expectCorrectResultsN
 
 
@@ -38,6 +56,12 @@ clear
     [ (requires) { [/foo /bar /counters#]  /thisProc requires } /undefined]
     [ (requires) { [/foo]  /add requires } /undefined      ]
     [ (requires) { 32  /add requires }     /typecheck      ]
+    [ (strcatmark) { (A)(B)(2) strcatmark} /unmatchedmark  ]
+    [ (equals)     { equals}               /stackunderflow ]
+    [ (equals)     { 2 equals}               /stackunderflow ]
+    [ (arrayEqualsArray)     { 2 arrayEqualsArray}    /stackunderflow ]
+    [ (arrayEqualsArray)     {2 2 arrayEqualsArray}   /typecheck ]
+    
 ]expectExecutionErrorsN
 
 
@@ -51,6 +75,8 @@ clear
     [ (add)      { 2 1 add }     [45] ]
     [ (toString) { 43 toString } [(439)] ]
     [ (toString) { 43 toString } []   ]
+    [ (spaces) { 2 spaces } [(   )]   ]
+    [ (strcatmark) { mark (A)(B)(2) strcatmark} [] ]
 ] expectIncorrectResultsN
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

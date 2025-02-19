@@ -14,7 +14,7 @@
 
 aposkribh.raw# begin
 
-/counters#<<
+/expectCounters#<<
           >>def
 
 
@@ -54,21 +54,21 @@ aposkribh.raw# begin
     end
 }bind def
 
-/counterValue{
+/expectCounterValue{
     1 dict begin
     /procName exch def
-    counters# procName get 3 string cvs
+    expectCounters# procName get 3 string cvs
     end
  }def
 
-/counter{
+/expectCounter{
     1 dict begin
     % creates or increments counter for procName
     /procName exch def
-    counters# procName known{
-        counters# procName   counters# procName get 1 add  put
+    expectCounters# procName known{
+        expectCounters# procName   expectCounters# procName get 1 add  put
     }{
-        counters# procName 1 put
+        expectCounters# procName 1 put
     }ifelse
     end
 } bind def
@@ -122,14 +122,14 @@ aposkribh.raw# begin
     1 index proc2string /procAsPSString exch def
 
     0 index /resultsArray exch def
-    procName counter
+    procName expectCounter
     clear
     {
         proc 
     }stopped{ % Not supposed to happen: proc should run OK but produce incorrect results
-        procName counterValue /counterValueS exch  def
+        procName expectCounterValue /expectCounterValueS exch  def
 
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should not product error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
+        mark (FAIL: ) procName (-#) expectCounterValueS ( proc={ ) procAsPSString  (}  )( should not product error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
     }if
 
     {
@@ -138,8 +138,8 @@ aposkribh.raw# begin
         % Should happen
         % Verify results generates a signal error
     }{
-        procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )( should produce RESULTS error: Did not!) strcatmark  $error /errorname get signalerror
+        procName expectCounterValue /expectCounterValueS exch  def
+        mark (FAIL: ) procName (-#) expectCounterValueS ( proc={ ) procAsPSString  (}  )( should produce RESULTS error: Did not!) strcatmark  $error /errorname get signalerror
     }ifelse
     end
     clear
@@ -184,13 +184,13 @@ aposkribh.raw# begin
     1 index proc2string /procAsPSString exch def
     0 index /resultsArray exch def
 
-    procName counter
+    procName expectCounter
     clear
     {
         proc 
     }stopped{ % Not supposed to happen
-        procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  ) ( should not produce error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
+        procName expectCounterValue /expectCounterValueS exch  def
+        mark (FAIL: ) procName (-#) expectCounterValueS ( proc={ ) procAsPSString  (}  ) ( should not produce error: /) $error /errorname get dup length string cvs strcatmark  $error /errorname get signalerror
     }if
 
 
@@ -226,18 +226,21 @@ aposkribh.raw# begin
     /_procName exch def
 
     count _resultsArray length gt{
-        _procName counterValue /counterValueS exch  def
-        mark (FAIL: ) _procName (-#) counterValueS  ( proc={ ) _procAsPSString  (}  )   (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
+        _procName expectCounterValue /expectCounterValueS exch  def
+        mark (FAIL: ) _procName (-#) expectCounterValueS  ( proc={ ) _procAsPSString  (}  )   (: more args on stack than in results array) strcatmark  /stackoverflow signalerror
     }if
 
     count _resultsArray length lt{
-        _procName counterValue /counterValueS exch  def
-        mark (FAIL: ) _procName (-#) counterValueS ( proc={ ) _procAsPSString  (}  )  (: less args on stack than in results array) strcatmark  /stackunderflow signalerror
+        _procName expectCounterValue /expectCounterValueS exch  def
+        mark (FAIL: ) _procName (-#) expectCounterValueS ( proc={ ) _procAsPSString  (}  )  (: less args on stack than in results array) strcatmark  /stackunderflow signalerror
     }if
     
     _resultsArray arrayMatchesStack not{
-        _procName counterValue /counterValueS exch  def
-        mark (FAIL ) _procName (-#) counterValueS  ( proc={ ) _procAsPSString  (}  ) (: expected results array does not match stack) strcatmark /undefinedresult signalerror
+        _procName expectCounterValue /expectCounterValueS exch  def
+        stack2string /stackAsString exch def
+        mark (FAIL ) _procName (-#) expectCounterValueS  ( proc={ ) _procAsPSString  (}  ) (: expected results array: [)
+        _resultsArray toPSString
+        (] does not match stack: ) stackAsString strcatmark /undefinedresult signalerror
     }if
     end
 }def
@@ -255,22 +258,22 @@ aposkribh.raw# begin
     1 index procArray exch 0 exch put
 
     clear
-    procName counter
+    procName expectCounter
     {
         procArray  0 get exec
     }stopped{
         % Expected: OK
         expectedError  $error /errorname get ne{
-            procName counterValue /counterValueS exch  def
+            procName expectCounterValue /expectCounterValueS exch  def
             
-            mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )  ( produces wrong error /)  $error /errorname get  dup length string cvs
+            mark (FAIL: ) procName (-#) expectCounterValueS ( proc={ ) procAsPSString  (}  )  ( produces wrong error /)  $error /errorname get  dup length string cvs
             (; expected error: /) expectedError dup length string cvs
             strcatmark /undefinedresult  signalerror
         }if
     }{
         % Should not succeed
-        procName counterValue /counterValueS exch  def
-        mark (FAIL: ) procName (-#) counterValueS ( proc={ ) procAsPSString  (}  )  ( should produce error [/) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
+        procName expectCounterValue /expectCounterValueS exch  def
+        mark (FAIL: ) procName (-#) expectCounterValueS ( proc={ ) procAsPSString  (}  )  ( should produce error [/) expectedError dup length string cvs (] but does not) strcatmark /undefinedresult  signalerror
     }ifelse
     
     end
@@ -283,25 +286,33 @@ aposkribh.raw# begin
     (nametype) {
         toString
     }
+
     (arraytype) {
-        proc2string
+        array2PSstring2
+        %proc2string
     }
+
     (stringtype) {
         (\50) exch concatstrings (\51) concatstrings
     }
+
     (integertype) {
         toString
     }
+
     (booleantype) {
         toString
     }
+
     (dicttype) {
         toString
     }
+
     (nulltype) {
         pop
         (/null)
     }
+
     (realtype) {
         toString
     }
@@ -453,7 +464,6 @@ convertToString# readonly pop
 
     dup length 80 gt{
         mark ( [...) l 10 string cvs concatstrings ( characters not shown...]) strcatmark
-        (M) =
     }if
     end
 }def
@@ -462,14 +472,52 @@ convertToString# readonly pop
     2 dict begin
     /s (/arraytype) def
 
-    0 index length =
-    (---) =
-     0 index xcheck{
+     0 index xcheck ne{
          /s ({) s concatstrings (}) concatstrings store
      }{
          dup length 5 string cvs /s exch s exch  ( Size: ) exch concatstrings concatstrings  store
      }ifelse
-     pop
+
+
+    s
+    end
+}def
+
+/array2PSstring2{
+    0 index type /arraytype ne{
+        mark (/array2string: Arg must be /arraytype) /stackunderflow signalerror
+    }if
+
+
+    2 dict begin
+    /_a exch def
+    
+    /s () def
+
+    _a xcheck {
+         /s ({) store
+    }{
+        /s ([) store
+    }ifelse
+
+
+    /first true def
+    _a{
+        first{
+            /first false store
+        }{
+            /s s ( ) concatstrings store
+        }ifelse
+        
+        /v exch def
+        /s s v toPSString concatstrings store
+    }forall
+
+    _a xcheck {
+        /s s (}) concatstrings store
+    }{
+        /s s (]) concatstrings store
+    }ifelse
 
     s
     end
@@ -665,9 +713,8 @@ convertToString# readonly pop
 
 /equals{
     count 2 lt{
-        (/equals: Needs 2 args) /stackunderfill signalerror
+        (/equals: Needs 2 args) /stackunderflow signalerror
     }if
-
     2 dict begin
     /v1 exch def
     /v2 exch def
@@ -709,6 +756,14 @@ convertToString# readonly pop
     }if
     
     end
+}bind def
+
+
+/stack2string{
+    /cnt count 1 sub def
+    /a cnt array def
+    a astore
+    a toPSString
 }bind def
 
 clear
