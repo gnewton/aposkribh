@@ -1,7 +1,10 @@
-/aposkribh.run{  %Applies 'run' on array of strings/filenames
-     count 2 lt{
+/aposkribh.run{
+    % basefile array-of-ps-file-names
+    % Applies 'run' on array of strings/filenames
+    
+    count 2 lt{
          (/aposkribh.run: Need 2 args: string-filename []string) /stackunderflow signalerror
-     }if 
+    }if 
      0 index type /arraytype ne{
          (/aposkribh.run: Arg0 Not []stringtype) /typecheck signalerror
      }if
@@ -17,6 +20,7 @@
      {
          /filename exch def
 
+         % Already loaded?
          aposkribh.libraryLoader_LOADED_FILES# filename known not{
              aposkribh.libraryLoader_LOADED_FILES# filename true put
              
@@ -24,6 +28,7 @@
                  %() =
                  %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
              }if
+             % Load ps file
              filename run
          }if
     }forall
@@ -31,6 +36,7 @@
 }bind def
 
 /aposkribh.append{ % value array -> array with value added to end
+                   % Appends item to end of array
     count 2 lt{
         (/append: Needs 2 args, any, array) /stackunderflow signalerror
     }def
@@ -57,6 +63,7 @@
 }bind def
 
 /aposkribh.cat{ % array[strings] -> string
+                % Takes array of strings an appends to single string
     count 0 eq{
         (/cat: Needs 1 arg: array[strings]) /stackunderflow signalerror
     }def
@@ -83,7 +90,9 @@
 
 }bind def
 
-/aposkribh.array_contains{
+/aposkribh.array_contains{ % array item -> t/f
+                           % Item is in array?
+    
     count 2 lt{
         (aposkribh.array_contains: Needs 2 args (value array)) /stackunderflow signalerror
     }if
@@ -106,9 +115,38 @@
 }bind def
 
 /aposkribh.log_location{
-    (File: ) aposkribh.location concatstrings =
+    (File: ) aposkribh.location concatstrings 
 }bind def
 
 /aposkribh.location{ 
     aposkribh.PSFile aposkribh.cat
+}bind def
+
+
+/aposkribh.unappend{ % array -> array with last element removed
+    count 0 eq{
+        (/unappend: Needs 1 arg: array) /stackunderflow signalerror
+    }def
+    0 index type /arraytype ne{
+        (/unappend: Arg not /arraytype) /typecheck
+    }if
+    %
+    1 dict begin
+    /_a exch def
+
+    _a length 0 eq{
+        _a % Return empty []
+    }{
+        /$newArray _a length 1 sub array def
+
+        0 1 _a length 2 sub{
+            /i exch def
+            $newArray i _a i get  put
+        }for
+
+        $newArray
+    }ifelse
+    
+    end
+
 }bind def

@@ -1,4 +1,5 @@
 
+% Dict for recording loaded files
 /aposkribh.libraryLoader_LOADED_FILES# where not{
     /aposkribh.libraryLoader_LOADED_FILES# <<>> def  % EDIT
 }{
@@ -22,7 +23,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All files start with this %%%%%%%%%
-% filename, array of to-be-laoded filenames; on stack
+% filename, array of to-be-loaded filenames; on stack
 
 0 index type /arraytype ne{
     0 index type =
@@ -36,9 +37,12 @@
 
 %%%%
 
+% Start of init.ps
+% Expects ps-file-to-load, array of filename dependencies
 /psfilenames exch def
 /filename exch def
 
+% aposkribh.PSFile collects all the PS files that are called
 /aposkribh.PSFile where not{
     /aposkribh.PSFile 1 array def
     aposkribh.PSFile 0 filename put
@@ -60,46 +64,20 @@
 
 (init.ps) psfilenames aposkribh.run
 
+% Cleanup: Undefine local variables
 currentdict /psfilenames undef
 currentdict /filename undef
 
-
+% end of init.ps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-/aposkribh.unappend{ % array -> array with last element removed
-    count 0 eq{
-        (/unappend: Needs 1 arg: array) /stackunderflow signalerror
-    }def
-    0 index type /arraytype ne{
-        (/unappend: Arg not /arraytype) /typecheck
-    }if
-    %
-    1 dict begin
-    /_a exch def
-
-    _a length 0 eq{
-        _a % Return empty []
-    }{
-        /$newArray _a length 1 sub array def
-
-        0 1 _a length 2 sub{
-            /i exch def
-            $newArray i _a i get  put
-        }for
-
-        $newArray
-    }ifelse
-    
-    end
-
-}bind def
 
 
 
 
 
-/aposkribh.PSFile,LOG{
+/nnaposkribh.PSFile,LOG{
 
 }bind def
 

@@ -74,13 +74,17 @@
                     (/assertAtLeastNArgs: Arg needs to be /integertype) /rangecheck signalerror
                 }if
 
+
+
                 1 dict begin
+
                 /n exch def
                 n 0 lt{
                     aposkribh.log_location =
+                    (MMMMMMMMMM 00) =
                     (/assertAtLeastNArgs: Arg needs to be >=0) /rangecheck signalerror
                 }if
-
+                (MMMMMMMMMM) =
                 count n lt{
                     aposkribh.log_location =
                     (/assertAtLeastNArgs: Not enough args) /stackunderflow signalerror
