@@ -166,8 +166,8 @@ begin
         /actualError $error /errorname get def
         actualError expectedError ne{ % if
             (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
-            (Expected error: /) expectedError expectedError length string cvs concatstrings =
-            (  Actual error: /) actualError 20 string cvs concatstrings =
+            (  Expected error: /) expectedError expectedError length string cvs concatstrings =
+            (    Actual error: /) actualError 20 string cvs concatstrings =
             %(% --> {) proc concatstrings ( }) concatstrings =
             $error /command get =
             (assert_test.ps) /undefined signalerror
