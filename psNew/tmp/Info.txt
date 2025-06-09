@@ -1,0 +1,11 @@
+All libraries:
+1 - Load dependencies (other aposkribh dependencies) by loading
+    init.ps with their filename (string) and an array of the filenames of
+    the libraries they want to load.
+    Example: First line of args.ps:
+      (args.ps) [(globals.ps)] (init.ps) run
+    This loads "globals.ps".
+    - init.ps tracks the loading of libraries so they are only loaded
+    once.
+2 - 
+    
