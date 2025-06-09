@@ -77,7 +77,7 @@
                 }if
                 
                 0 index type /integertype ne{
-                    (/assertAtLeastNArgs: Arg needs to be /integertype) /rangecheck signalerror
+                    (/assertAtLeastNArgs: Arg needs to be /integertype) /typecheck signalerror
                 }if
 
 
@@ -249,7 +249,7 @@
                 /a2 exch def
 
                 a1 length a2 length ne{
-                    (/assertArraysEqual: Not equal: different lengths) /rangeheck signalerror
+                    (/assertArraysEqual: Not equal: different lengths) /rangecheck signalerror
                 }if
 
                 0 1 a1 length 1 sub{

@@ -6,7 +6,7 @@ begin
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Should not FAIL
+% Should not FAIL (Positive tests)
 [
     %    ( (MMM) {  2 3 add pop } TR)
     ( (test-56) { 1 2 add } TR)
@@ -78,13 +78,17 @@ begin
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Should FAIL
+% Should FAIL  (Negative tests)
 [
     [ ( (test1) {  2 (m) add } TR) /typecheck ]
 
      [ (assertAtLeastNArgs)  /stackunderflow ]
      [ (-1 assertAtLeastNArgs) /rangecheck ]
      [ (1 assertAtLeastNArgs)  /stackunderflow ]
+     [ ((M) assertAtLeastNArgs)  /typecheck ]
+     [ (1.5 assertAtLeastNArgs)  /typecheck ]
+     [ (<<>> assertAtLeastNArgs)  /typecheck ]
+     [ ((M) 2 10 assertAtLeastNArgs)  /stackunderflow ]
 
 
      [ ((foo) assertZeroOrPositiveInteger)   /typecheck      ]
