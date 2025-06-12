@@ -32,7 +32,9 @@
              filename run
          }if
     }forall
-
+     currentdict /filename undef
+     currentdict /_files undef
+     currentdict /_baseFile undef
 }bind def
 
 /aposkribh.append{ % value array -> array with value added to end

@@ -1,11 +1,12 @@
 
 % Dict for recording loaded files
-/aposkribh.libraryLoader_LOADED_FILES# where not{
-    /aposkribh.libraryLoader_LOADED_FILES# <<>> def  % EDIT
-}{
-    pop % throw away the found dict
-}ifelse
+ /aposkribh.libraryLoader_LOADED_FILES# where not{
+     /aposkribh.libraryLoader_LOADED_FILES# <<>> def  % EDIT
+ }{
+     pop % throw away the found dict
+ }ifelse
 
+ % Verbose output in library loading
 /aposkribh.libraryLoader_VERBOSE where not{
     /aposkribh.libraryLoader_VERBOSE true def  % EDIT
 }{
@@ -25,6 +26,7 @@
 % All files start with this %%%%%%%%%
 % filename, array of to-be-loaded filenames; on stack
 
+% This deals with the array of filenames passed 
 0 index type /arraytype ne{
     0 index type =
     (init.ps: First arg not /stringtype) /typecheck signalerror
@@ -40,12 +42,12 @@
 % Start of init.ps
 % Expects ps-file-to-load, array of filename dependencies
 /psfilenames exch def
-/filename exch def
+/sourcefilename exch def
 
 % aposkribh.PSFile collects all the PS files that are called
 /aposkribh.PSFile where not{
     /aposkribh.PSFile 1 array def
-    aposkribh.PSFile 0 filename put
+    aposkribh.PSFile 0 sourcefilename put
     aposkribh.libraryLoader_VERBOSE{
         aposkribh.libraryLoader_VERBOSE_LOADING_ONLY not{
             aposkribh.PSFile aposkribh.cat ( START) concatstrings =
@@ -53,7 +55,7 @@
     }if
 }{
     pop
-    /aposkribh.PSFile aposkribh.PSFile filename aposkribh.append store
+    /aposkribh.PSFile aposkribh.PSFile sourcefilename aposkribh.append store
     aposkribh.libraryLoader_VERBOSE{
         aposkribh.libraryLoader_VERBOSE_LOADING_ONLY not{
             aposkribh.PSFile aposkribh.cat ( START) concatstrings =
@@ -66,7 +68,7 @@
 
 % Cleanup: Undefine local variables
 currentdict /psfilenames undef
-currentdict /filename undef
+currentdict /sourcefilename undef
 
 % end of init.ps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

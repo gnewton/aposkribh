@@ -23,18 +23,18 @@
 
     % simple tests
     /test.F{ % { } : proc should return true
-        0 assertProc
+        0 assertProcN
         [false] test.V
     }bind def
     
     /test.T{ % { } : proc should return false
-        0 assertProc
+        0 assertProcN
         [true] test.V
     }bind def
     
 
     /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
-        1 assertProc
+        1 assertProcN
         10 dict begin
         /_expectedStack exch def
         %
@@ -78,7 +78,7 @@
     
     /test.V2{ % {} [expected values left on stack] : proc should run and return specific values on stack
         % 0 assertNamed NOT IMPLEMENTED
-        1 assertProc
+        1 assertProcN
         10 dict begin
         /_expectedStack exch def
         %
@@ -120,7 +120,7 @@
 
     /test.E{ % { } /errortype : Should run and throw a specific error
         % 0 assertNamed NOT IMPLEMENTED
-        1 assertProc
+        1 assertProcN
         
         10 dict begin
         /_expectedError exch def
@@ -159,7 +159,7 @@
 
     /test.E2{ % { } /errortype : Should run and throw a specific error
         % 0 assertNamed NOT IMPLEMENTED
-        1 assertString
+        1 assertStringN
         
         10 dict begin
         
@@ -208,7 +208,7 @@
         (% testLibrary_Pass START) =
         
         1 assertAtLeastNArgs
-        0 assertDict
+        0 assertDictN
 
         0 index /__ArgsTypes# known not{
             (/testLibrary_positive: Dict does not contain /__ArgsTypes# dict) /undefined signalerror
@@ -270,7 +270,7 @@
     /NumRandomTests 10 def % The number of runs random args are applied
     
     /makeTestArgs{ % array of array of types --> array of array of values of that type
-        0 assertArray
+        0 assertArrayN
 
         2 dict begin
         /_thisProcArgsTypeList exch def

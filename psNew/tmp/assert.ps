@@ -19,17 +19,21 @@
         }bind def
 
 
-        /TR{ % string {proc} % traces proc execution
+        /trace{
+	    % 0 - string - name of proc to run
+	    % 1 - {proc}
+	    % traces proc execution
+	    %
             count 2 lt{
-                (/TR: Needs 2 args) /stackunderflow signalerror
+                (/trace: Needs 2 args) /stackunderflow signalerror
             }if
 
             1 index type /stringtype ne{
-                (/TR: Second arg needs to be /stringtpe (name of calling proc)) /typecheck signalerror
+                (/trace: Second arg needs to be /stringtpe (name of calling proc)) /typecheck signalerror
             }if
             0 index type /arraytype ne
             {
-                (/TR: First arg needs to be a proc {} ) /typecheck signalerror
+                (/trace: First arg needs to be a proc {} ) /typecheck signalerror
             }if
             10 dict begin
             /tproc exch def
@@ -37,33 +41,32 @@
 
             aposkribh.ASSERTIONS_TRACE_ON{
                 () =
-                (TR:  ) (START: ) concatstrings procName  concatstrings =
-                (TR:  Stack start) =
+                (trace:  ) (: START: ) concatstrings procName  concatstrings =
+                (trace:  Stack start) =
                 stack
-                (TR:  Stack end) =
+                (trace:  Stack end) =
             }if
 
             {
                 tproc
             }stopped{
                 aposkribh.ASSERTIONS_TRACE_ON{
-                    (TR:  Procedure = ) procName   concatstrings  =
-                    (TR:  Error = ) $error /errorname get 32 string cvs concatstrings  =
-                    (TR:  Failing command = ) =
+                    (trace:  Procedure = ) procName   concatstrings  =
+                    (trace:  Error = ) $error /errorname get 32 string cvs concatstrings  =
+                    (trace:  Failing command = ) =
                     $error /command get =
                 }if
                 $error /command get  $error /errorname get signalerror
             }if
 
             aposkribh.ASSERTIONS_TRACE_ON{
-                (TR: ) (: END: ) concatstrings procName  concatstrings =
+                (trace: ) (: END: ) concatstrings procName  concatstrings =
             }if
+	    
             end
         }bind def
         
         /assertAtLeastNArgs{ % n
-
-
             (/assertAtLeastNArgs)
             {
                 % Needs N on the stack
@@ -91,72 +94,75 @@
                     (/assertAtLeastNArgs: Not enough args) /stackunderflow signalerror
                 }if
                 end
-            }TR
+            }trace
         }bind def
         
-        /assertStackIsBigEnoughFromArg0{ % n -> Does the Nth arg item exist (n < count)
-            (assertStackIsBigEnoughFromArg0)
+        /assertStackIsBigAsArg0{ % n -> Does the Nth arg item exist (n < count)
+            (assertStackIsBigAsArg0)
             {
                 count 1 lt{
-                    (/assertStackIsBigEnoughFromArg0: Needs one arg) /stackunderflow signalerror
+                    (/assertStackIsBigAsArg0: Needs one arg) /stackunderflow signalerror
                 }if
 
                 0 index type /integertype ne{
-                    (/assertStackIsBigEnoughFromArg0: Arg0 needs to be /integertype) /typecheck signalerror
+                    (/assertStackIsBigAsArg0: Arg0 needs to be /integertype) /typecheck signalerror
                 }if
 
                 0 index 0 lt{
-                    (/assertStackIsBigEnoughFromArg0: Arg0 needs to be zero or positive integer) /rangecheck signalerror
+                    (/assertStackIsBigAsArg0: Arg0 needs to be zero or positive integer) /rangecheck signalerror
                 }if
                 
                 dup 
                 /n exch def
                 count n lt{
-                    (/assertStackIsBigEnoughFromArg0: Referenced stack location greater than stack size) /stackunderflow signalerror
+                    (/assertStackIsBigAsArg0: Referenced stack location greater than stack size) /stackunderflow signalerror
                 }if
-            }TR
+            }trace
         }bind def
         
-        /assertInteger{ % n -> checks to see if Nth arg is /integertype
-            (/assertInteger)
+        /assertIntegerN{ % n -> checks to see if Nth arg is /integertype
+            (/assertIntegerN)
             {
-                assertStackIsBigEnoughFromArg0
+                assertStackIsBigAsArg0
 
                 index type /integertype eq not{
-                    (/assertInteger: Not integer) /typecheck signalerror
+                    (/assertIntegerN: Not integer) /typecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
-        /assertReal{ % n -> checks to see if Nth arg is /realtype
-            (/assertReal)
+        /assertRealN{ % n -> checks to see if Nth arg is /realtype
+            (/assertRealN)
             {
-                assertStackIsBigEnoughFromArg0
+                assertStackIsBigAsArg0
                 
                 index type /realtype eq not{
-                    (/assertReal: Not real) /typecheck signalerror
+                    (/assertRealN: Not real) /typecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
-        /assertZeroOrPositiveInteger{ % n -> checks to see >= 0
-            (/assertZeroOrPositiveInteger){
+        /assertZeroOrPositiveIntegerN{ % n -> checks to see >= 0
+            (/assertZeroOrPositiveIntegerN){
                 1 assertAtLeastNArgs
-                0 assertInteger
-                0 lt{
-                    (/ZeroOrPositiveInteger: Negative number) /rangecheck signalerror
+		2 dict begin
+		/n exch def
+                n assertIntegerN
+                n index 0 lt{
+                    (/assertZeroOrPositiveInteger: Negative number) /rangecheck signalerror
                 }if
-            }TR
+		end
+            }trace
         }bind def
         
-        /assertZeroOrPositiveNumber{ % n -> checks to see >= 0
-            (/assertZeroOrPositiveNumber){
+        /assertZeroOrPositiveNumberN{ % n -> checks to see >= 0
+            (/assertZeroOrPositiveNumberN){
                 1 assertAtLeastNArgs
                 0 assertNumber
                 0 lt{
-                    (/ZeroOrPositiveNumber: Negative number) /rangecheck signalerror
+                    (/assertZeroOrPositiveNumberN: Negative number) /rangecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
         /assertZeroOrNegativeNumber{ % n -> checks to see >= 0
@@ -166,12 +172,12 @@
                 0 gt{
                     (/ZeroOrNegativeeNumber: Positive number) /rangecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
         
         /assertNumber{ % n -> checks to see if Nth arg is /realtype
             (/assertNumber){
-                assertStackIsBigEnoughFromArg0
+                assertStackIsBigAsArg0
 
                 1 dict begin
                 /i exch def
@@ -179,50 +185,50 @@
                 i type /integertype eq not
                 and
                 {
-                    (/assertReal: Not number) /typecheck signalerror
+                    (/assertRealN: Not number) /typecheck signalerror
                 }if
                 end
-            }TR
+            }trace
         }bind def
 
         /assertNonZeroLengthArray{ % n -> checks to see if Nth arg is /arraytype
             (/assertNonZeroLengthArray: Not IMPLEMENTED) /undefined signalerror
         }def
         
-        /assertArray{ % n -> checks to see if Nth arg is /arraytype
-            (/assertArray){
-                assertStackIsBigEnoughFromArg0
+        /assertArrayN{ % n -> checks to see if Nth arg is /arraytype
+            (/assertArrayN){
+                assertStackIsBigAsArg0
                 index type /arraytype eq not{
-                    (/assertArray: Not array) /typecheck signalerror
+                    (/assertArrayN: Not array) /typecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
 
-        /assertDict{ % n -> checks to see if Nth arg is /arraytype
-            (/assertDict){
-                assertStackIsBigEnoughFromArg0
+        /assertDictN{ % n -> checks to see if Nth arg is /arraytype
+            (/assertDictN){
+                assertStackIsBigAsArg0
                 index type /dicttype eq not{
-                    (/assertDict: Not dict) /typecheck signalerror
+                    (/assertDictN: Not dict) /typecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
 
 
-        /assertString{ % n -> checks to see if Nth arg is /stringtype
-            (/assertString){
-                assertStackIsBigEnoughFromArg0
+        /assertStringN{ % n -> checks to see if Nth arg is /stringtype
+            (/assertStringN){
+                assertStackIsBigAsArg0
 
                 index type /stringtype eq not{
-                    (/assertString Not string) /typecheck signalerror
+                    (/assertStringN Not string) /typecheck signalerror
                 }if
-            }TR
+            }trace
         }bind def
 
-        /assertProc{
-            (/assertProc){
-                assertStackIsBigEnoughFromArg0
+        /assertProcN{
+            (/assertProcN){
+                assertStackIsBigAsArg0
                 
                 2 dict begin
                 /n exch  def
@@ -236,14 +242,14 @@
                 }ifelse
 
                 end
-            }TR
+            }trace
         }bind def
 
         /assertArraysEqual{
             (/assertArraysEqual){
                 2 assertAtLeastNArgs
-                0 assertArray
-                1 assertArray
+                0 assertArrayN
+                1 assertArrayN
 
                 /a1 exch def
                 /a2 exch def
@@ -258,7 +264,7 @@
                         (/assertArraysEqual: Not equal: different values) /rangecheck signalerror
                     }if
                 }for
-            }TR
+            }trace
 
         }bind def
 
