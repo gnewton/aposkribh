@@ -374,7 +374,7 @@
         }bind def
         
         /i2s{ % int to string int --> (int)
-            1 assertAtLeastNArgs
+            1 (i2s) assertAtLeastNArgs
             0 assertIntegerN
 
             2 dict begin
@@ -483,7 +483,7 @@
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         /spaces{
             aposkribh.primatives# /spaces {
-                1 assertAtLeastNArgs
+                1 (spaces) assertAtLeastNArgs
                 0 assertIntegerN
 
                 0 index =
@@ -776,7 +776,7 @@
 
         /stackTypesMatchOneOfArrayOfArrays{ % [ [] [] ] -> bboolean
             % Checks to see if stack types match any of the arrays of types results
-            2 assertAtLeastNArgs
+            2 (stackTypesMatchOneOfArrayOfArrays) assertAtLeastNArgs
             0 assertArrayN
 
             /_a exch def
@@ -824,7 +824,7 @@
         
 
         /contains{ % array value -> true index|false; first item that matches
-            2 assertAtLeastNArgs
+            2 (contains) assertAtLeastNArgs
             1 assertArrayN
 
             2 dict begin

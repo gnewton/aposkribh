@@ -207,7 +207,7 @@
         % Given a library, uses its /Args# to generate passing tests
         (% testLibrary_Pass START) =
         
-        1 assertAtLeastNArgs
+        1 (testLibrary_Pass) assertAtLeastNArgs
         0 assertDictN
 
         0 index /__ArgsTypes# known not{

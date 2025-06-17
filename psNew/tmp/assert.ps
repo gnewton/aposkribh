@@ -66,35 +66,36 @@
             end
         }bind def
         
-        /assertAtLeastNArgs{ % n
+        /assertAtLeastNArgs{ % n msg-string
             (/assertAtLeastNArgs)
             {
                 % Needs N on the stack
 
-                count 0 eq{
-                    (/assertAtLeastNArgs: Need at least one arg) /stackunderflow signalerror
+                count 3 lt{
+                    (/assertAtLeastNArgs: Need at least two args: n-arg-to-check, msg) /stackunderflow signalerror
                 }if
 
-                0 index 0 lt{
-                    (/assertAtLeastNArgs: Arg cannot be < 0) /rangecheck signalerror
-                }if
-                
-                0 index type /integertype ne{
-                    (/assertAtLeastNArgs: Arg needs to be /integertype) /typecheck signalerror
+		0 index type /stringtype ne{
+                    (/assertAtLeastNArgs: Arg0 needs to be string) /typecheck signalerror
+		}if
+
+		1 index type /integertype ne{
+                    (/assertAtLeastNArgs: Arg1 needs to be /integertype) /typecheck signalerror
                 }if
 
-
-                1 dict begin
-
-                /n exch def
-                n 0 lt{
-                    (/assertAtLeastNArgs: Arg needs to be >=0) /rangecheck signalerror
+                1 index 0 lt{
+                    (/assertAtLeastNArgs: Arg1 cannot be < 0) /rangecheck signalerror
                 }if
-                count n lt{
+
+		2 dict begin
+		/msg exch def
+		/n exch def
+		count n lt{
                     (/assertAtLeastNArgs: Not enough args) /stackunderflow signalerror
-                }if
-                end
+		}if
+		end
             }trace
+
         }bind def
         
         /assertStackIsBigAsArg0{ % n -> Does the Nth arg item exist (n < count)
@@ -144,7 +145,7 @@
 
         /assertZeroOrPositiveIntegerN{ % n -> checks to see >= 0
             (/assertZeroOrPositiveIntegerN){
-                1 assertAtLeastNArgs
+                1 (assertZeroOrPositiveIntegerN) assertAtLeastNArgs
 		2 dict begin
 		/n exch def
                 n assertIntegerN
@@ -247,7 +248,7 @@
 
         /assertArraysEqual{
             (/assertArraysEqual){
-                2 assertAtLeastNArgs
+                2 (/assertArraysEqual) assertAtLeastNArgs
                 0 assertArrayN
                 1 assertArrayN
 

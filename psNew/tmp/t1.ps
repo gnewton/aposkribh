@@ -1,0 +1,141 @@
+
+
+
+
+300 300 200   00 360 arc 
+stroke
+
+newpath
+90 cos 200 mul 300 add
+90 sin 200 mul 300 add
+moveto
+100 100 rlineto
+stroke
+
+/dot{
+    gsave
+    1 0 0 setrgbcolor
+    translate
+    0 0 5 0 360 arc closepath fill
+    grestore
+}bind def
+
+/arcCreate{
+    4 dict begin
+    % cx, cy, r, a0, a1, n
+    % cx cy: centre of arc
+    % r: radius
+    % a0, a1: start,end angle
+    % n: num steps
+    % returns: array of points [ [x0 y0] [x1 y1]...]
+    /n exch def
+    /a1 exch def
+    /a0 exch def
+    /r exch def
+    /cy exch def
+    /cx exch def
+    %%%%%%
+
+    /step a1 a0 sub n div def
+
+    (STEP=) =
+    step ===
+
+    /results n 1 add array def
+    /i 0 def
+    
+    a0 step a1 step add{
+	/a exch def
+	results i [a cos r mul cx add   	a sin r mul cy add] put
+	/i i 1 add store
+
+    }for
+    results
+    end
+}bind def
+
+% 100 100 dot
+
+% /res 300 300 190 50 180 6 arcCreate def
+
+% res{
+%     /xy exch def
+%     xy 0 get  xy 1 get dot
+% }forall
+
+/consumer{
+    % array of real points, proc to apply to each set of points
+    1 index type /arraytype ne{
+        (/consumer: Second arg needs to be /arraytype) /typecheck signalerror
+    }if
+
+    0 index type /arraytype ne  =
+    0 index xcheck false ne =
+
+    0 index xcheck true ne
+    {
+     	(/consumer: First arg must be executable) /typecheck signalerror
+     }if
+    
+    /proc exch def
+    /a exch def
+    a{
+	/xy exch def
+	xy type /arraytype ne{
+            (/consumer: Array needs to contain arrays) /typecheck signalerror
+	}if
+	xy length 2 ne{
+	    (/consumer: Array needs to contain arrays of length 2) /typecheck signalerror
+	}if
+	xy 0 get  type /realtype ne{
+	    (/consumer: Array needs to contain arrays of /realtype) /typecheck signalerror
+	}if
+	xy 1 get type /realtype ne{
+	    (/consumer: Array needs to contain arrays of /realtype) /typecheck signalerror
+	}if
+	%%
+	xy 0 get  xy 1 get proc
+
+    }forall
+}bind def
+
+(Hello) =
+
+
+[[50.0 50.0]] {dot} consumer
+
+
+
+/connect{
+    (/connect start) =
+    1 dict begin
+    /i 0 def
+    {
+	i =
+	/xy exch def
+	xy ===
+	    xy 0 get
+	    xy 1 get
+	    i 0 eq{
+		moveto
+	    }{
+		lineto
+	    }ifelse
+
+	    /i i 1 add store
+    }forall
+    end
+}def
+
+(------------------) =
+
+% 300 300 190 50 180 6 arcCreate connect
+% 300 300 190 50 180 6 arcCreate {dot}  consumer
+
+300 300 190 0 360 13 arcCreate dup connectA
+{dot}  consumer
+
+
+
+
+

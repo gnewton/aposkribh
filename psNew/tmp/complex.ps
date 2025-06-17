@@ -1,0 +1,29 @@
+
+
+(complex.ps) [(globals.ps)] (init.ps) run
+
+
+/complex#
+(complex.ps)
+{
+        /complex# 20 dict def
+
+        complex# begin
+
+
+	/arcCreate{
+	    % cx, cy, r, a0, a1, n
+	    % cx cy: centre of arc
+	    % r: radius
+	    % a0, a1: start,end angle
+	    % n: num steps
+	    % returns: array of points [ [x0 y0] [x1 y1]...]
+
+	    
+
+	}bind def
+
+        end  % complex#
+}aposkribh.libraryLoader
+
+aposkribh.PSFile.END
