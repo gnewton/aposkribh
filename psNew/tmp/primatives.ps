@@ -1,6 +1,8 @@
 
 
-(primatives.ps) [(globals.ps) (library.ps) (types.ps) (args.ps)] (init.ps) run
+%(primatives.ps) [(globals.ps) (library.ps) (types.ps) (args.ps)] (init.ps) run
+%(primatives.ps) [(globals.ps) (library.ps) (args.ps)] (init.ps) run
+(primatives.ps) [(globals.ps) (library.ps) (args.ps)] (init.ps) run
 %
 
 /aposkribh.primatives#
@@ -9,14 +11,15 @@
         /aposkribh.primatives# 50 dict def
 
         aposkribh.primatives# begin
-        /stringtype*  (do) def
-        /stringtype+  (do) def
-        /anytype+ (do) def
-        /anytype* (do) def
+        % /stringtype*  (do) def
+        % /stringtype+  (do) def
+        % /anytype+ (do) def
+        % /anytype* (do) def
 
         %/Args# 10 dict def
 
 
+        % Make new ArgTypes dict to handle the args for this dict's procs
         /__ArgsTypes# aposkribh.args# begin newArgDict end  def
 
         __ArgsTypes# begin
@@ -45,6 +48,12 @@
                         [/integertype] % results on stack
                     ]
                 ]
+                                 [
+                     [ /realtype /realtype] % args
+                     [
+                         [/realtype] % results on stack
+                     ]
+                ]
             ]
 
             /r2s[
@@ -57,6 +66,12 @@
             
             /n2s[
                 [
+                    [ /nametype ]
+                    [
+                        [ /stringtype] % results on stack
+                    ]
+                ]
+                                [
                     [ /nametype ]
                     [
                         [ /stringtype] % results on stack
@@ -83,6 +98,8 @@
                 ]
             ]
 
+
+            
             % /spaces[
             %     [
             %         [ /integertype ] % args
@@ -92,7 +109,7 @@
             %         ]
             %     ]
             % ]
-        >> addArgsDict % Add all of these to the /Args# dict
+        >> addArgsDict % Add all of these to the local /Args# dict
         
         end % ./__ArgsTypes# 
 
@@ -178,43 +195,29 @@
             _procDict# _procName argsAssertLibHasProcDict
             end
 
-            
             /argTypesAndResults _procDict# /__ArgsTypes# get /Args# get _procName get def
 
-            /argTypes argTypesAndResults 0 get def
-
-            /oneMatchesLength false def
-            0 1 argTypes length 1 sub{
-                /i exch def
-                count argTypes i get length ge{
-                    /oneMatchesLength true store
-                    argTypes i get ===
-                    exit
-                }if
-            }for
-            oneMatchesLength not{
-                (/runner: Stack too small) /stackunderflow signalerror
-            }if
-
             /oneMatches false def
-            0 1 argTypes length 1 sub{
-                /i exch def
-                argTypes i get stackTypesMatchArray{
+            argTypesAndResults{
+                /oneArgTypesAndResults exch def
+                /argTypes  oneArgTypesAndResults 0 get def
+                (WWW)=
+                argTypes ===
+                argTypes stackTypesMatchArray{
                     /oneMatches true store
+                    (MATCHES) ===
+                    argTypes  ===
                     exit
                 }if
-            }for
+            }forall
+
             oneMatches not{
                 (/runner: One arg does not match type) /typecheck signalerror
             }if
 
             %(/runner:    =======  TODO  =======     Get args from //Args#/procName and see if OK) procName dup length string cvs concatstrings /undefined signalerror
-            
             _proc exec
-
             end
-
-            
         }def
 
         
@@ -229,7 +232,6 @@
             2 dict begin
             /_a exch def
             count _a length lt{
-                %(/stackTypesMatchArray stack not big enough) /stackunderflow signalerror
                 false
             }{
                 /matches false def
@@ -768,11 +770,6 @@
             returnValue
             end % anonymous
         }def
-
-        /checkArgs2{ % (procName) [n types]; also supports 'mark' --> bool
-
-        }bind def
-
 
         /stackTypesMatchOneOfArrayOfArrays{ % [ [] [] ] -> bboolean
             % Checks to see if stack types match any of the arrays of types results

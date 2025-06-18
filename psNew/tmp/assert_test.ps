@@ -1,5 +1,5 @@
 
-(assert_test.ps) [(assert.ps)(test2.ps)] (init.ps) run
+(assert_test.ps) [(assert.ps)(test2.ps) (primatives.ps)] (init.ps) run
 
 aposkribh.assert#
 begin
@@ -136,7 +136,36 @@ aposkribh.test2# /runNegativeTests get exec
 aposkribh.assert# begin
 (---) =
 
+aposkribh.assert# ===
+(********************************************************) =
 aposkribh.assert# begin
 __docs#  ===
 end
 
+
+/add2
+[                <<
+                     (args)   [ /integertype /integertype] % args
+                     (results)[/integertype] % results on stack
+                 >>
+                 <<
+                     (args)      [ /integertype] % args
+                     (results) [/stringtype] % results on stack
+                 >>
+]                def
+
+
+(-------------------000000000000000000000000000000000) =
+
+add2{
+    ===
+}forall
+
+
+() =
+(*********************) =
+aposkribh.primatives# begin
+33.3 10 add2 =
+33 10 add2 =
+(A) (b) add2
+end

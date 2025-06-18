@@ -1,4 +1,4 @@
-(args.ps) [(globals.ps)] (init.ps) run
+(args.ps) [(globals.ps) (library.ps)] (init.ps) run
 
 /aposkribh.args# 
 (args.ps)
@@ -23,7 +23,7 @@
             0 index type /dicttype ne{
                 (/aposkribh.args#/addArgs: Arg0 not /dicttype) /typecheck signalerror
             }if
-            %
+            % Copies args dict on stack into --local-- Args#
             Args# copy pop
         } def % /addArgs
         
@@ -78,6 +78,8 @@
             }if
             2 dict begin
             /_lib# exch def
+
+
 
 
             _lib# /__ArgsTypes# known not{

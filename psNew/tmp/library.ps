@@ -1,5 +1,5 @@
 
-(library.ps) [(globals.ps) (trace.ps)] (init.ps) run
+(library.ps) [(globals.ps) (trace.ps) (args.ps)] (init.ps) run
 
 /aposkribh.library#
 (library.ps)
@@ -8,7 +8,7 @@
 
         aposkribh.library# begin
 
-        % Doc dict template for procs
+        % Doc dict template for each proc
         /newDocs{
             <<
                 aposkribh.docs.name   (name) 

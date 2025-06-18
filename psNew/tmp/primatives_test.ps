@@ -1,9 +1,6 @@
 
+(primatives_test.ps) [(assert.ps)(test2.ps) (test.ps)(primatives.ps)] (init.ps) run
 
-(assert.ps) run
-(primatives.ps) run
-
-(test.ps) run
 
 aposkribh.assert#
 begin
@@ -23,7 +20,9 @@ test.primatives# begin
 
 (% primatives_test START --------------------) =
 
+
 clear
+% Given a library, uses its /Args# to generate passing tests
 aposkribh.primatives# testLibrary_Pass
 
 end % test.primatives# 

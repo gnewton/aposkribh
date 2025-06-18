@@ -6,7 +6,12 @@
 /aposkribh.assert#
 (assert.ps)
 {
-    /aposkribh.assert# 20 dict def
+    %/aposkribh.assert# 20 dict def
+    /aposkribh.assert# null def
+
+    aposkribh.library# begin
+    /aposkribh.assert# (/aposkribh.assert#) newLibrary store
+    end
 
     aposkribh.assert# begin
     /__docs# 20 dict def

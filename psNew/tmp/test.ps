@@ -240,18 +240,19 @@
             0 1 testArgs length 1 sub{
                 %testArgs{
                 () =
+                (----------------------------------------------------------------------------------------) =
                 /i exch def
                 /args testArgs i get def
                 /resultTypes testResultTypes i get def
                 (Testing ) thisProcName dup length string cvs concatstrings =
-                ( with args: ) =
+                (  with args: ) =
                 args ===
                 args aload pop
                 (Results: ) =
                 {
                     _library# thisProcName get exec === % Run proc with test args
                     %resultTypes ===
-                    %% TODO: Test is stack (results) matches /resultTypes
+                    %% TODO: Test if stack (results) type(s) match /resultTypes
                     (DONE) =
                 }stopped{
                     % Should not stop
@@ -303,10 +304,8 @@
 
                     /ttype  thisArgs j get def
 
-
                     % Randomly add type values
                     thisArgsValuesArray j
-
                     aposkribh.types_examples# /typesWithExamplars get ttype get randomArrayValue
                     put
                 }for
