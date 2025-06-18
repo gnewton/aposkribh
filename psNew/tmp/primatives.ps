@@ -186,6 +186,7 @@
 
             % Is the proc in the main dict; where its code lives:
             _procDict# _procName known not{
+                (_procName) = _procName =
                 (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
             }if
 
@@ -212,6 +213,7 @@
             }forall
 
             oneMatches not{
+                (_procName) = _procName =
                 (/runner: One arg does not match type) /typecheck signalerror
             }if
 

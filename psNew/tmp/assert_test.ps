@@ -1,5 +1,5 @@
 
-(assert_test.ps) [(assert.ps)(test2.ps) (primatives.ps)] (init.ps) run
+(assert_test.ps) [(assert.ps) (primatives.ps)] (init.ps) run
 
 aposkribh.assert#
 begin
@@ -46,7 +46,7 @@ begin
     ( [(foo) null 65.4 3 4 true /stringtype {} ] [(foo) null 65.4 3 4 true /stringtype {}] assertArraysEqual  )
 
 ]
-aposkribh.test2# /runPositiveTests exec
+runPositiveTests
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL  (Negative tests)
@@ -129,7 +129,7 @@ aposkribh.test2# /runPositiveTests exec
     [ ( 85 87  assertArraysEqual ) /typecheck ]
     [ ( 22 [87]  assertArraysEqual ) /typecheck ]
 ]
-aposkribh.test2# /runNegativeTests get exec
+runNegativeTests
 
 () =
 (----------------------------) =
@@ -143,29 +143,11 @@ __docs#  ===
 end
 
 
-/add2
-[                <<
-                     (args)   [ /integertype /integertype] % args
-                     (results)[/integertype] % results on stack
-                 >>
-                 <<
-                     (args)      [ /integertype] % args
-                     (results) [/stringtype] % results on stack
-                 >>
-]                def
-
-
-(-------------------000000000000000000000000000000000) =
-
-add2{
-    ===
-}forall
-
 
 () =
 (*********************) =
 aposkribh.primatives# begin
 33.3 10 add2 =
 33 10 add2 =
-(A) (b) add2
+
 end

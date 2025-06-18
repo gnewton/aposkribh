@@ -292,6 +292,88 @@
 
     }bind def
 
+
+    %%%%%%%%% assert runs its own errors
+        /runPositiveTests{ % [Array of strings]
+        0 index type /arraytype ne{
+            (assert.ps/runPositiveTests: Needs one arg (/arraytpe)) /stackunderflow signalerror
+        }if
+        
+        10 dict begin
+        {
+            % stopped
+            {
+                /test_proc exch def
+                
+                aposkribh.ASSERTIONS_TRACE_ON{
+                    () =
+                    (---------------------------------------------------------------------------------------------) =
+                    (assert_test.ps: Running positive test:) =
+                    test_proc =
+                }if
+                
+                clear
+                test_proc cvx
+                exec
+            }stopped{ % if
+                (FAIL: This should run successfully but did not:) =
+                (proc with args=) =
+                test_proc =
+                (error=) =
+                $error /errorname get =
+	        (command=) =
+                $error /command get =
+                (assert_test.ps) /undefined signalerror
+            }if
+        }forall
+        end
+    }bind def
+    %%% END /runPositiveTests %%%
+
+
+    /runNegativeTests{ % [Array of arrays of [string error]]
+        10 dict begin
+        { % forall
+
+            /test_proc null def
+            /expectedError null def
+            { % stopped
+                /a exch store
+                /test_proc a 0 get store
+                /expectedError a 1 get store
+                aposkribh.ASSERTIONS_TRACE_ON{
+                    () =
+                    (---------------------------------------------------------------------------------------------) =
+                    (assert_test.ps: Running negative test:) =
+                    test_proc =
+                }if
+                
+                clear
+                test_proc cvx
+                exec
+            }stopped{ % ifelse
+                /actualError $error /errorname get def
+                actualError expectedError ne{ % if
+                    (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
+                    (  Expected error: /) expectedError expectedError length string cvs concatstrings =
+                    (    Actual error: /) actualError 20 string cvs concatstrings =
+                    %(% --> {) proc concatstrings ( }) concatstrings =
+                    $error /command get =
+                    (assert_test.ps) /undefined signalerror
+                }if
+            }{
+                () =
+                (FAIL: This should not run successfully but should throw an error. Did not throw an error.) =
+                %(% --> {) proc concatstrings ( }) concatstrings =
+                (assert_test.ps) /undefined signalerror
+            }ifelse
+
+        }forall
+        end
+    }bind def
+    %%% END /runNegativeTests %%%
+
+
     end  % aposkribh_assert#
 }aposkribh.libraryLoader
 
