@@ -1,5 +1,5 @@
 
-(assert_test.ps) [(assert.ps)] (init.ps) run
+(assert_test.ps) [(assert.ps)(test2.ps)] (init.ps) run
 
 aposkribh.assert#
 begin
@@ -46,36 +46,7 @@ begin
     ( [(foo) null 65.4 3 4 true /stringtype {} ] [(foo) null 65.4 3 4 true /stringtype {}] assertArraysEqual  )
 
 ]
-% forall
-{
-    10 dict begin
-    % stopped
-    {
-        /test_proc exch def
-
-        aposkribh.ASSERTIONS_TRACE_ON{
-            () =
-            (---------------------------------------------------------------------------------------------) =
-            (assert_test.ps: Running positive test:) =
-            test_proc =
-        }if
-        
-        clear
-        test_proc cvx
-        exec
-    }stopped{ % if
-        (FAIL: This should run successfully but did not:) =
-        (proc with args=) =
-        test_proc =
-        (error=) =
-        $error /errorname get =
-	(command=) =
-        $error /command get =
-        (assert_test.ps) /undefined signalerror
-    }if
-    end
-}forall
-
+aposkribh.test2# /runPositiveTests exec
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL  (Negative tests)
@@ -157,48 +128,15 @@ begin
     %
     [ ( 85 87  assertArraysEqual ) /typecheck ]
     [ ( 22 [87]  assertArraysEqual ) /typecheck ]
-]{ % forall
-    10 dict begin
-    /test_proc null def
-    /expectedError null def
-    { % stopped
-        /a exch store
-        /test_proc a 0 get store
-        /expectedError a 1 get store
-        aposkribh.ASSERTIONS_TRACE_ON{
-            () =
-            (---------------------------------------------------------------------------------------------) =
-            (assert_test.ps: Running negative test:) =
-            test_proc =
-        }if
-        
-        clear
-        test_proc cvx
-        exec
-    }stopped{ % ifelse
-        /actualError $error /errorname get def
-        actualError expectedError ne{ % if
-            (FAIL: This should not run successfully but should throw a error specific error: Threw wrong error.) =
-            (  Expected error: /) expectedError expectedError length string cvs concatstrings =
-            (    Actual error: /) actualError 20 string cvs concatstrings =
-            %(% --> {) proc concatstrings ( }) concatstrings =
-            $error /command get =
-            (assert_test.ps) /undefined signalerror
-        }if
-    }{
-        () =
-        (FAIL: This should not run successfully but should throw an error. Did not throw an error.) =
-        %(% --> {) proc concatstrings ( }) concatstrings =
-        (assert_test.ps) /undefined signalerror
-    }ifelse
-    end
-}forall
-
+]
+aposkribh.test2# /runNegativeTests get exec
 
 () =
 (----------------------------) =
 aposkribh.assert# begin
 (---) =
+
+aposkribh.assert# begin
 __docs#  ===
 end
 

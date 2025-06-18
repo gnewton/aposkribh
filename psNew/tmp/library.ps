@@ -8,9 +8,7 @@
 
         aposkribh.library# begin
 
-        /aposkribh.NATIVE_LIB true def
-
-
+        % Doc dict template for procs
         /newDocs{
             <<
                 aposkribh.docs.name   (name) 
@@ -19,6 +17,7 @@
             >>
         }def
 
+        % Library dict template
         /newLibrary{
             count 0 eq{
                 (aposkribh.library#newLibrary: Needs 1 arg, string - name of library) /stackunderflow signalerror
