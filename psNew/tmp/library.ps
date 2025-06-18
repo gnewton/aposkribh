@@ -10,13 +10,14 @@
 
         /aposkribh.NATIVE_LIB true def
 
-        /zz{
-            /tmp# <<
-                      (name) (Freddd)
-                  >> def
-            tmp#
-        }def
 
+        /newDocs{
+            <<
+                aposkribh.docs.name   (name) 
+                aposkribh.docs.short-description (short-description)
+                aposkribh.docs.long-description (long-description)
+            >>
+        }def
 
         /newLibrary{
             count 0 eq{

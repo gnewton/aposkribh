@@ -56,7 +56,7 @@ args:
 
 
 tmp:
-	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER     -sDEVICE=pdfwrite  -o tmp_test.pdf tmp_test.ps
+	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER     -sDEVICE=pdfwrite  -o test2.pdf test2.ps
 
 
 globals:

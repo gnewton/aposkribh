@@ -1,0 +1,24 @@
+
+(test2.ps) [(globals.ps) (library.ps)] (init.ps) run
+
+/aposkribh.test2#
+(test2.ps)
+{    
+    %/aposkribh.test2# 20 dict def
+    /aposkribh.test2# null  def
+    aposkribh.library# begin
+    /aposkribh.test2# (/aposkribh.test2#) newLibrary store
+    end
+    aposkribh.test2# ===
+
+    aposkribh.test2# begin
+    
+    end  % aposkribh_assert#
+}aposkribh.libraryLoader
+
+aposkribh.PSFile.END
+
+aposkribh.library# begin
+/foo# (/foo#) newLibrary def
+foo# ===
+end
