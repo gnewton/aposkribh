@@ -207,17 +207,23 @@
         % Given a library, uses its /Args# to generate passing tests
         (% testLibrary_Pass START) =
         
-        1 (testLibrary_Pass) assertAtLeastNArgs
-        0 assertDictN
+        2 (testLibrary_Pass) assertAtLeastNArgs
+        0 assertStringN
+        1 assertDictN
 
-        0 index /__ArgsTypes# known not{
+        1 index /__ArgsTypes# known not{
             (/testLibrary_positive: Dict does not contain /__ArgsTypes# dict) /undefined signalerror
         }if
 
         2 dict begin
-
+        /_libraryName exch def
         /_library# exch def
 
+        () =
+        (%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ) =
+        (% Testing library: ) _libraryName concatstrings =
+        (%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ) =
+        () =
         aposkribh.args# begin
         _library# argsValidateLibrary
         end
@@ -263,9 +269,12 @@
                 }if
             }for
         }forall
-        
+        () =
+        (%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ) =
+        (% END Testing library: ) _libraryName concatstrings =        
         end
-        (% testLibrary_Pass END) =
+        (%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ) =
+        () =
     }bind def
 
     /NumRandomTests 10 def % The number of runs random args are applied
@@ -276,9 +285,6 @@
         2 dict begin
         /_thisProcArgsTypeList exch def
 
-        (M) =
-        _thisProcArgsTypeList ===
-        (m) =
 
         /$argValuesList _thisProcArgsTypeList length NumRandomTests mul array def
         /$argResultsTypeList _thisProcArgsTypeList length NumRandomTests mul array def

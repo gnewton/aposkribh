@@ -104,17 +104,17 @@
 
             /_lib exch def
 
-            _lib{
-                dup type /arraytype eq{
-                    dup xcheck ===
-                }if
-                /proc exch def
+            % _lib{
+            %     dup type /arraytype eq{
+            %         dup xcheck ===
+            %     }if
+            %     /proc exch def
                 
-                /key exch def
-                key ===
-                /proc ===
-                () =
-            }forall
+            %     /key exch def
+            %     key ===
+            %     /proc ===
+            %     () =
+            % }forall
 
             %(/argsValidateLibrary: NOT IMPLEMENTED) /invalidexit signalerror
             
