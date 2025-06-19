@@ -1,19 +1,19 @@
-(assert.ps) run
-(types.ps) run
-(primatives.ps) run
 
-(test.ps) run
 
-aposkribh.assert# begin
-aposkribh.primatives# begin
-aposkribh.types# begin
-aposkribh.test#  begin
+(types_test.ps) [(assert.ps) (types.ps) (primatives.ps) (test.ps)] (init.ps) run
+
+($$$$$$$$$$$$$$$$$$$$$$$$$$) =
 
 
 
 
+(types_test.ps) [(aposkribh.assert#) (aposkribh.primatives#) (aposkribh.types#) (aposkribh.test#)] beginx
 
-% { (m) isNumberType } test.F
+
+
+
+
+% { (m) isNumberType } test.T
 % { 2.5 isNumberType } test.T
 % { 22 isNumberType} test.T
 % { <<>> isNumberType } test.F

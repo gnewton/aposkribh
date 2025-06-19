@@ -29,7 +29,12 @@
                  %(*** aposkribh.run: ) baseFile concatstrings (: ) concatstrings filename concatstrings =
              }if
              % Load ps file
-             filename run
+	     {
+		 filename run
+	      }stopped{
+	      	 (init_utils.ps/aposkribh.run: Error reading file: [) filename concatstrings (]  Error = /) concatstrings $error /errorname get dup length string cvs concatstrings =
+	         (assert_test.ps) $error /errorname get signalerror
+	      }if
          }if
     }forall
      currentdict /filename undef
@@ -152,3 +157,42 @@
     end
 
 }bind def
+
+
+% Takes array of dict _names_ (as strings) and loading filename
+% Tries to load each dict in order
+/beginx{
+    count 2 lt{
+	(/beginx: Needs 2 args) /stackunderflow signalerror
+    }if
+    0 index type /arraytype ne{
+	(/beginx: Arg0 must be array) /typedef signalerror
+    }if
+
+    1 index type /stringtype ne{
+	(/beginx: Arg1 must be string (name of psfile)) /typedef signalerror
+    }if
+
+    5 dict begin
+    
+    /_libs exch def
+    /_psfilename exch def
+
+    _libs{
+	/dname exch def
+	aposkribh.VERBOSE{
+	    dname dup _psfilename (: Loading dictionary: ) concatstrings exch concatstrings =
+	}if
+	
+	dname cvx
+	{
+	    exec
+	}stopped{
+	    _psfilename (: Unable to find dict: ) dname concatstrings concatstrings /undefined signalerror
+	}if
+	begin
+    }forall
+
+    end
+}def
+

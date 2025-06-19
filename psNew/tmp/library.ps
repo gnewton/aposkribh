@@ -24,7 +24,7 @@
             }if
 
             0 index type /stringtype ne{
-                (aposkribh.library#newLibrary: 1st arg not stringtype) /typecheck signalerror
+                (aposkribh.library#newLibrary: Arg0 not stringtype) /typecheck signalerror
             }if
 
             /_dictName exch def
@@ -40,11 +40,11 @@
                     }if
 
                     0 index type /arraytype ne{
-                        (/def2: 1st arg not /arraytype) /typecheck signalerror
+                        (/def2: Arg0 not /arraytype) /typecheck signalerror
                     }if
 
                     1 index type /nametype ne{
-                        (/def2: 2nd arg not /nametype) /typecheck signalerror
+                        (/def2: Arg1 not /nametype) /typecheck signalerror
                     }if
                     
                     /dName () def

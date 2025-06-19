@@ -2,6 +2,7 @@
 
 
 % Should not rely on anything except globals.ps
+% and library.ps to load library 
 %
 /aposkribh.assert#
 (assert.ps)
@@ -64,11 +65,13 @@
                 (trace:  Failing command = ) =
                 $error /command get =
             }if
-            (trace: ) (: END: ) concatstrings procName  concatstrings =
+	    aposkribh.ASSERTIONS_TRACE_ON{
+		(trace: ) (: END: ) concatstrings procName  concatstrings =
+	    }if
             $error /command get  $error /errorname get signalerror
         }if
 
-        aposkribh.ASSERTIONS_TRACE_ON{
+	aposkribh.ASSERTIONS_TRACE_ON{
             (trace: ) (: END: ) concatstrings procName  concatstrings =
         }if
 	

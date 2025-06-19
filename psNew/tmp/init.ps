@@ -67,6 +67,7 @@
 (init.ps) psfilenames aposkribh.run
 
 % Cleanup: Undefine local variables
+
 currentdict /psfilenames undef
 currentdict /sourcefilename undef
 
@@ -79,9 +80,6 @@ currentdict /sourcefilename undef
 
 
 
-/nnaposkribh.PSFile,LOG{
-
-}bind def
 
 /aposkribh.PSFile.END{
     aposkribh.libraryLoader_VERBOSE{
@@ -96,15 +94,16 @@ currentdict /sourcefilename undef
 }bind def
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This is run
 
 
 
 
+
+% Stack should be empty at this point; if not, something is wrong
 count 0 ne{
     (--) =
     stack
     (--) =
-    (init.ps: stack is not empty) /stackunderflow signalerror
+    (init.ps: stack is not empty) /stackoverflow signalerror
 }if
 

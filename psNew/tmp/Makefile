@@ -1,6 +1,6 @@
 
 
-all: libs
+all: libs test
 #	gs -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dSAFER -sDEVICE=pdfwrite   -dNOSAFER -o speckles.pdf speckles.ps
 #	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    my_library_test.ps
 
@@ -14,7 +14,7 @@ libs:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    primatives.ps
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    complex.ps			
 	gs -dALLOWPSTRANSPARENCY -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite   -dNOSAFER -o t1.pdf t1.ps	
-tests:
+test:
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    assert.ps
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    test.ps	
 	gs -q -dALLOWPSTRANSPARENCY -dBATCH -dNOPAUSE -dQUIET -dNOSAFER -dNODISPLAY    types.ps	
