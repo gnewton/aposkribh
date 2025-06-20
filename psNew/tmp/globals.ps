@@ -53,6 +53,17 @@
     }bind def
 
 
+    /aposkribh.newDict{
+         /nd# <<>> def
+
+         nd# begin
+
+         end
+
+         nd
+    } def
+
+
 
     /aposkribh.END22{ % (filename)
         /_psfilename exch def
@@ -211,6 +222,9 @@
         
         /aposkribh.TEST_SHOW_PASSES false def
 
+        % DictTemplate
+        %% Key for entry for library name
+        /aposkribh.LIB_NAME (aposkribh.LIB_NAME) def
         % Docs
         /aposkribh.docs.name   (name) def
         /aposkribh.docs.short-description (short-description) def
@@ -230,6 +244,71 @@
 
 
     }aposkribh.libraryLoader
+
+    % Library dict template
+    /aposkribh.newLibrary{
+        count 0 eq{
+            (/aposkribh.newLibrary: Needs 1 arg, string - name of library) /stackunderflow signalerror
+        }if
+
+        0 index type /stringtype ne{
+            (/aposkribh.newLibrary: Arg0 not stringtype) /typecheck signalerror
+        }if
+
+        /_dictName exch def
+
+
+        %%%
+        <<
+            /__DictName _dictName
+
+            /def2{
+                count 2 lt{
+                    (/def2: Needs 2 args, /nametype-procName, /array-proc) /stackunderflow signalerror
+                }if
+
+                0 index type /arraytype ne{
+                    (/def2: Arg0 not /arraytype) /typecheck signalerror
+                }if
+
+                1 index type /nametype ne{
+                    (/def2: Arg1 not /nametype) /typecheck signalerror
+                }if
+                
+                /dName () def
+                currentdict /__DictName known{
+                    /dName currentdict /__DictName get def
+                }if
+
+                /dictName  currentdict /__DictName get def
+                
+                2 dict begin
+                cvlit /proc exch def
+                /procName exch dup length string cvs def
+
+                aposkribh.trace.TRACE {
+                    % Add before exec
+                    /Before [dictName procName] {aposkribh.trace# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                    /proc Before proc aposkribh.primatives# /mergeArrays get exec store
+
+                    % Add after exec
+                    /After [dictName procName] {aposkribh.trace# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
+                    /proc proc After cvlit aposkribh.primatives# /mergeArrays get exec store
+                }if
+                
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                % Actual def of proc taking place
+                procName % /proc
+                proc cvx %  /body of proc
+                end % End anonymous dict
+                def % procName
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                currentdict /dName undef
+            }
+        >>
+    }def % aposkribh.newLibrary
+
+
 
 }ifelse% #A
 

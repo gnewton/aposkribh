@@ -4,84 +4,22 @@
 /aposkribh.library#
 (library.ps)
 {
-        /aposkribh.library# 50 dict def
+    %/aposkribh.library# 50 dict def
+    /aposkribh.library# (/aposkribh.library#) aposkribh.newLibrary store
 
-        aposkribh.library# begin
+    aposkribh.library# begin
 
-        % Doc dict template for each proc
-        /newDocs{
-            <<
-                aposkribh.docs.name   (name) 
-                aposkribh.docs.short-description (short-description)
-                aposkribh.docs.long-description (long-description)
-            >>
-        }def
+    % Doc dict template for each proc
+    /newDocs{
+        <<
+            aposkribh.docs.name   (name) 
+            aposkribh.docs.short-description (short-description)
+            aposkribh.docs.long-description (long-description)
+        >>
+    }def
 
-        % Library dict template
-        /newLibrary{
-            count 0 eq{
-                (aposkribh.library#newLibrary: Needs 1 arg, string - name of library) /stackunderflow signalerror
-            }if
-
-            0 index type /stringtype ne{
-                (aposkribh.library#newLibrary: Arg0 not stringtype) /typecheck signalerror
-            }if
-
-            /_dictName exch def
-
-
-            %%%
-            <<
-                /__DictName _dictName
-
-                /def2{
-                    count 2 lt{
-                        (/def2: Needs 2 args, /nametype-procName, /array-proc) /stackunderflow signalerror
-                    }if
-
-                    0 index type /arraytype ne{
-                        (/def2: Arg0 not /arraytype) /typecheck signalerror
-                    }if
-
-                    1 index type /nametype ne{
-                        (/def2: Arg1 not /nametype) /typecheck signalerror
-                    }if
-                    
-                    /dName () def
-                    currentdict /__DictName known{
-                        /dName currentdict /__DictName get def
-                    }if
-
-                    /dictName  currentdict /__DictName get def
-                    
-                    2 dict begin
-                    cvlit /proc exch def
-                    /procName exch dup length string cvs def
-
-                    aposkribh.trace.TRACE {
-                        % Add before exec
-                        /Before [dictName procName] {aposkribh.trace# begin execBefore end} cvlit aposkribh.primatives# /mergeArrays get exec def
-                        /proc Before proc aposkribh.primatives# /mergeArrays get exec store
-
-                        % Add after exec
-                        /After [dictName procName] {aposkribh.trace# begin execAfter end} cvlit aposkribh.primatives# /mergeArrays get exec def
-                        /proc proc After cvlit aposkribh.primatives# /mergeArrays get exec store
-                    }if
-                    
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    % Actual def of proc taking place
-                    procName % /proc
-                    proc cvx %  /body of proc
-                    end % End anonymous dict
-                    def % procName
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    currentdict /dName undef
-                }
-            >>
-        }def % newLibrary
-
-        
-        end % aposkribh.library#
+    
+    end % aposkribh.library#
 }aposkribh.libraryLoader
 
 
