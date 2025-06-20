@@ -107,7 +107,32 @@
 	    }if
 	    end
         }trace
+    }bind def
 
+    /assertTrue{
+	count 1 lt{
+	    (assert.ps/assertTrue: Needs one bool arg) /stackunderflow signalerror
+	}if
+
+	0 index type /booleantype ne{
+	    (assert.ps/assertTrue: Needs a bool arg) /typecheck signalerror
+	}if
+	 0 index not{
+	     (assert.ps/assertTrue: Not true) /rangecheck signalerror
+	 }if
+    }bind def
+
+    /assertFalse{
+	count 1 lt{
+	    (assert.ps/assertFalse: Needs one bool arg) /stackunderflow signalerror
+	}if
+
+	0 index type /booleantype ne{
+	    (assert.ps/assertFalse: Needs a bool arg) /typecheck signalerror
+	}if
+	 0 index {
+	     (assert.ps/assertFalse: Not false) /rangecheck signalerror
+	 }if
     }bind def
 
 

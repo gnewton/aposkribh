@@ -173,16 +173,16 @@
 	(/beginx: Arg1 must be string (name of psfile)) /typedef signalerror
     }if
 
-    5 dict begin
+
     
     /_libs exch def
     /_psfilename exch def
 
     _libs{
 	/dname exch def
-	aposkribh.VERBOSE{
+	%aposkribh.VERBOSE{
 	    dname dup _psfilename (: Loading dictionary: ) concatstrings exch concatstrings =
-	}if
+	%}if
 	
 	dname cvx
 	{
@@ -192,7 +192,8 @@
 	}if
 	begin
     }forall
-
-    end
+    currentdict _libs undef
+    currentdict _psfilename undef
+    currentdict dname undef
 }def
 
