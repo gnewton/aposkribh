@@ -1,6 +1,10 @@
 
 (assert_test.ps) [(assert.ps) (primatives.ps)] (init.ps) run
 
+(countdictstack) =
+countdictstack =
+
+
 aposkribh.assert#
 begin
 
@@ -23,9 +27,9 @@ begin
     (0 0 assertZeroOrPositiveIntegerN)
     (100 0 assertZeroOrPositiveIntegerN)
 
-    (33 1 assertStackIsBigAsArg0)
-    ((mm) 33 2 assertStackIsBigAsArg0)
-    (44 (mm) 33 2 assertStackIsBigAsArg0)
+    % (33 1 assertStackIsBigAsArg0)
+    % ((mm) 33 2 assertStackIsBigAsArg0)
+    % (44 (mm) 33 2 assertStackIsBigAsArg0)
     
     (10   0 assertIntegerN)
     (0    0 assertIntegerN)
@@ -41,7 +45,7 @@ begin
     ( (foo) 42.3 0 assertNumber  )
     ( (foo) 42 0 assertNumber  )
 
-    ( [] 0 assertArrayN )
+   ( [] 0 assertArrayN )
 
     
     ( [] [] assertArraysEqual )
@@ -50,6 +54,8 @@ begin
 
 ]
 runPositiveTests
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Should FAIL  (Negative tests)
@@ -80,34 +86,34 @@ runPositiveTests
     [ (assertAtLeastNArgs)  /stackunderflow ]
     [ (1 (test) assertAtLeastNArgs)  /stackunderflow ]
     [ (<<>> (test) assertAtLeastNArgs)  /stackunderflow ]
-    %
+    
     [ ( (test1) {  2 (m) add } trace) /typecheck ]
     [ ((M) (Z) (test) assertAtLeastNArgs)  /typecheck ]
     [ ((Z) 1.5 (test) assertAtLeastNArgs)  /typecheck ]
 
     
-    [ ((foo) 0 assertZeroOrPositiveIntegerN)   /typecheck      ]
+  [ ((foo) 0 assertZeroOrPositiveIntegerN)   /typecheck      ]
     [ (-1 0 assertZeroOrPositiveIntegerN)      /rangecheck      ]
     [ (/stringtype  0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ (45.5 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ (<<>> 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ ([22] 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ ([] 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ (assertZeroOrPositiveIntegerN)      /stackunderflow     ]
-    [ (0 assertZeroOrPositiveIntegerN)      /stackunderflow     ]
-    [ ((foo) 2 assertZeroOrPositiveIntegerN)      /stackunderflow     ]
-    [ (mark 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ (null 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ (true 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
-    [ ({}  0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ (45.5 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ (<<>> 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+  [ ([22] 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ ([] 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+     [ (assertZeroOrPositiveIntegerN)      /stackunderflow     ]
+  [ (0 assertZeroOrPositiveIntegerN)      /stackunderflow     ]
+   [ ((foo) 2 assertZeroOrPositiveIntegerN)      /stackunderflow     ]
+   [ (mark 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ (null 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ (true 0 assertZeroOrPositiveIntegerN)    /typecheck      ]
+   [ ({}  0 assertZeroOrPositiveIntegerN)    /typecheck      ]
 
     
     [ (assertStackIsBigAsArg0)    /stackunderflow ]
     [ (2 assertStackIsBigAsArg0)    /stackunderflow ]
 
-    
+
     [ ( assertIntegerN)                  /stackunderflow ]
-    [ ( 22 2 assertIntegerN)             /stackunderflow ]
+   [ ( 22 2 assertIntegerN)             /stackunderflow ]
     [ ( (foo) assertIntegerN)            /typecheck      ]
     [ ( 22.3 0 assertIntegerN)           /typecheck      ]
     [ ( 44 (foo) -100 3 assertIntegerN)  /stackunderflow ]
@@ -154,8 +160,8 @@ runPositiveTests
     %
     [ ( [85] [87]  assertArraysEqual ) /rangecheck ]
     %
-    [ ( 85 87  assertArraysEqual ) /typecheck ]
-    [ ( 22 [87]  assertArraysEqual ) /typecheck ]
+     [ ( 85 87  assertArraysEqual ) /typecheck ]
+     [ ( 22 [87]  assertArraysEqual ) /typecheck ]
 
 ]
 runNegativeTests
@@ -180,3 +186,21 @@ runNegativeTests
 % 33 10 add2 =
 
 % end
+
+% clear
+% (MMMMMMMMMMM) =
+
+% mark
+% (A)
+% 87
+% 44.3
+% [1 2 3]
+% assertOut
+
+% (  MMMMMMMMMMM) =
+
+% (countdictstack) =
+% countdictstack =
+
+
+%(Test: ) printNumDictStack

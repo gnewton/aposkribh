@@ -7,13 +7,41 @@
 /aposkribh.assert#
 (assert.ps)
 {
-    %/aposkribh.assert# 20 dict def
-    %/aposkribh.assert# null def
     /aposkribh.assert# (/aposkribh.assert#) aposkribh.newLibrary store
 
     aposkribh.assert# begin
     /__docs# 20 dict def
 
+    /printNumDictStack{
+        countdictstack
+        2 dict begin
+        /n  exch def
+        ( DictSize = ) n 3 string cvs concatstrings concatstrings =
+        printDictStackNames
+        end
+    }bind def
+
+    
+    /printDictStackNames{
+        () =
+        (DICT STACK start) =
+         2 dict begin
+         /n countdictstack def
+         /ds n array def
+         ds dictstack
+         {
+             /d exch def
+             d /__DictName known{
+                 (KNOWN) =
+                 d /__DictName get =
+             }{
+                 (UNKNOWN) =
+                 d ==
+             }ifelse
+         }forall
+         end
+         (DICT STACK end) =
+    }bind def
 
     /astack{
         () =
@@ -65,6 +93,7 @@
 	    aposkribh.ASSERTIONS_TRACE_ON{
 		(trace: ) (: END: ) concatstrings procName  concatstrings =
 	    }if
+            end
             $error /command get  $error /errorname get signalerror
         }if
 
@@ -100,6 +129,7 @@
 	    /msg exch def
 	    /n exch def
 	    count n lt{
+                end
                 (/assertAtLeastNArgs: Not enough args) /stackunderflow signalerror
 	    }if
 	    end
@@ -145,6 +175,7 @@
     (Asserts that the stack is at least N in length) put
     end
     end
+
     % Proc
     /assertStackIsBigAsArg0{ % n -> Does the Nth arg item exist (n < count)
         (assertStackIsBigAsArg0)
@@ -154,6 +185,7 @@
             }if
 
             0 index type /integertype ne{
+                end
                 (/assertStackIsBigAsArg0: Arg0 needs to be /integertype) /typecheck signalerror
             }if
 
@@ -198,6 +230,7 @@
 	    /n exch def
             n assertIntegerN
             n index 0 lt{
+                end
                 (/assertZeroOrPositiveInteger: Negative number) /rangecheck signalerror
             }if
 	    end
@@ -234,6 +267,7 @@
             i type /integertype eq not
             and
             {
+                end
                 (/assertRealN: Not number) /typecheck signalerror
             }if
             end
@@ -283,9 +317,11 @@
             /n exch  def
             
             n index type /arraytype ne{
+                end
                 (/assertIsProc: Not executable proc) /typecheck signalerror
             }{
                 n index xcheck not{
+                    end
                     (/assertIsProc: Not executable proc) /typecheck signalerror
                 }if
             }ifelse
@@ -348,6 +384,7 @@
                 $error /errorname get =
 	        (command=) =
                 $error /command get =
+                end
                 (assert_test.ps) /undefined signalerror
             }if
         }forall
@@ -384,12 +421,14 @@
                     (    Actual error: /) actualError 20 string cvs concatstrings =
                     %(% --> {) proc concatstrings ( }) concatstrings =
                     $error /command get =
+                    end
                     (assert_test.ps) /undefined signalerror
                 }if
             }{
                 () =
                 (FAIL: This should not run successfully but should throw an error. Did not throw an error.) =
                 %(% --> {) proc concatstrings ( }) concatstrings =
+                end
                 (assert_test.ps) /undefined signalerror
             }ifelse
 
@@ -398,6 +437,24 @@
     }bind def
     %%% END /runNegativeTests %%%
 
+    /assertOut{ % Print all stack members to mark
+        {
+            counttomark
+        }stopped{
+            /unmatchedmark $error /errorname get eq{
+                (assertOut: Error: needs a mark) =
+                (assert.ps/assertOut) /unmatchedmark signalerror
+            }
+            (FOO) =
+        }if
+
+        /n exch def
+        0 1 n 1 sub{
+            pop
+            ==
+        }for
+        
+    }bind def
 
     end  % aposkribh_assert#
 }aposkribh.libraryLoader
