@@ -23,49 +23,49 @@
 
     % simple tests
     /test.F{ % { } : proc should return true
-        0 assertProcN
         [false] test.V
     }bind def
     
     /test.T{ % { } : proc should return false
-        0 assertProcN
         [true] test.V
     }bind def
     
 
-    /test.V{ % {} [expected values left on stack] : proc should run and return specific values on stack
-        1 assertProcN
+
+    /test.V{ % {} [expected values left on stack] : proc-as-string should run and return specific values on stack
+        0 assertArrayN
+        1 assertStringN
+        
         10 dict begin
         /_expectedStack exch def
         %
         
-        dup /procAsLiteral exch cvlit def
-
         aposkribh.VERBOSE_TEST{
             () =
             (test.V) =
-            procAsLiteral ===
+            1 index ===
         }if
         
         {
-            /proc exch def
+            /_proc exch def
             clear
-            {proc} exec
+            _proc cvx exec
         }stopped{
-            procAsLiteral ===
+            (Proc: ) _proc concatstrings =
+            (Expected results:) =
             _expectedStack ===
-            (Unexpected error: ) =
-            $error /errorname get =
-            $error /errorname get
-            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
+            (Unexpected error: /) $error /errorname get dup length string cvs concatstrings =
+            
+            (/test.V: FAIL /test.V: Error: Should run OK and return results)  $error /errorname get signalerror
         }{
             _expectedStack arraySameAsStack not{
                 =
-                procAsLiteral ===
+                (Proc: ) _proc concatstrings =
+                (Expected results:) =
                 _expectedStack ===
-                (Stack +) =
+                (Actual results (stack) ) =
                 stack
-                (Stack -) =
+                ( - End Stack -) =
                 (Fail: test.V: Results stack does not match)  /invalidexit signalerror
             }if
         }ifelse
@@ -76,47 +76,6 @@
 
 
     
-    /test.V2{ % {} [expected values left on stack] : proc should run and return specific values on stack
-        % 0 assertNamed NOT IMPLEMENTED
-        1 assertProcN
-        10 dict begin
-        /_expectedStack exch def
-        %
-        
-        dup /procAsLiteral exch cvlit def
-
-        aposkribh.VERBOSE_TEST{
-            () =
-            (test.V) =
-            procAsLiteral ===
-        }if
-        
-        {
-            /proc exch def
-            clear
-            {proc} exec
-        }stopped{
-            procAsLiteral ===
-            _expectedStack ===
-            (Unexcpected error: ) =
-            $error /errorname get =
-            $error /errorname get
-            (/test.V: FAIL /test.V: Error: Should run OK and return results)  exch signalerror
-        }{
-            _expectedStack arraySameAsStack not{
-                =
-                procAsLiteral ===
-                _expectedStack ===
-                (Stack +) =
-                stack
-                (Stack -) =
-                (Fail: test.V: Results stack does not match)  /invalidexit signalerror
-            }if
-        }ifelse
-        end
-        clear
-    }bind def
-
 
     /test.E{ % { } /errortype : Should run and throw a specific error
         % 0 assertNamed NOT IMPLEMENTED
