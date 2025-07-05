@@ -40,25 +40,25 @@
 
         /argsAssertLibHasProcDict{
             count 2 lt{
-                (/aposkribh.args#//assertLibHasProc: Needs 2 args, /dicttype) /stackunderflow signalerror
+                (/aposkribh.args#/assertLibHasProc: Needs 2 args, /dicttype) /stackunderflow signalerror
             }if
             
             0 index type /nametype ne{
-                (/aposkribh.args#//assertLibHasProc: Arg0 not /nametype) /typecheck signalerror
+                (/aposkribh.args#/assertLibHasProc: Arg0 not /nametype) /typecheck signalerror
             }if
             1 index type /dicttype ne{
-                (/aposkribh.args#//assertLibHasProc: Arg1 not /dicttype) /typecheck signalerror
+                (/aposkribh.args#/assertLibHasProc: Arg1 not /dicttype) /typecheck signalerror
             }if
             %
             /procName exch def
             /procDict# exch def
 
-            procDict# /__ArgsTypes# known not{
-                (/assertLibHasProcDict procDict/__ArgsTypes# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
+            procDict# /__ProcSignatures# known not{
+                (/assertLibHasProcDict procDict/__ProcSignatures# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
 
-            procDict# /__ArgsTypes# get  /Args# known not{
-                (/assertLibHasProcDict procDict/__ArgsTypes#/__ArgsTypes# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
+            procDict# /__ProcSignatures# get  /Args# known not{
+                (/assertLibHasProcDict procDict/__ProcSignatures#/__ProcSignatures# does not exist:  ) procName dup length string cvs concatstrings /undefined signalerror 
             }if
 
             procDict# procName known not{
@@ -82,12 +82,12 @@
 
 
 
-            _lib# /__ArgsTypes# known not{
-                (validateLibrary: livrary/dictionary missing /__ArgsTypes# key ) /undefined signalerror
+            _lib# /__ProcSignatures# known not{
+                (validateLibrary: livrary/dictionary missing /__ProcSignatures# key ) /undefined signalerror
             }if
 
-            _lib# /__ArgsTypes# get /Args# known not{
-                (validateLibrary: livrary/dictionary missing /__ArgsTypes#/Args#  key ) /undefined signalerror
+            _lib# /__ProcSignatures# get /Args# known not{
+                (validateLibrary: livrary/dictionary missing /__ProcSignatures#/Args#  key ) /undefined signalerror
             }if
             end
         }bind def

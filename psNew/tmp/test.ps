@@ -170,8 +170,8 @@
         0 assertStringN
         1 assertDictN
 
-        1 index /__ArgsTypes# known not{
-            (/testLibrary_positive: Dict does not contain /__ArgsTypes# dict) /undefined signalerror
+        1 index /__ProcSignatures# known not{
+            (/testLibrary_positive: Dict does not contain /__ProcSignatures# dict) /undefined signalerror
         }if
 
         2 dict begin
@@ -187,7 +187,7 @@
         _library# argsValidateLibrary
         end
 
-        /allLibProcsWithArgs _library# /__ArgsTypes#  get /Args# get def
+        /allLibProcsWithArgs _library# /__ProcSignatures#  get /Args# get def
 
         allLibProcsWithArgs{
             /thisProcArgsTypeList exch def

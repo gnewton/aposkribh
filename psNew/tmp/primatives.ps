@@ -18,9 +18,9 @@
 
 
         % Make new ArgTypes dict to handle the args for this dict's procs
-        /__ArgsTypes# aposkribh.args# begin newArgDict end  def
+        /__ProcSignatures# aposkribh.args# begin newArgDict end  def
 
-        __ArgsTypes# begin
+        __ProcSignatures# begin
 
         <<
             % /known2
@@ -109,7 +109,7 @@
             % ]
         >> addArgsDict % Add all of these to the local /Args# dict
         
-        end % ./__ArgsTypes# 
+        end % ./__ProcSignatures# 
 
 
         %%% Cannot be used
@@ -188,13 +188,12 @@
                 (/runner: Procedure does not exist in dictionary: ) procName dup length string cvs concatstrings /undefined signalerror
             }if
 
-            aposkribh.args#
-            begin
+            aposkribh.args# begin
             %_procDict# assertValidLibrary
             _procDict# _procName argsAssertLibHasProcDict
             end
 
-            /argTypesAndResults _procDict# /__ArgsTypes# get /Args# get _procName get def
+            /argTypesAndResults _procDict# /__ProcSignatures# get /Args# get _procName get def
 
             /oneMatches false def
             argTypesAndResults{
