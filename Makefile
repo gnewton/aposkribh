@@ -33,3 +33,7 @@ deepGet:
 
 layer_idea:
 	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE -dQUIET -dSAFER -sDEVICE=pdfwrite  -dDOINTERPOLATE  -o layer_idea_1.pdf layer_idea_1.ps
+
+
+pattern:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dDOINTERPOLATE  -o pattern_image.pdf pattern_image.ps

@@ -512,71 +512,93 @@
 
 
 /noiseFillColorThisColor2{
-    (noiseFillColorThisColor2) =
+    (noiseFillColorThisColor2: START) =
     10 dict begin
     /d# exch def
 
-    /color d# /color get def
-    
-    /x0 d# /x0 get def
-    /y0 d# /y0 get def
-    /x1 d# /x1 get def
-    /y1 d# /y1 get def
+    /.color d# /Color get def
 
-    /width x1 x0 sub def
-    /height y1 y0 sub def
-
-    /scale1 d# /sscale get def
-    
-    /deltaPlusMinus d# /deltaPlusMinus get def
-    color{
-	/blue d# /blue get def
-	/green d# /green get def
-	/red d# /red get def
+    d# /Filter known{
+        /.filter d# /Filter get def
     }{
-	/gray d# /gray get def
+        /.filter false def
+    }ifelse
+
+    .filter{
+        d# /FilterProc known{
+            /.filterProc d# /FilterProc get def
+        }{
+            (noiseFillColorThisColor2: Missing filter proc) /stackunderflow signalerror
+        }ifelse
+    }if
+
+    /.x0 d# /X0 get def
+    /.y0 d# /Y0 get def
+    /.x1 d# /X1 get def
+    /.y1 d# /Y1 get def
+    /.scale d# /Scale get def
+    /.deltaPlusMinus d# /DeltaPlusMinus get def
+
+     /width x1 x0 sub .scale mul cvi def
+     /height y1 y0 sub .scale mul cvi def
+    
+
+    .color{
+	/.blue d# /Blue get def
+	/.green d# /Green get def
+	/.red d# /Red get def
+    }{
+	/.gray d# /Gray get def
     }ifelse
 
 
-    width height gt{
-	/size width cvi def
-    }{
-	/size height cvi def
-    }ifelse
-    
-    /stringLength size 3 mul 3 add def
+    %/stringLength height width add 2 div dup mul 3 mul 3 add cvi def
+    /stringLength height width mul def
+    %/stringLength width height mul 3 mul cvi def
     /str stringLength  string def
 
     gsave
-    x0 y0 translate
-    
+    .x0 .y0 translate
+
     % Image parameters:
-    width scale1 mul cvi
-    height scale1 mul cvi
+    %width .scale mul cvi
+    %height .scale mul cvi
+    width 
+    height
     8                       % bits/sample
-    [scale1 0 0 scale1 0 0] % matrix
+    [.scale 0 0 .scale 0 0] % matrix
     {
-	color{
+	.color{
 	    0 3 stringLength 1 sub
-	}{
-	    0 1 stringLength 1 sub
+	}{ 
+	    0 1 stringLength 1 sub % grayscale
 	}ifelse
 	{
 	    /n exch def
-	    color{
-		str n        red   rand deltaPlusMinus mod plusMinus  0 255 range  put
-		str n 1 add  green rand deltaPlusMinus mod plusMinus  0 255 range  put
-		str n 2 add  blue  rand deltaPlusMinus mod plusMinus  0 255 range  put
+	    .color{
+		str n        .red   rand .deltaPlusMinus mod plusMinus  0 255 range  put
+		str n 1 add  .green rand .deltaPlusMinus mod plusMinus  0 255 range  put
+		str n 2 add  .blue  rand .deltaPlusMinus mod plusMinus  0 255 range  put
 	    }{
-		% grayscale
-		str n        gray   rand deltaPlusMinus mod plusMinus  0 255 range  put
+                % grayscale
+		str n        .gray   rand .deltaPlusMinus mod plusMinus  0 255 range  put 
 	    }ifelse
 	} for
-	str
+        (NNN) =
+        .filter{
+            .filterProc
+        }{
+            str
+        }ifelse
     }                      % datasrc
-    false
-    3
-    colorimage % Image
+    .color{
+        false
+        3
+        colorimage % Color Image
+    }{
+        % grayscale
+        image
+    }ifelse
 
     grestore
     end
@@ -584,19 +606,20 @@
 } bind def
 
 
-/noiseFillColorThisColorShape2{ % path
+/noiseFillColorThisColorShape2{ % path defined
+    (/noiseFillColorThisColorShape2) =
     1 dict begin
     /d# exch def
     pathbbox
-    /y1 exch def
-    /x1 exch def
-    /y0 exch def
-    /x0 exch def
+    /y1 exch cvi def
+    /x1 exch cvi def
+    /y0 exch cvi def
+    /x0 exch cvi def
 
-    d# /x0 x0 put
-    d# /y0 y0 put
-    d# /x1 x1 put
-    d# /y1 y1 put
+    d# /X0 x0 put
+    d# /Y0 y0 put
+    d# /X1 x1 put
+    d# /Y1 y1 put
 
     gsave
     clip
@@ -617,17 +640,33 @@ closepath
 gsave
 stroke
 grestore
-gsave
 
+gsave
 <<
-    /color true
-    /red 100
-    /green 10
-    /blue 10
-    /deltaPlusMinus 20
-    /sscale .4
+    /Filter false
+    /FilterProc {
+        %str
+        /newstr str length string def
+
+        0 1 str length 1 sub 3 sub{
+            /i exch def
+            newstr i         str i       get  2 div  cvi 0 255 range put
+            newstr i 1 add   str i 1 add get  2 div  cvi 0 255 range put
+            newstr i 2 add   str i 2 add get  2 div  cvi 0 255 range put
+            %str i get =
+        }for
+
+        newstr
+    }
+    /Color true
+    /Red 200
+    /Green 100
+    /Blue 100
+    /DeltaPlusMinus 100
+    /Scale 2
 >> noiseFillColorThisColorShape2
 grestore
+
 gsave
 0 1 1 setrgbcolor
 showbb
@@ -650,16 +689,116 @@ stroke
 grestore
 gsave
 
+/pixel{ %str w h
+
+    5 dict begin
+    /.j exch def
+    /.i exch def
+    /.h exch def
+    /.w exch def
+    /.str exch def
+
+    .w .h mul .str length ne{
+        (/pixel: Size error) /rangeerror signalerror
+        }if
+
+    .str .w .j mul .i add get
+     end
+}bind def
+
+/colorPixel{ %str w h
+
+    5 dict begin
+    /.j exch def
+    /.i exch def
+    /.h exch def
+    /.w exch def
+    /.str exch def
+
+    .w .h mul 3 mul .str length ne{
+        (/colorpixel: Size error) /rangeerror signalerror
+        }if
+
+    
+    .str .w .j mul .i add 3 mul get
+     end
+}bind def
+
+
+/averageKernel.Gray{ % Assumes str .w .h x y size from /averageFilterGray
+    2 dict begin
+    /d .size 2 div cvi def
+
+    x d ge
+    y d ge
+    and
+    x .w d sub lt
+    and
+    y .h d sub lt
+    and
+    {
+        /val 0 def
+        d neg 1 d{
+            /j exch def
+            d neg 1 d{
+                /i exch def
+                /val val   .str .w .h x i add y j add pixel add store
+            }for
+        }for
+        val .size .size mul div cvi
+    }{
+        str .w .h x y pixel cvi
+    }ifelse
+    end
+}def
+
+/averageFilter.Gray{ % w h str size
+    (/averageFilterGray) =
+    1 dict begin
+    /.size exch def
+    /.h exch def
+    /.w exch def
+    /.str exch def
+
+    /newstr .str length string def
+
+    0 1 .h 1 sub{
+        /y exch def
+        
+         0 1 .w 1 sub{
+             /x exch def
+             newstr y .w mul x add
+             averageKernel.Gray
+             put
+         }for
+    }for
+    
+    newstr
+    end
+}bind def
+
 <<
-    /color false
-    /gray 100
-    /deltaPlusMinus 20
-    /sscale .4
+    /Filter true
+    /FilterProc {
+        str width height 5  averageFilter.Gray
+    }
+
+    /Color false
+    /Gray 128
+    /DeltaPlusMinus 40
+    /Scale 1
 >> noiseFillColorThisColorShape2
 grestore
+
 gsave
 0 1 1 setrgbcolor
 showbb
 grestore
 0 1 0 setrgbcolor stroke
+showpage
+
+gsave
+newpath
+fill
+grestore
 showpage
