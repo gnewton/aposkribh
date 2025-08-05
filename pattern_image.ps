@@ -1,0 +1,665 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Title:patternVar1.eps
+%%Creator:John F Sherman
+%%BoundingBox:0 0 400 400
+%%%%%%%%%%%%%% https://www3.nd.edu/~jsherman/portfolio/PSforD/PSforD.pdf
+<< /AllowTransparency true >> % enable transparency
+
+17341734 srand
+
+% /str 1512 string def
+% /bits 8 def
+
+% /pattern{
+%     /light exch def /dark exch def
+%     /diff light dark sub def
+%     7 7 bits [.1 0 0 .1 0 0]
+%     {0 1 511 {str exch rand diff mod dark add put} for
+%      str} bind image
+% } def
+
+
+% /makeTexture{
+%     gsave % row
+%     100 300 translate
+%     .025 .025 scale
+%     159{
+% 	gsave
+% 	113{
+% 	    70 0 translate 0 255 pattern
+% 	}repeat
+% 	grestore
+% 	0 50 translate
+%     }repeat
+    
+%     grestore
+% }def
+
+% gsave
+% makeTexture
+% grestore
+
+% gsave
+
+% 0.9 .setfillconstantalpha % FILL opacity
+% .5 .setstrokeconstantalpha  % stroke opacity
+
+% 100 300 moveto
+% 200 0 rlineto
+% 0 200 rlineto
+% -200 0 rlineto
+% closepath
+% 1 1 0 setrgbcolor
+% fill
+
+% grestore
+
+% showpage
+
+% gsave
+% /w 933 def
+% /str w string def
+% .333 setgray
+% 0 1 w 1 sub {str exch rand 255 mod put} for
+% 128 128 true [.8 0 0 .8 0 0] {str} imagemask
+% % 100 0 translate
+% % .333 setgray
+% % 100 100 true [.5 0 0 .5 0 0] {str} imagemask
+% % 0 100 translate
+% % .666 setgray
+% % 100 100 true [.5 0 0 .5 0 0] {str} imagemask
+% grestore
+% showpage
+
+
+
+% /sl 1000 def
+% /str sl string def
+
+% % A4
+% % 1785 = 210mm = 8.5   595 = 
+% % 2526 = 297mm = 8.5   842 = 
+
+
+% /pattern2{
+%     /light exch def /dark exch def
+%     /diff light dark sub def
+%     1785 2526 bits [3 0 0 3 0 0]
+%     {0 1 sl 1 sub {str exch rand diff mod dark add put} for
+%      str} bind image
+% } def
+
+% gsave
+% 120 70 translate
+% 150 220 pattern2
+% grestore
+% showpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
+
+/pathbboxAsPath{
+    pathbbox
+    /y0 exch def
+    /x0 exch def
+    /y1 exch def
+    /x1 exch def
+    
+    newpath
+    x0 y0 moveto
+    x1 y0 lineto
+    x1 y1 lineto
+    x0 y1 lineto
+    closepath
+}def
+
+/showbb{
+    gsave
+    (showbb) =
+    pathbboxAsPath
+    0 setlinewidth
+    stroke
+    grestore
+    
+}def
+
+% /fill2{
+%     fill
+% }def
+
+% gsave
+% 100 0 translate
+% 100 100 moveto
+% 100 200 rlineto
+% -100 100 rlineto
+% -100 -200 rlineto
+% closepath
+% showbb
+% gsave
+% stroke
+% grestore
+
+
+
+% clipsave
+% %pathbboxAsPath
+% clip
+
+% 0.8 .setfillconstantalpha % FILL opacity
+% .5 .setstrokeconstantalpha  % stroke opacity
+
+% 0 80 pattern2
+
+
+% 0 1 0 setrgbcolor
+% gsave
+% fill2
+% grestore
+
+% 0 0 1 setrgbcolor
+
+
+% newpath
+% 20 20 moveto
+% 180 170 rlineto
+% -50 50 rlineto
+% closepath
+% fill
+
+% newpath
+
+% fill
+% stroke
+
+
+% %clip
+
+
+
+
+
+
+
+% grestore
+% showpage
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 150 200 pattern2
+% showpage
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% /fillTexture{ % path
+%     % pattern0 pattern1 fillAlpha
+%     /alpha exch def
+%     /p1 exch def
+%     /p0 exch def
+%     gsave
+%     gsave
+%     clip
+%     p0 p1 pattern2
+%     grestore
+%     alpha .setfillconstantalpha % FILL opacity
+%     fill
+%     grestore
+% }def
+
+
+% newpath
+% 100 100 moveto
+% 50 0 rlineto
+% 350 -50 rlineto
+% 300 540 rlineto
+% closepath
+% gsave
+% 0 0 1 setrgbcolor
+% 0 200 .2 fillTexture
+% grestore
+
+% showbb
+
+
+% showpage
+
+
+% /noiseFillGray{
+%     10 dict begin
+    
+%     /height exch def
+%     /width exch def
+%     /scale1 exch def
+%     /maxGray exch def
+%     /minGray exch def
+
+%     width height gt{
+% 	/size width def
+%     }{
+% 	/size height def
+%     }ifelse
+    
+%     /stringLength size 13 mul 13 add def
+%     /str stringLength  string def
+    
+%     /delta maxGray minGray sub def
+
+%     % Image parameters:
+%     size scale1 mul cvi     % width
+%     size scale1 mul cvi     % height
+%     8                       % bits/sample
+%     [scale1 0 0 scale1 0 0] % matrix
+%     {
+% 	0 1 stringLength 1 sub
+% 	{
+% 	    str exch rand delta mod minGray add put
+% 	} for
+% 	str
+%     }                      % datasrc
+%     bind image % Image
+
+%     end
+% } def
+
+ /z 500 def
+% 100 100 translate
+% newpath
+
+% 0 0 moveto
+% z 0 rlineto
+% 0 z rlineto
+% z neg 0 rlineto
+% closepath
+% 0 0 1 setrgbcolor
+% .3 .setfillconstantalpha % FILL opacity
+
+% gsave
+% clip
+% <<
+%     /min 20
+%     /max 190
+%     /scale 1.5
+%     /width z
+%     /height z
+% >>
+% 20 190 1.5 z z noiseFillGray
+% %20 230 3 z z pattern3
+
+% grestore
+
+% gsave
+% %fill
+% grestore
+% stroke
+
+% showpage
+
+% /noiseFillColor{
+%     10 dict begin
+    
+%     /height exch def
+%     /width exch def
+%     /scale1 exch def
+%     /maxColor exch def
+%     /minColor exch def
+
+%     width height gt{
+% 	/size width def
+%     }{
+% 	/size height def
+%     }ifelse
+    
+%     /stringLength size 3 mul 3 add def
+%     /str stringLength  string def
+    
+%     /delta maxColor minColor sub def
+
+%     % Image parameters:
+%     size scale1 mul cvi     % width
+%     size scale1 mul cvi     % height
+%     8                       % bits/sample
+%     [scale1 0 0 scale1 0 0] % matrix
+%     {
+% 	0 3 stringLength 1 sub
+% 	{
+% 	    /n exch def
+% 	    str n rand delta mod minColor add put
+% 	    str n 1 add rand delta mod minColor add put
+% 	    str n 2 add rand delta mod minColor add put
+% 	} for
+% 	str
+%     }                      % datasrc
+%     false
+%     3
+%     colorimage % Image
+
+%     end
+% } def
+
+% 100 100 translate
+% 20 190 1.5 z z noiseFillColor
+
+
+% newpath
+
+% 0 0 moveto
+% z 0 rlineto
+% 0 z rlineto
+% z neg 0 rlineto
+% closepath
+% 0 0 1 setrgbcolor
+% .5 .setfillconstantalpha % FILL opacity
+
+% fill
+
+% showpage
+
+/plusMinus{
+    %add
+    
+    rand 2 mod 0 eq
+    {
+	add
+    }{
+	sub
+    }ifelse
+}def
+
+
+/range{
+    /max exch def
+    /min exch def
+
+    dup max gt{
+	pop
+	max
+    }{
+	dup min lt{
+	    pop
+	    min
+	}if
+    }ifelse
+
+}bind def
+
+/noiseFillColorThisColor{
+    (HELLO) =    
+    10 dict begin
+    /height exch def
+    /width exch def
+    /scale1 exch def
+    
+    /deltaPlusMinus exch def
+    /blue exch def
+    /green exch def
+    /red exch def
+
+
+    width height gt{
+	/size width cvi def
+    }{
+	/size height cvi def
+    }ifelse
+    
+    /stringLength size 3 mul 3 add def
+    /str stringLength  string def
+
+    % Image parameters:
+    size scale1 mul cvi     % width
+    size scale1 mul cvi     % height
+    8                       % bits/sample
+    [scale1 0 0 scale1 0 0] % matrix
+    {
+
+	0 3 stringLength 1 sub
+	{
+	    /n exch def
+	    str n        red   rand deltaPlusMinus mod plusMinus  0 255 range  put
+	    str n 1 add  green rand deltaPlusMinus mod plusMinus  0 255 range  put
+	    str n 2 add  blue  rand deltaPlusMinus mod plusMinus  0 255 range  put
+	} for
+	str
+    }                      % datasrc
+    false
+    3
+    colorimage % Image
+
+    end
+} bind def
+
+% 100 100 translate
+% <<
+%     /r 100
+%     /g 10
+%     /b 10
+%     /deltaPlusMinus 50
+%     /scale 2
+%     /width z
+%     /height z
+%     >>
+
+% 150 10 10 30   .4  z z noiseFillColorThisColor
+
+% showpage
+
+
+% gsave
+% 0 setgray
+% 50 50 translate
+% newpath
+% 0 0 moveto
+% 100 0 rlineto
+% 100 100 rlineto
+% -100 100 rlineto
+% closepath
+% gsave
+% stroke
+% grestore
+
+% pathbbox
+% /y1 exch def
+% /x1 exch def
+% /y0 exch def
+% /x0 exch def
+% (bbox) =
+
+% 150 10 10 30   .4  x1 x0 sub y1 y0 sub  noiseFillColorThisColor
+
+
+
+
+% grestore
+% showpage
+
+% /noiseFillColorThisColorShape{ % path
+%     pathbbox
+%     /y1 exch def
+%     /x1 exch def
+%     /y0 exch def
+%     /x0 exch def
+
+%     x1 x0 sub =
+%     y1 y0 sub =
+
+%     gsave
+%     clip
+%     x1 x0 sub y1 y0 sub  noiseFillColorThisColor
+%     grestore
+% }bind def
+
+% gsave
+% 0 setgray
+% 50 50 translate
+% newpath
+% 0 0 moveto
+% 200 0 rlineto
+% 100 200 rlineto
+% 100 -20 rlineto
+% -300 300 rlineto
+% -30 100 rlineto
+% closepath
+% gsave
+% stroke
+% grestore
+
+% gsave
+% showbb
+% grestore
+
+
+% 150 10 10 30 3  noiseFillColorThisColorShape
+
+
+% showpage
+
+
+/noiseFillColorThisColor2{
+    (noiseFillColorThisColor2) =
+    10 dict begin
+    /d# exch def
+
+    /color d# /color get def
+    
+    /x0 d# /x0 get def
+    /y0 d# /y0 get def
+    /x1 d# /x1 get def
+    /y1 d# /y1 get def
+
+    /width x1 x0 sub def
+    /height y1 y0 sub def
+
+    /scale1 d# /sscale get def
+    
+    /deltaPlusMinus d# /deltaPlusMinus get def
+    color{
+	/blue d# /blue get def
+	/green d# /green get def
+	/red d# /red get def
+    }{
+	/gray d# /gray get def
+    }ifelse
+
+
+    width height gt{
+	/size width cvi def
+    }{
+	/size height cvi def
+    }ifelse
+    
+    /stringLength size 3 mul 3 add def
+    /str stringLength  string def
+
+    gsave
+    x0 y0 translate
+    
+    % Image parameters:
+    width scale1 mul cvi
+    height scale1 mul cvi
+    8                       % bits/sample
+    [scale1 0 0 scale1 0 0] % matrix
+    {
+	color{
+	    0 3 stringLength 1 sub
+	}{
+	    0 1 stringLength 1 sub
+	}ifelse
+	{
+	    /n exch def
+	    color{
+		str n        red   rand deltaPlusMinus mod plusMinus  0 255 range  put
+		str n 1 add  green rand deltaPlusMinus mod plusMinus  0 255 range  put
+		str n 2 add  blue  rand deltaPlusMinus mod plusMinus  0 255 range  put
+	    }{
+		% grayscale
+		str n        gray   rand deltaPlusMinus mod plusMinus  0 255 range  put
+	    }ifelse
+	} for
+	str
+    }                      % datasrc
+    false
+    3
+    colorimage % Image
+
+    grestore
+    end
+
+} bind def
+
+
+/noiseFillColorThisColorShape2{ % path
+    1 dict begin
+    /d# exch def
+    pathbbox
+    /y1 exch def
+    /x1 exch def
+    /y0 exch def
+    /x0 exch def
+
+    d# /x0 x0 put
+    d# /y0 y0 put
+    d# /x1 x1 put
+    d# /y1 y1 put
+
+    gsave
+    clip
+    d# noiseFillColorThisColor2
+    grestore
+    end
+}bind def
+
+10 10 translate
+newpath
+100 100 moveto
+100 0 rlineto
+100 100 rlineto
+100 0 rlineto
+0 200 rlineto
+-100 100 rlineto
+closepath
+gsave
+stroke
+grestore
+gsave
+
+<<
+    /color true
+    /red 100
+    /green 10
+    /blue 10
+    /deltaPlusMinus 20
+    /sscale .4
+>> noiseFillColorThisColorShape2
+grestore
+gsave
+0 1 1 setrgbcolor
+showbb
+grestore
+0 1 0 setrgbcolor stroke
+showpage
+
+
+10 10 translate
+newpath
+100 100 moveto
+100 0 rlineto
+100 100 rlineto
+100 0 rlineto
+0 200 rlineto
+-100 100 rlineto
+closepath
+gsave
+stroke
+grestore
+gsave
+
+<<
+    /color false
+    /gray 100
+    /deltaPlusMinus 20
+    /sscale .4
+>> noiseFillColorThisColorShape2
+grestore
+gsave
+0 1 1 setrgbcolor
+showbb
+grestore
+0 1 0 setrgbcolor stroke
+showpage
