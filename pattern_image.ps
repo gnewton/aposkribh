@@ -606,6 +606,47 @@
 } bind def
 
 
+/colorPixel{
+    [
+    str i get
+    str i 1 add get
+    str i 2 add get
+    ]
+}bind def
+
+
+/averageFilter.Color{
+    (/averageFilter.Color START) =
+
+    /newstr str length string def
+
+    0 1 str length 1 sub 3 sub{
+        /i exch def
+        newstr i         str i       get  2 div  cvi 0 255 range put
+        newstr i 1 add   str i 1 add get  2 div  cvi 0 255 range put
+        newstr i 2 add   str i 2 add get  2 div  cvi 0 255 range put
+        %str i get =
+    }for
+    
+     0 1 height 1 sub{
+         /y exch def
+        
+         0 3 width 1 sub{
+             /x exch def
+             /i y width mul  x add def
+             colorPixel pop
+             newstr i         str i       get   2 div cvi put
+             newstr i 1 add   str i 1 add get   2 div cvi put
+             newstr i 2 add   str i 2 add get   2 div cvi put
+         }for
+     }for
+    
+     newstr
+    % end
+}bind def
+
+
+
 /noiseFillColorThisColorShape2{ % path defined
     (/noiseFillColorThisColorShape2) =
     1 dict begin
@@ -643,27 +684,16 @@ grestore
 
 gsave
 <<
-    /Filter false
+    /Filter true
     /FilterProc {
-        %str
-        /newstr str length string def
-
-        0 1 str length 1 sub 3 sub{
-            /i exch def
-            newstr i         str i       get  2 div  cvi 0 255 range put
-            newstr i 1 add   str i 1 add get  2 div  cvi 0 255 range put
-            newstr i 2 add   str i 2 add get  2 div  cvi 0 255 range put
-            %str i get =
-        }for
-
-        newstr
+        averageFilter.Color
     }
     /Color true
-    /Red 200
-    /Green 100
-    /Blue 100
-    /DeltaPlusMinus 100
-    /Scale 2
+    /Red 250
+    /Green 10
+    /Blue 10
+    /DeltaPlusMinus 50
+    /Scale 1
 >> noiseFillColorThisColorShape2
 grestore
 
@@ -703,24 +733,6 @@ gsave
         }if
 
     .str .w .j mul .i add get
-     end
-}bind def
-
-/colorPixel{ %str w h
-
-    5 dict begin
-    /.j exch def
-    /.i exch def
-    /.h exch def
-    /.w exch def
-    /.str exch def
-
-    .w .h mul 3 mul .str length ne{
-        (/colorpixel: Size error) /rangeerror signalerror
-        }if
-
-    
-    .str .w .j mul .i add 3 mul get
      end
 }bind def
 
@@ -776,6 +788,8 @@ gsave
     newstr
     end
 }bind def
+
+
 
 <<
     /Filter true
