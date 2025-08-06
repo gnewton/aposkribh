@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%% https://www3.nd.edu/~jsherman/portfolio/PSforD/PSforD.pdf
 << /AllowTransparency true >> % enable transparency
 
-17341734 srand
+1341734 srand
 
 % /str 1512 string def
 % /bits 8 def
@@ -413,9 +413,13 @@
 }def
 
 
-/range{
+/range{ % clamps the values to this range; <min becomes min; >max becomes max
     /max exch def
     /min exch def
+
+    min max ge{
+        (/range: min must be less than max) /rangeerror signalerror
+    }if
 
     dup max gt{
 	pop
@@ -616,13 +620,12 @@
     .x0 25 sub .y0 25 sub translate
 
     % Image parameters:
-    %width .scale mul cvi
-    %height .scale mul cvi
     width 
     height
     8                       % bits/sample
     [.scale 0 0 .scale 0 0] % matrix
-    {
+    % DataSource
+    { 
 	.color{
 	    0 3 stringLength  4 sub
 	}{ 
@@ -631,18 +634,9 @@
 	{
 	    /n exch def
 	    .color{
-                {
-		    str n        .red   rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
-                    str n 1 add  .green rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
-                    str n 2 add  .blue  rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
-                }stopped{
-                    (MMMM) =
-                    n =
-                    stringLength =
-                    quit
-                }if
-
-
+		str n        d# /Red get   rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
+		str n 1 add  d# /Green get rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
+		str n 2 add  d# /Blue get  rand .deltaPlusMinus mod plusMinus  0 255 range cvi put
 	    }{
                 % grayscale
 		str n        .gray   rand .deltaPlusMinus mod plusMinus  0 255 range  put 
@@ -650,6 +644,7 @@
 	} for
         (NNN) =
         .filter{
+
             .filterProc
         }{
             str
@@ -677,21 +672,6 @@
 
     /iii y width mul  x  add 3 mul cvi def
 
-    % () =
-    % (@@@@) =
-    % iii =
-    % x =
-    % y =
-    % width =
-    % height =
-    % ( PA) =
-    % str iii get =
-    % ( PB) =
-    % str iii 1 add get =
-    % ( PC) =
-    % str iii 2 add get =
-    % ( PE) =
-
     [
         str iii get 
         str iii 1 add get 
@@ -701,74 +681,78 @@ end
 }bind def
 
 /averageKernel.Color{ % Assumes str .w .h x y size from /averageFilterGray
-    2 dict begin
-    % (/averageKernel.Color) =
-
-    /d .size 2 div cvi def
-    /size2 .size .size mul def
 
 
-    true{
-        x d ge
-        y d ge
-        and
-        x width d sub lt
-        and
-        y height d sub lt
-        and
-        {
-            /valR 0 def
-            /valG 0 def
-            /valB 0 def
+    % Not edges
+    x d ge
+    y d ge
+    and
+    x width d sub lt
+    and
+    y height d sub lt
+    and
+    {
+        /valR 0 def
+        /valG 0 def
+        /valB 0 def
+	/jj 0 def
+	/ii 0 def
+	/rgb null def
+        d neg 1 d{
+            /jj exch store
             d neg 1 d{
-                /jj exch def
-                d neg 1 d{
-                    /ii exch def
-                    /rgb x ii add y jj add  colorPixel def
-                     /valR valR  rgb 0 get add store
-                     /valG valG  rgb 1 get add store
-                     /valB valB  rgb 2 get add store
-                }for
+                /ii exch store
+                /rgb x ii add y jj add  colorPixel store
+                /valR valR  rgb 0 get  add store
+                /valG valG  rgb 1 get  add  store
+                /valB valB  rgb 2 get  add  store
             }for
-            [
-                valR size2 div cvi
-                valG size2 div cvi
-                valB size2 div cvi
-            ]
-        }{
-            [
-                str i get
-                str i 1 add get
-                str i 2 add get
-            ]
-        }ifelse
-    }if
-    end
+        }for
+        [
+            valR size2 div cvi
+            valG size2 div cvi
+            valB size2 div cvi
+        ]
+    }{
+	% Edge pixel
+        [
+            str i get
+            str i 1 add get
+            str i 2 add get
+        ]
+    }ifelse
 }def
 
 
 
 /averageFilter.Color{
+    10 dict begin
     /.size exch def
     /newstr str length string def
 
-    
-     0 1 height 1 sub{
-         /y exch def
-         0 1 width 1 sub{
-             /x exch def
-             /i y width mul   x  add 3 mul cvi def
+    /size2 .size .size mul def
+    /d .size 2 div cvi def
 
-             /foo averageKernel.Color def
-             newstr i         foo 0 get put
-             newstr i 1 add   foo 1 get put
-             newstr i 2 add   foo 2 get put
+    /x 0 def
+    /y 0 def
+    /i 0 def
+    /newPixel [1 2 3] def
+     0 1 height 1 sub{
+         /y exch store
+         0 1 width 1 sub{
+             /x exch store
+             /i y width mul   x  add 3 mul cvi store
+
+             /newPixel averageKernel.Color store
+             newstr i         newPixel 0 get put
+             newstr i 1 add   newPixel 1 get put
+             newstr i 2 add   newPixel 2 get put
 
          }for
      }for
     
      newstr
-    % end
+     end
 }bind def
 
 
@@ -848,7 +832,6 @@ grestore
 gsave
 
 /pixel{ %str w h
-
     5 dict begin
     /.j exch def
     /.i exch def
@@ -928,7 +911,7 @@ gsave
     /Color false
     /Gray 128
     /DeltaPlusMinus 40
-    /Scale 1
+    /Scale .1
 >> noiseFillColorThisColorShape2
 grestore
 
@@ -972,16 +955,16 @@ grestore
 
 gsave
 <<
-    /Filter false
+    /Filter true
     /FilterProc {
         3 averageFilter.Color
     }
     /Color true
     /Red 128
-    /Green 120
+    /Green 10
     /Blue 10
     /DeltaPlusMinus 40
-    /Scale 1
+    /Scale .1
 >> noiseFillColorThisColorShape2
 grestore
 
