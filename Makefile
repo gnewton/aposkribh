@@ -36,4 +36,7 @@ layer_idea:
 
 
 pattern:
-	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dDOINTERPOLATE  -o pattern_image.pdf pattern_image.ps
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite    -o pattern_image.pdf pattern_image.ps
+
+gaussian:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite    -o gaussian.pdf gaussian.ps

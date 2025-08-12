@@ -1,11 +1,24 @@
 %!PS-Adobe-2.0 EPSF-1.2
-%%Title:patternVar1.eps
-%%Creator:John F Sherman
+%%Title:
+%%Creator:Glen Newtopn
 %%BoundingBox:0 0 400 400
-%%%%%%%%%%%%%% https://www3.nd.edu/~jsherman/portfolio/PSforD/PSforD.pdf
-<< /AllowTransparency true >> % enable transparency
+%%%%%%%%%%%%%% 
+%<< /AllowTransparency true >> % enable transparency
+
+/Rotate 79 def
+/Debug false def
+/debug{
+    Debug{
+	(--- [ Debug) =
+	===
+	(--- ] Debug) =
+    }{
+	pop
+    }ifelse
+}def
 
 41341734 srand
+
 
 % /str 1512 string def
 % /bits 8 def
@@ -125,6 +138,7 @@
 }def
 
 
+
 /cross{
     2 dict begin
     /s exch def
@@ -168,9 +182,9 @@
     10 cross
     grestore    
 
-
-    
 }def
+
+
 
 % /fill2{
 %     fill
@@ -401,7 +415,8 @@
 
 % showpage
 
-/plusMinus{
+
+ /plusMinus{
     %add
     rand 2 mod 0 eq
     {
@@ -581,7 +596,6 @@
     /width x1 x0 sub 50 add .scale mul cvi def
     /height y1 y0 sub 50 add .scale mul cvi def
     
-
     .color{
 	/.blue d# /Blue get def
 	/.green d# /Green get def
@@ -597,7 +611,7 @@
 
     %/stringLength height width add 2 div dup mul 3 mul 3 add cvi def
     .color{
-        /stringLength height width mul 3 mul def
+        /stringLength height width mul 3  mul def
     }{
         /stringLength height width mul def
     }ifelse
@@ -633,13 +647,14 @@
 	} for
         (NNN) =
         d# /UseFilters get{
+
 	    d# /Filters get ===
 	    /nnn 0 def
 	    d# /Filters get{
 		/f# exch def
 		f# ===
-		f# /Filter known =
-		f# /Filter get{
+		f# /UseThisFilter known =
+		f# /UseThisFilter get{
 		    (RUNNUNG) =
 		    nnn =
 		    /nnn nnn 1 add store
@@ -670,6 +685,122 @@
 
 } bind def
 
+/noiseFillColorThisColor2_MM{
+    (noiseFillColorThisColor2: START) =
+    10 dict begin
+    /d# exch def
+
+    /.color d# /Color get def
+
+    /.x0 d# /X0 get def
+    /.y0 d# /Y0 get def
+    /.x1 d# /X1 get def
+    /.y1 d# /Y1 get def
+    /.scale d# /Scale get def
+
+    d# /Interpolate known{
+	/.interpolate d# /Interpolate get def
+    }{
+	/.interpolate false def
+    }ifelse
+
+
+    % Add 40 to buffer fill
+    /width x1 x0 sub 50 add .scale mul cvi def
+    /height y1 y0 sub 50 add .scale mul cvi def
+    
+    .color{
+	/.blue d# /Blue get def
+	/.green d# /Green get def
+	/.red d# /Red get def
+	/.deltaPlusMinus.R d# /DeltaPlusMinus.R get def
+	/.deltaPlusMinus.G d# /DeltaPlusMinus.G get def
+	/.deltaPlusMinus.B d# /DeltaPlusMinus.B get def
+    }{
+	/.gray d# /Gray get def
+	/.deltaPlusMinus.Gray d# /DeltaPlusMinus.Gray get def
+    }ifelse
+
+    width =
+    height =
+
+    %/stringLength height width add 2 div dup mul 3 mul 3 add cvi def
+    .color{
+        /stringLength height width mul 3 mul 3 add def
+    }{
+        /stringLength height width mul def
+    }ifelse
+    
+    %/stringLength width height mul 3 mul cvi def
+    /str stringLength  string def
+
+    gsave
+    .x0 25 sub .y0 25 sub translate
+
+    /DeviceRGB setcolorspace 
+
+    {
+    << % Start image dictionary
+	/ImageType 1
+	/Width width
+	/Height height
+	/BitsPerComponent 8
+	/Interpolate .interpolate
+	/Decode [0 1 0 1 0 1] % Decode color values in normal way
+	/ImageMatrix [.scale 0 0 .scale 0 0]
+	/DataSource 	{ 
+		.color{
+		    0 3 stringLength  4 sub
+		}{ 
+		    0 1 stringLength 1 sub % grayscale
+		}ifelse
+		{
+		    /n exch def
+		    .color{
+			str n          .red   rand .deltaPlusMinus.R mod plusMinus  0 255 range cvi   put
+			str n 1 add    .green rand .deltaPlusMinus.G mod plusMinus  0 255 range cvi   put
+			str n 2 add    .blue  rand .deltaPlusMinus.B mod plusMinus  0 255 range cvi   put
+		    }{
+	            % grayscale
+			str n        .gray   rand .deltaPlusMinus.Gray mod plusMinus  0 255 range  put 
+		    }ifelse
+		} for
+	    (NNN) =
+	    d# /UseFilters get{
+		    d# /Filters get ===
+		    /nnn 0 def
+		    d# /Filters get{
+			/f# exch def
+			f# ===
+			f# /UseThisFilter known =
+			f# /UseThisFilter get{
+			    (RUNNUNG) =
+			    nnn =
+			    /nnn nnn 1 add store
+
+			    f# f# /FilterProc get exec
+			    /str exch store
+			}if
+		    }forall
+		    str
+		    str str length 2 div cvi  get =
+		    str str length 2 div cvi 1 add get =
+		    str str length 2 div cvi 2 add get =
+		}{
+	        str
+	    }ifelse
+	} 
+    >>
+    image % Color Image
+    }stopped{
+	(ERROR) =
+	quit
+    }
+    grestore
+    end
+
+} bind def
+
 
 /colorPixel{
     2 dict begin
@@ -683,7 +814,7 @@
         str iii 1 add get 
         str iii 2 add get
     ]
-end
+    end
 }bind def
 
 
@@ -703,6 +834,7 @@ end
 	/jj 0 def
 	/ii 0 def
 	/rgb null def
+
         d neg 1 d{
             /jj exch store
             d neg 1 d{
@@ -728,44 +860,65 @@ end
     }ifelse
 }def
 
+/kernel.Color.SingleColor{
+    kernelArgs# /Color get
+}def
+
+/kernel.Color.2Stripes{
+    kernelArgs# /Vertical get{
+	/axis x def
+    }{
+	/axis y def
+    }ifelse
+    
+    axis .size mod .size 2 div lt{
+	kernelArgs# /Color1 get
+    }{
+	kernelArgs# /Color2 get
+    }ifelse
+}def
+
 
 
 /color.FilterHarness{
     (/color.FilterHarness START) =
     10 dict begin
     /ff# exch def
-    ff# ===
-    (M) =
-    ff# /KernelArgs get ===
-    /kernelArgs ff# /KernelArgs get
-    (A) =
-    /.size ff# /KernelArgs get /Size get def
+
+
+
+    /kernelArgs# ff# /KernelArgs# get def
+
+    % Cache size for kernels that need it
+    kernelArgs# /Size known{
+	/.size kernelArgs# /Size get def
+	/size2 .size .size mul def
+	/d .size 2 div cvi def
+    }if
 
     /newstr str length string def
-
-    /size2 .size .size mul def
-    /d .size 2 div cvi def
 
     /x 0 def
     /y 0 def
     /i 0 def
 
     /newPixel [1 2 3] def
-     0 1 height 1 sub{
-         /y exch store
-         0 1 width 1 sub{
-             /x exch store
-             /i y width mul   x  add 3 mul cvi store
-             ff# /Kernal get exec /newPixel  exch store
-             newstr i         newPixel 0 get put
-             newstr i 1 add   newPixel 1 get put
-             newstr i 2 add   newPixel 2 get put
+    0 1 height 1 sub{
+        /y exch store
+        0 1 width 1 sub{
+            /x exch store
+            /i y width mul   x  add 3 mul cvi store
 
-         }for
-     }for
-    
-     newstr
-     end
+            ff# /Kernel get exec /newPixel  exch store
+
+            newstr i         newPixel 0 get put
+            newstr i 1 add   newPixel 1 get put
+            newstr i 2 add   newPixel 2 get put
+        }for
+    }for
+
+    newstr
+    end
 }bind def
 
 
@@ -773,6 +926,9 @@ end
     (/noiseFillThisShape2) =
     1 dict begin
     /d# exch def
+    d# /Angle known{
+	d# /Angle get rotate
+    }if
     pathbbox
     /y1 exch cvi def
     /x1 exch cvi def
@@ -786,11 +942,13 @@ end
 
     gsave
     clip
-    d# noiseFillColorThisColor2
+    d# noiseFillColorThisColor2_MM
+    %d# noiseFillColorThisColor2
     grestore
     end
 }bind def
 
+1{
 10 10 translate
 newpath
 100 100 moveto
@@ -802,39 +960,86 @@ newpath
 -134 -45 rlineto
 -100 100 rlineto
 closepath
-gsave
-stroke
-grestore
+
+ gsave
+ pathbbox = = = =
+ Rotate rotate
+ showbb
+ grestore
+
+% gsave
+% stroke
+% grestore
+
 
 gsave
+
+(AAAAAAAAAAAAAAAA) =
+
 <<
     /UseFilters true
+    /Angle Rotate
+    /Interpolate true
+    
     /Filters[
 	<<
-	    /Kernal{
+	    /UseThisFilter false
+	    /Kernel{
+		kernel.Color.SingleColor
+	    }
+	    /KernelArgs#
+	    <<
+		/Color [100 0 0]
+	    >>
+	    /FilterProc {
+		color.FilterHarness
+	    }
+	>>
+
+	<<
+	    /UseThisFilter false
+	    /Kernel{
+		kernel.Color.2Stripes
+	    }
+	    /KernelArgs#
+	    <<
+		/Size 2
+		/Color1 [0 255 0 0]
+		/Color2 [255 0  0]
+		/Vertical true
+	    >>
+	    /FilterProc {
+		color.FilterHarness
+	    }
+	>>
+	<<
+	    /UseThisFilter false
+	    /Kernel{
 		kernel.Color.Average
 	    }
-	    /KernelArgs
+	    /KernelArgs#
 	    <<
 		/Size 3
 	    >>
-	    /Filter true
 	    /FilterProc {
 		color.FilterHarness
 	    }
 	>>
     ]
+    /Scale .7
     /Color true
-    /Red 126
-    /Green 255
-    /Blue 126
-    /DeltaPlusMinus.R 100
-    /DeltaPlusMinus.G 100
-    /DeltaPlusMinus.B 100
-    /Scale .4
->> noiseFillThisShape2
-grestore
+    /Red 128
+    /Green 28
+    /Blue 128
+    /DeltaPlusMinus.R 30
+    /DeltaPlusMinus.G 128
+    /DeltaPlusMinus.B 50
 
+>> noiseFillThisShape2
+
+grestore
+10 rotate
+}repeat
 
 showpage
 
@@ -993,7 +1198,7 @@ showpage
 %     /Filters[
 % 	<<
 % 	    /Filter false
-% 	    /Kernal{
+% 	    /Kernel{
 % 		kernel.Color.Average
 % 	    }
 % 	    /FilterProc {
