@@ -3,10 +3,12 @@
 %%Creator:Glen Newtopn
 %%BoundingBox:0 0 400 400
 %%%%%%%%%%%%%% 
-%<< /AllowTransparency true >> % enable transparency
+<< /AllowTransparency true >> % enable transparency
 
+(sort.ps) run
 
-/Rotate 0 def
+/Rotate 77 def
+%/Rotate 0 def
 
 /PixelMinDist 10 def
 %/Rotate 0 def
@@ -23,6 +25,97 @@
 }def
 
 41341734 srand
+
+
+/GaussingBlur_KernelMatrix_3
+<<
+    /Matrix [
+        1 2 1
+        2 4 2
+        1 2 1
+    ]
+    /Normalize true
+    /NormalizeRange false 
+>>def
+
+/GaussingBlur_KernelMatrix_5
+<<
+    /Matrix [
+        1  4  6  4 2
+        4 16 24 16 4
+        6 24 36 24 6
+        4 16 24 16 4
+        1  4  6  4 2
+    ]
+    /Normalize true
+    /NormalizeRange false 
+>>def
+
+/Emboss_KernelMatrix_3 [
+    2 -1 0
+    -1 1 1
+    0  1 2
+] def
+
+/Sharpen_KernelMatrix_3
+<<
+    /Matrix [
+        0 -1 0
+        -1 4 -1
+        0 -1 0 
+    ]
+    /Normalize false
+    /NormalizeRange true
+>>def
+
+/Laplacian_KernelMatrix_3
+<<
+    /Matrix[
+        0 -1 0
+        -1 4 -1
+        0 -1 0 
+    ]
+    /Normalize false
+    /NormalizeRange true
+>>def
+
+/HighPass_KernelMatrix_3
+<<
+    /Matrix[
+        -1 -1 -1
+        -1 9 -1
+        -1 -1 -1
+    ]
+    /Normalize false
+    /NormalizeRange true
+>>def
+
+
+
+
+/LowPass_KernelMatrix_3
+<<
+    /Matrix[
+        1 1 1
+        1 8 1
+        1 1 1
+    ]
+    /Normalize true
+    /NormalizeRange false
+>> def
+
+/Edge_3
+<<
+    /Matrix[
+        -1 -1 -1
+        -1  8 -1
+        -1 -1 -1
+    ]
+    /Normalize false
+    /NormalizeRange true
+>> def
+
+
 
 
 % /str 1512 string def
@@ -675,15 +768,9 @@
 	/.deltaPlusMinus.G d# /DeltaPlusMinus.G get def
 	/.deltaPlusMinus.B d# /DeltaPlusMinus.B get def
     }{
-	(MM) =
 	/.gray d# /Gray get def
-	(BB) =
 	/.deltaPlusMinus.Gray d# /DeltaPlusMinus.Gray get def
-	(BBbbb) =
     }ifelse
-
-    width =
-    height =
 
     %/stringLength height width add 2 div dup mul 3 mul 3 add cvi def
     .color{
@@ -704,7 +791,6 @@
 
 
     %/DeviceRGB setcolorspace
-    (HELLO 222) =
     {
     << % Start image dictionary
 	/ImageType 1
@@ -728,7 +814,6 @@
 		    /n exch def
 		    .color{
 			/newPixel makeRandomColor def
-			
 			str n         newPixel 0 get    put %newPixel 0 get    put
 			str n 1 add   newPixel 1 get    put
 			str n 2 add   newPixel 2 get    put
@@ -838,16 +923,6 @@
 }def
 
 /kernel.Gray.Average{
-    (/kernel.Gray.Average) =
-    % Not edges
-    ( w h) =
-    width =
-    height =
-    ( x y) =
-    x =
-    y = 
-    (-) =
-
     x d ge
     y d ge
     and
@@ -855,32 +930,115 @@
     and
     y height d sub lt
     and
-    (BNBB 99) =
     {
         /sum 0 def
 	/jj 0 def
 	/ii 0 def
 
         d neg 1 d {
-
             /jj exch store
             d neg 1 d {
 
                 /ii exch store
 
-                /index jj width mul x add ii add def
-		(BNBB 1888) =
+                /index    y jj add width mul    x add ii add def
+
                 /sum sum str index get  add store
             }for
         }for
-	sum size2 cvr div cvi
+
+	sum size2 cvr div cvi % Return average
     }{
-	(BNBB 2) =
-	% Edge pixel
-        %str i get
-	33
+        str n get  % Return same value for edges
     }ifelse
 }def
+
+
+/kernel.Gray.Median{
+    x d ge
+    y d ge
+    and
+    x width d sub lt
+    and
+    y height d sub lt
+    and
+    {
+
+        /mid size2 2.0 div ceiling cvi def
+        /sum 0 def
+        /values size2 array def
+	/jj 0 def
+	/ii 0 def
+
+        /valuesIndex 0 def
+        d neg 1 d {
+            /jj exch store
+            d neg 1 d {
+                /ii exch store
+                /index    y jj add width mul    x add ii add def
+                values valuesIndex str index get put
+                /valuesIndex valuesIndex 1 add store
+                /sum sum str index get  add store
+            }for
+        }for
+        values quicksort
+        values mid get
+    }{
+        str n get  % Return same value for edges
+    }ifelse
+}def
+
+/kernel.Gray.Generic{
+    x d ge
+    y d ge
+    and
+    x width d sub lt
+    and
+    y height d sub lt
+    and
+    {
+        /sum 0 def
+
+	/jj 0 def
+	/ii 0 def
+        /matrixIndex 0 def
+
+        d neg 1 d {
+            /jj exch store
+            d neg 1 d {
+                /ii exch store
+                /index    y jj add width mul    x add ii add def
+
+                /pixelValue  str index get def
+                
+                /sum sum   pixelValue .kernelMatrix matrixIndex get    mul add store
+                /matrixIndex matrixIndex 1 add store
+            }for
+        }for
+
+        .normalize{
+            sum .matrixSum div cvi
+        }{
+            sum cvi
+        }ifelse
+
+        /vvv exch def
+
+        vvv .zmin lt{
+            /.zmin vvv store 
+        }if
+
+        vvv .zmax gt{
+            /.zmax vvv store 
+        }if
+        vvv
+
+    }{
+        str n get  % Return same value for edges
+    }ifelse
+}def
+
+
 
 /kernel.Color.SingleColor{
     kernelArgs# /Color get
@@ -901,12 +1059,61 @@
 }def
 
 
+/normalizeImageRange{
+    () =
+    (/normalizeImageRange START) =
+    
+    2 dict begin
 
-/color.FilterHarness{
-    (/color.FilterHarness START) =
+    /normalizedImage newstr length string def
+    
+    /delta .zmax .zmin sub def
+    0 1 newstr length 1 sub{
+        /n exch def
+         /v newstr n get def
+         .zmin 0 lt{
+
+             v .zmin sub cvr delta div 255 mul cvi 255 gt{
+                 (QQUIT 1) =
+                 quit
+             }if
+             normalizedImage n v .zmin abs add cvr delta div 255 mul cvi  put
+         }{
+             v .zmin sub cvr delta div 255 mul cvi 0 lt{
+                 (QQUIT 2) =
+                 (v=) =
+                 v =
+                 (.zmin =) =
+                 .zmin =
+                 (v .zmin sub = ) =
+                 v .zmin sub =
+                 quit
+             }if
+             normalizedImage n v .zmin add cvr delta div 255 mul cvi  put
+
+         }ifelse
+     }for
+
+
+     normalizedImage
+     end
+}def
+
+/sumMatrix{
+    /sum 0 def
+    {
+        sum add /sum exch store
+    }forall
+    sum
+}def
+
+/filterHarness{
+    (/filterharness START) =
     10 dict begin
     /ff# exch def
-
+    /.zmax -99999 def
+    /.zmin 99999 def
+    
     /kernelArgs# ff# /KernelArgs# get def
 
     % Cache size for kernels that need it
@@ -914,6 +1121,27 @@
     ff# ===
     kernelArgs# ===
 
+    /.normalizeRange false def
+    /.normalize false def
+    
+    kernelArgs# /KernelMatrix known{
+        kernelArgs# /Size   kernelArgs# /KernelMatrix get /Matrix get length sqrt cvi  put
+        /.kernelMatrix   kernelArgs# /KernelMatrix get  /Matrix get def
+
+        kernelArgs# /KernelMatrix get  /Normalize known{
+            /.normalize kernelArgs# /KernelMatrix get  /Normalize get def
+            /.matrixSum .kernelMatrix sumMatrix def
+            .matrixSum =
+        }if
+
+        kernelArgs# /KernelMatrix get  /NormalizeRange known{
+            /.normalizeRange kernelArgs# /KernelMatrix get  /NormalizeRange get def
+        }if
+        
+    }if
+
+    kernelArgs# ===
+    
     kernelArgs# /Size known{
 	/.size kernelArgs# /Size get def
 	/size2 .size .size mul def
@@ -922,7 +1150,18 @@
     }if
     (IIII) =
     d =
-    /newstr str length string def
+
+    .normalizeRange{
+        (NO 2) =
+        /newstr str length array def
+        
+    }{
+        (NO) =
+        /newstr str length string def
+
+    }ifelse
+
+    (M) =
 
     /x 0 def
     /y 0 def
@@ -948,12 +1187,22 @@
 		newstr i 1 add   newPixel 1 get put
 		newstr i 2 add   newPixel 2 get put
 	    }{
-		newstr i 45 put
+		newstr i  newPixel  put
 	    }ifelse
         }for
     }for
 
-    newstr
+    (MAX MIN) =
+    .zmin =
+    .zmax =
+
+    .normalizeRange{
+        (NORMALIZING) =
+        normalizeImageRange
+        %newstr
+    }{
+        newstr
+    }ifelse
     end
 }bind def
 
@@ -965,6 +1214,7 @@
     d# /Angle known{
 	d# /Angle get rotate
     }if
+    showbb
     pathbbox
     /y1 exch cvi def
     /x1 exch cvi def
@@ -1029,7 +1279,7 @@ gsave
 		/Color [100 0 0]
 	    >>
 	    /FilterProc {
-		color.FilterHarness
+		filterHarness
 	    }
 	>>
 
@@ -1046,7 +1296,7 @@ gsave
 		/Vertical true
 	    >>
 	    /FilterProc {
-		color.FilterHarness
+		filterHarness
 	    }
 	>>
 	<<
@@ -1059,7 +1309,7 @@ gsave
 		/Size 3
 	    >>
 	    /FilterProc {
-		color.FilterHarness
+		filterHarness
 	    }
 	>>
     ]
@@ -1177,11 +1427,44 @@ gsave
 	<<
 	    /UseThisFilter true
 	    /FilterProc {
+		filterHarness
+	    }
+	    /Kernel{
+		kernel.Gray.Generic
+	    }
+	    /KernelArgs#
+	    <<
+                % OK                 /KernelMatrix LowPass_KernelMatrix_3
+                % OK                 /KernelMatrix HighPass_KernelMatrix_3 
+                % OK                 /KernelMatrix Laplacian_KernelMatrix_3
+                % OK                 /KernelMatrix Edge_3
+                % OK/KernelMatrix Sharpen_KernelMatrix_3
+                % OK
+                /KernelMatrix      GaussingBlur_KernelMatrix_5
+                % OK                 /KernelMatrix GaussingBlur_KernelMatrix_3
+	    >>
+	>>
+        <<
+	    /UseThisFilter false
+	    /FilterProc {
 		color.FilterHarness
 	    }
 	    /Kernel{
-		%str width height 3  averageFilter.Gray
-		kernel.Gray.Average
+		kernel.Gray.Median
+	    }
+	    /KernelArgs#
+	    <<
+		/Size 3
+	    >>
+	>>
+        
+        <<
+	    /UseThisFilter false
+	    /FilterProc {
+		color.FilterHarness
+	    }
+	    /Kernel{
+	        kernel.Gray.Average
 	    }
 	    /KernelArgs#
 	    <<
@@ -1192,14 +1475,23 @@ gsave
 
     /Color false
     /Gray 128
-    /DeltaPlusMinus.Gray 40
-    /Scale 2
+    /DeltaPlusMinus.Gray 140
+    /Scale .7
 >> noiseFillThisShape2
+grestore
+
+gsave
+
 grestore
 
 gsave
 showbb
 grestore
+ gsave
+ .2 .setfillconstantalpha % FILL opacity
+ 0 1 0 setrgbcolor
+ fill
+ grestore
 showpage
 
 % gsave
@@ -1280,3 +1572,12 @@ showpage
 
 
 % showpage
+
+
+% /test[
+%     23 54 12 45 233 54 6 7 56.9 -88.4
+% ]def
+
+% test ===
+
+% test quicksort ===
