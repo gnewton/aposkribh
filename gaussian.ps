@@ -8,20 +8,20 @@
 
 
 /w 400 def
-/h 400 def
-/dx 100 def
-/dy 100 def
+/h 600 def
+/dx 300 def
+/dy 300 def
 
 
-dx 2 mul dy 2 mul translate
+dx  dy  translate
 .5 .5 scale
 
 /axis{
     gsave
-    3 setlinewidth
+    1 setlinewidth
     newpath
     0 0 moveto
-    w 0 lineto
+    w  0 lineto
     0 0 moveto
     0 h lineto
     stroke
@@ -29,11 +29,13 @@ dx 2 mul dy 2 mul translate
 }def
 
 /dot{
+    1 dict begin
+    /size exch def
     gsave
-    .5 0 0 setrgbcolor
     translate
-    0 0 1 0 360 arc closepath fill
+    0 0 size 0 360 arc closepath fill
     grestore
+    end
 }bind def
 
 /Pi 3.14159 def
@@ -41,18 +43,14 @@ dx 2 mul dy 2 mul translate
 /PiE2 Pi Pi mul def
 
 /E 2.71828 def
-/variance .1 def
+
+/variance .05 def
 /variance2 variance 2 mul def
 /standardDeviation variance sqrt def
 % https://pages.stat.wisc.edu/~mchung/teaching/MIA/reading/diffusion.gaussian.kernel.pdf.pdf p4
 
-/L 1.0    Pi2 sqrt standardDeviation mul div def
 
-
-L =
-
-
-/gauss{ % returns -1 to 1 real (prob x)
+/gauss{ % returns 0 to 1 real (prob x)
     2 dict begin
     /x exch def
     /ev E x x mul variance2 div neg exp def
@@ -60,40 +58,37 @@ L =
     end
 }bind def
 
-
-axis
-
-200 200 dot
-
 /w2 w 2 div def
 
 /MaxInt 2147483647 def
 /MaxIntAsReal MaxInt cvr def
 
+/H 10.0 def
+/H2 H 2.0 div def
 
-0 1 100000 {
-    % /x rand w mod def
-    % /x rand w mod w 2 div sub def
-    % /xs x w2 div def
-
-    % /y rand h mod def
-    % %/y xs gauss h mul def
-    % /py xs gauss  def
-
-    % py   rand cvr MaxInt div   gt{
-    % 	x w2 add y dot
-    % }if
-    pop
-    /x rand cvr MaxIntAsReal div 2.0 mul 1.0 sub def
+1000000 {
+    /x rand cvr MaxIntAsReal div H mul H2 sub def
     /y rand cvr MaxIntAsReal div def
 
     /py x gauss def
 
     py rand cvr MaxIntAsReal div gt{
-	x .5 add w mul   y h mul dot
+	1 0 0 setrgbcolor
+	x w mul H2 sub  y h mul 1 dot
     }if
+}repeat
 
+w neg 5 mul 1 w 5 mul{
+    /x exch def
+    gsave
+    0 0 1 setrgbcolor
+    /y x cvr w div gauss def
+    x H2 sub  y h mul   2 dot
+    grestore
 }for
+
+0 setgray
+axis
 
 /foo 115910200641878280303 def
 foo =
