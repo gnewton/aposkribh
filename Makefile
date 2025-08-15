@@ -40,3 +40,6 @@ pattern:
 
 gaussian:
 	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER -dNODISPLAY   -o gaussian.pdf gaussian.ps
+
+filler:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER   -o filler.pdf filler.ps

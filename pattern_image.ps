@@ -5,10 +5,95 @@
 %%%%%%%%%%%%%% 
 << /AllowTransparency true >> % enable transparency
 
+/Shape{
+    newpath
+    50 75 moveto
+    100 0 rlineto
+    100 100 rlineto
+    -100 -50 rlineto
+    -100 50 rlineto
+    closepath
+}def
+
+
+/Circle{
+    0 0 50 0 360 arc closepath
+}def
+    
+
+
+newpath
+100 100 translate
+
+gsave
+%Shape
+% Circle
+% 3 setlinewidth
+% 1 0 0 setrgbcolor
+% stroke
+% grestore
+
+
+
+100{
+    Shape
+    %Circle
+    pathbbox
+    .1 .setstrokeconstantalpha  % stroke opacity
+    5 setlinewidth
+    gsave
+    0 1 0 setrgbcolor
+    {
+        newpath
+        /y exch def
+        /x exch def
+        x  rand 30 mod add
+        y  rand 30 mod add 
+        moveto
+    }
+    {
+        /y exch def
+        /x exch def
+        x rand 30 mod add
+        y rand 30 mod add
+        lineto
+    }
+    {
+        /y3 exch def
+        /x3 exch def
+        /y2 exch def
+        /x2 exch def
+        /y1 exch def
+        /x1 exch def
+        x1  rand 30 mod add
+        y1  rand 30 mod add 
+        x2  rand 30 mod add
+        y2  rand 30 mod add 
+        x3  rand 30 mod add
+        y3  rand 30 mod add 
+        curveto
+    }
+    {closepath stroke newpath} pathforall 
+    grestore
+}repeat
+
+.5 .5 scale
+newpath
+10 40 moveto
+100 100 50 50 150 150 rcurveto
+45 rotate
+100 100 50 50 150 150 rcurveto
+
+
+fill
+showpage
+
+quit
+
 (sort.ps) run
 
-/Rotate 77 def
-%/Rotate 0 def
+%/Rotate 77 def
+/Rotate 0 def
 
 /PixelMinDist 10 def
 %/Rotate 0 def
@@ -210,11 +295,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
 
 /pathbboxAsPath{
+    1 dict begin
     pathbbox
-    /y0 exch def
-    /x0 exch def
-    /y1 exch def
-    /x1 exch def
+    /y1 exch def /x1 exch def /y0 exch def /x0 exch defw
     
     newpath
     x0 y0 moveto
@@ -222,6 +305,7 @@
     x1 y1 lineto
     x0 y1 lineto
     closepath
+    end
 }def
 
 /showbb{
@@ -235,6 +319,27 @@
     
 }def
 
+/centerOfMass{
+    pathbbox
+    /y1 exch def
+    /x1 exch def
+    /y0 exch def
+    /x0 exch def
+
+    y1 y0 add 2 div
+    x1 x0 add 2 div
+}def
+
+/drawCenterOfMass{
+    centerOfMass
+
+    /x exch def
+    /y exch def
+    gsave
+    1 0 0 setrgbcolor
+    x y 10 dot
+    grestore
+}def
 
 /cross{
     2 dict begin
@@ -698,7 +803,16 @@
 }def
 
 
-
+/dot{
+    1 dict begin
+    /size exch def
+    gsave
+    translate
+    newpath
+    0 0 size 0 360 arc closepath fill
+    grestore
+    end
+}bind def
 
 /distanceToAbovePixelAboveLimit{
     /maxDist exch def
@@ -759,6 +873,9 @@
     % Add 40 to buffer fill
     /width x1 x0 sub 50 add .scale mul cvi def
     /height y1 y0 sub 50 add .scale mul cvi def
+
+    width =
+    height =
     
     .color{
 	/.blue d# /Blue get def
@@ -1332,19 +1449,22 @@ grestore
 
 
 
-
+10 setlinewidth
 10 10 translate
 newpath
 100 100 moveto
 100 0 rlineto
-100 100 rlineto
+120 120 rlineto
 100 0 rlineto
-0 200 rlineto
--100 100 rlineto
-closepath
-gsave
-stroke
-grestore
+
+ 100 100 rlineto
+ -100 40 rlineto
+ -100  200 rlineto
+ -100 100 rlineto
+ closepath
+ gsave
+% stroke
+ grestore
 gsave
 
 /pixel{ %str w h
@@ -1422,7 +1542,7 @@ gsave
     /Angle Rotate
     /Interpolate false
 
-    /UseFilters true
+    /UseFilters false
     /Filters[
 	<<
 	    /UseThisFilter true
@@ -1476,7 +1596,7 @@ gsave
     /Color false
     /Gray 128
     /DeltaPlusMinus.Gray 140
-    /Scale .7
+    /Scale .9
 >> noiseFillThisShape2
 grestore
 
@@ -1485,13 +1605,13 @@ gsave
 grestore
 
 gsave
-showbb
+%showbb
 grestore
- gsave
+% gsave
  .2 .setfillconstantalpha % FILL opacity
- 0 1 0 setrgbcolor
- fill
- grestore
+  0 1 0 setrgbcolor
+  fill
+  grestore
 showpage
 
 % gsave
@@ -1581,3 +1701,200 @@ showpage
 % test ===
 
 % test quicksort ===
+
+% /w 10000 def
+% /h 10000 def
+
+% /Y h array def
+
+% 0 1 h 1 sub{
+%     /i exch def
+
+%     /X w array def
+%     Y i X put
+% }for
+    
+    
+
+% /f 4000 def
+% /foo  f f mul array def
+% f =
+% f f mul =
+
+<<
+    /ImageType (/string or /real)
+    /width /int
+>>
+
+
+
+Shape
+1 setlinejoin
+0 0 1 setrgbcolor
+% gsave
+% .1 .setstrokeconstantalpha  % stroke opacity
+% 2 setlinewidth
+% stroke
+% grestore
+
+
+/alpha 0.2 def
+
+5 1 11{
+    /n exch def
+    gsave
+    alpha .setstrokeconstantalpha  % stroke opacity
+    n setlinewidth
+    stroke
+    grestore
+    /alpha alpha .01 sub store
+}for
+
+gsave
+0.7 .setfillconstantalpha
+1 0 0 setrgbcolor
+fill
+grestore
+
+showpage
+
+
+
+
+
+Shape
+
+gsave
+stroke
+grestore
+showpage
+
+
+Shape
+1 0 0 setrgbcolor
+
+gsave
+{%moveto Push x y; execute move
+    (Moveto x y) =
+    = =
+}
+{%lineto Push x y; execute line
+    (Lineto x y) =
+    = =
+}
+{%curveto Push x1 y1 x2 y2 x3 y3; execute curve
+}
+{%closepath Execute close
+}
+pathforall
+grestore
+
+stroke
+showpage
+
+
+gsave
+2 2 scale
+/Helvetica-Bold findfont 10 scalefont setfont
+
+Shape
+gsave
+clip
+
+newpath
+/a {300 rand exch mod} def
+/b {300 rand exch mod} def
+/c {300 rand exch mod} def
+/d {300 rand exch mod} def
+/e {300 rand exch mod} def
+/f {300 rand exch mod} def
+/note {moveto (q) show} def
+
+.5 setlinewidth
+173417 srand
+/Sonata findfont 10 scalefont setfont
+
+.5 .setstrokeconstantalpha  
+100{
+    gsave
+    128 rand 128 mod add 255.0 div   0 rand 255 mod 255.0 div   128 rand 128 mod add 255.0 div   setrgbcolor
+
+ %   rand 30 mod rotate
+    3 setlinewidth
+    rand 1 setlinewidth
+    %0 setlinewidth
+    %  0 0 moveto
+    a b moveto
+    %10 {a b c d e f curveto} repeat
+    10 {a b lineto} repeat
+
+    gsave
+    .1 .setstrokeconstantalpha
+    4 setlinewidth
+    stroke
+    grestore
+
+
+    grestore
+}repeat
+%{pop pop}{pop pop}{note note note}{} pathforall stroke
+
+grestore
+
+newpath
+0 0 moveto
+500 500 rlineto
+stroke
+
+100 100 translate
+100 100 10 dot
+fill
+
+
+
+showpage
+
+
+Shape
+gsave
+showbb
+grestore
+
+gsave
+pathbbox
+/y1 exch def
+/x1 exch def
+/y0 exch def
+/x0 exch def
+
+newpath
+x1 y1 moveto
+10 10 rlineto
+stroke
+grestore
+
+gsave
+currentpoint =
+grestore
+
+gsave
+stroke
+grestore
+gsave
+drawCenterOfMass
+grestore
+
+
+
+showpage
+
+grestore
+grestore
+newpath
+100 100 translate
+%0 1 0 setrgbcolor
+50 100 10 dot
+showpage
+
+
+

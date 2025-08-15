@@ -1,0 +1,215 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Title:
+%%Creator:Glen Newtopn
+
+/iget{  %false d# /Value
+    /.key exch def
+    /.ddict# exch def
+
+    .ddict# .key known{
+        pop
+        .ddict# .key get
+    }if
+}bind def
+
+
+/PathFiller{
+    /pathProc exch def
+    /fillerArgs# exch def
+
+    gsave
+    pathProc
+    %pathbbox
+    clip
+    fillerArgs# /FillerProc get exec
+    grestore
+}bind def
+
+/testShape{
+    (/testShape START) =
+    newpath
+    100 100 moveto
+    200 10 rlineto
+    10 200 rlineto
+    -30 0 rlineto
+    -50 10 rlineto
+    closepath
+}def
+
+<<
+    /FillerProc {fill}
+    /FillerArg1 (MMM)
+>>
+{
+    testShape
+}
+PathFiller
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+/PathRender{
+    5 dict def
+    /pathProc exch def
+    (MMMMMMMMMM  0000) =
+    /renderArgs# exch def
+    (MMMMMMMMMM  0000 ffffff) =
+    % /bby1 exch def
+    % /bbx1 exch def
+    % /bby0 exch def
+    % /bbx0 exch def
+
+    /n 1 renderArgs# /Repeat iget def
+    /beforeLoop { } renderArgs# /BeforeLoop iget def
+    /afterLoop  { } renderArgs# /AfterLoop iget def
+
+    /beforeIter { } renderArgs# /BeforeIter iget def
+    /afterIter  { } renderArgs# /AfterIter iget def
+
+    beforeLoop 
+
+    n {
+        gsave
+        beforeIter
+        
+        pathProc
+        
+        renderArgs# /movetoProc get
+        renderArgs# /linetoProc get
+        renderArgs# /curvetoProc get
+        renderArgs# /closeProc  get
+        pathforall
+        afterIter
+        grestore
+
+    }repeat
+    afterLoop
+    end
+}bind def
+
+showpage
+
+(1111111111111111111111111111) =
+<<
+    /movetoProc  {moveto}
+    /linetoProc  {lineto}
+    /curvetoProc {curveto}
+    /closeProc   {closepath}
+    %
+>>
+({{testShape}})
+PathRender
+(8888888888888) =
+showpage
+
+
+/TT
+<<
+    /BeforeLoop{
+        /movetoRandom renderArgs# /MovetoRandom  get def
+    }
+    /MovetoRandom 500
+    /Repeat 50
+    /BeforeLoop {
+
+    }
+
+    /AfterIter {
+        stroke
+    }
+    /BeforeIter {
+        .1 .setstrokeconstantalpha
+        %4 setlinewidth
+        rand 7 mod setlinewidth
+
+        rand 100 mod 100.0 div
+        rand 100 mod 100.0 div
+        rand 100 mod 100.0 div
+          setrgbcolor
+    }
+    /movetoProc
+    {
+        newpath
+        /y exch def
+        /x exch def
+        x  rand movetoRandom mod add
+        y  rand movetoRandom mod add 
+        moveto
+    }
+
+    /linetoProc
+    {
+        /y exch def
+        /x exch def
+        x rand movetoRandom mod add
+        y rand movetoRandom mod add
+        lineto
+    }    
+
+    /curvetoProc
+    {
+        /y3 exch def
+        /x3 exch def
+        /y2 exch def
+        /x2 exch def
+        /y1 exch def
+        /x1 exch def
+        x1  rand movetoRandom mod add
+        y1  rand movetoRandom mod add 
+        x2  rand movetoRandom mod add
+        y2  rand movetoRandom mod add 
+        x3  rand movetoRandom mod add
+        y3  rand movetoRandom mod add 
+        curveto
+    }
+    /closeProc
+    {
+        closepath
+    }
+>> def
+
+TT
+{
+    testShape
+}PathRender
+
+showpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/randomShapes{
+    /d 30 def
+    /d2 d 2 div def
+    10 10 moveto
+
+    30{
+        rand d mod d2 sub
+        rand d mod d2 sub
+        rlineto
+    }repeat
+
+}bind def
+
+
+TT
+{
+    randomShapes
+}PathRender
+
+showpage
+
+<<
+    /FillerProc {
+        TT
+        {
+            randomShapes
+        }PathRender
+    }
+    /FillerArg1 (MMM)
+>>
+{
+    testShape
+}
+PathFiller
+
+showpage
