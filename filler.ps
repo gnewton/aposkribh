@@ -14,19 +14,26 @@
 
 
 /PathFiller{
+    5 dict begin
+    (/PathFiller START) =
     /pathProc exch def
     /fillerArgs# exch def
 
     gsave
     pathProc
-    %pathbbox
+    
     clip
+
+    fillerArgs# /FillerProcArgs known{
+        fillerArgs# /Rotate get rotate
+    }if
     fillerArgs# /FillerProc get exec
     grestore
+    end
+    (/PathFiller END) =
 }bind def
 
 /testShape{
-    (/testShape START) =
     newpath
     100 100 moveto
     200 10 rlineto
@@ -36,32 +43,85 @@
     closepath
 }def
 
+
+/StripesFillerProc{
+
+    pathbbox
+    /y1 exch cvi def
+    /x1 exch cvi def
+    /y0 exch cvi def
+    /x0 exch cvi def
+
+    gsave
+
+    1 0 0 setrgbcolor
+    newpath
+    x0 y0 moveto
+    x1 y1 lineto
+    stroke
+    grestore
+
+    fillerArgs# /FillerProcArgs get /LineWidth get setlinewidth
+    fillerArgs# /FillerProcArgs get /Color get exec setrgbcolor
+    
+    
+    x0 fillerArgs# /FillerProcArgs get /StepSize get  x1{
+        /x exch def
+         newpath
+         x y0 moveto
+         x y1 lineto
+         stroke
+    }for
+
+}def
+
 <<
-    /FillerProc {fill}
-    /FillerArg1 (MMM)
+    /Rotate 90
+    /FillerProc {
+        StripesFillerProc
+    }
+    /FillerProcArgs
+    <<
+        /StepSize 7
+        /LineWidth 3
+        /Color {0 0 1}
+    >>
 >>
 {
     testShape
 }
 PathFiller
 
+<<
+    /Rotate 45
+    /FillerProc {
+        StripesFillerProc
+    }
+    /FillerProcArgs
+    <<
+        /StepSize 5
+        /LineWidth 1
+        /Color {0 1 0}
+    >>
+>>
+{
+    testShape
+}
+PathFiller
+
+showpage
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 /PathRender{
-    5 dict def
+    (/PathRender START) =
+    5 dict begin
     /pathProc exch def
-    (MMMMMMMMMM  0000) =
     /renderArgs# exch def
-    (MMMMMMMMMM  0000 ffffff) =
-    % /bby1 exch def
-    % /bbx1 exch def
-    % /bby0 exch def
-    % /bbx0 exch def
 
     /n 1 renderArgs# /Repeat iget def
-    /beforeLoop { } renderArgs# /BeforeLoop iget def
+    /beforeLoop { (BeforeLoop) =} renderArgs# /BeforeLoop iget def
     /afterLoop  { } renderArgs# /AfterLoop iget def
 
     /beforeIter { } renderArgs# /BeforeIter iget def
@@ -86,11 +146,13 @@ PathFiller
     }repeat
     afterLoop
     end
+
+    (/PathRender END) =
 }bind def
 
 showpage
 
-(1111111111111111111111111111) =
+(8888888888888) =
 <<
     /movetoProc  {moveto}
     /linetoProc  {lineto}
@@ -98,7 +160,9 @@ showpage
     /closeProc   {closepath}
     %
 >>
-({{testShape}})
+%{
+(testShape)
+%}
 PathRender
 (8888888888888) =
 showpage
@@ -172,7 +236,8 @@ showpage
 TT
 {
     testShape
-}PathRender
+}
+PathRender
 
 showpage
 
