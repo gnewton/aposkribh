@@ -27,6 +27,15 @@
     fillerArgs# /FillerProcArgs known{
         fillerArgs# /Rotate get rotate
     }if
+    
+    fillerArgs# /AlphaStroke known{
+        fillerArgs# /AlphaStroke get   .setstrokeconstantalpha
+    }if
+
+    fillerArgs# /AlphaFill known{
+        fillerArgs# /AlphaFill get   .setfillconstantalpha
+    }if
+
     fillerArgs# /FillerProc get exec
     grestore
     end
@@ -63,7 +72,7 @@
 
     fillerArgs# /FillerProcArgs get /LineWidth get setlinewidth
     fillerArgs# /FillerProcArgs get /Color get exec setrgbcolor
-    
+
     
     x0 fillerArgs# /FillerProcArgs get /StepSize get  x1{
         /x exch def
@@ -76,7 +85,8 @@
 }def
 
 <<
-    /Rotate 90
+    /Rotate 15
+    /AlphaStroke .4
     /FillerProc {
         StripesFillerProc
     }
@@ -92,15 +102,20 @@
 }
 PathFiller
 
+    testShape
+stroke
+
 <<
-    /Rotate 45
+    /Rotate 0
+    /AlphaStroke .4
+    
     /FillerProc {
         StripesFillerProc
     }
     /FillerProcArgs
     <<
-        /StepSize 5
-        /LineWidth 1
+        /StepSize 7
+        /LineWidth 3
         /Color {0 1 0}
     >>
 >>
