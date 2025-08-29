@@ -314,7 +314,7 @@ showpage
 
 
 
- /plusMinus{
+ /random.AddSubtract{
     %add
     rand 2 mod 0 eq
     {
@@ -396,12 +396,12 @@ showpage
 }def
 
 
-/makeColorJitter{
+/image.Filter.Jitter{
     20{
      	/v [
-     	    .red   rand .deltaPlusMinus.R mod plusMinus  cvi 0 255 range
-     	    .green rand .deltaPlusMinus.G mod plusMinus  cvi 0 255 range
-     	    .blue  rand .deltaPlusMinus.B mod plusMinus  cvi 0 255 range
+     	    .red   rand .deltaPlusMinus.R mod random.AddSubtract  cvi 0 255 range
+     	    .green rand .deltaPlusMinus.G mod random.AddSubtract  cvi 0 255 range
+     	    .blue  rand .deltaPlusMinus.B mod random.AddSubtract  cvi 0 255 range
      	] def
      	v previousPixel rgb.Distance PixelMinDist gt
 	PixelMinDist distanceToAbovePixelAboveLimit
@@ -426,13 +426,13 @@ showpage
 
 		    /n exch def
 		    .color{
-			/newPixel makeColorJitter def
+			/newPixel image.Filter.Jitter def
 			str n         newPixel 0 get    put %newPixel 0 get    put
 			str n 1 add   newPixel 1 get    put
 			str n 2 add   newPixel 2 get    put
 		    }{
 			% grayscale
-			str n        .gray   rand .deltaPlusMinus.Gray mod plusMinus  0 255 range  put 
+			str n        .gray   rand .deltaPlusMinus.Gray mod random.AddSubtract  0 255 range  put 
 		    }ifelse
 		} for
 
@@ -673,7 +673,7 @@ showpage
     }ifelse
 }def
 
-/filter.Gray.Generic{
+/filter.Gray.ApplyKernel{
     % Applies the supplied kernel matrix to the x,y pixel in the image
     x d ge
     y d ge
@@ -1123,7 +1123,7 @@ gsave
 		filterHarness
 	    }
 	    /Filter{
-		filter.Gray.Generic
+		filter.Gray.ApplyKernel 
 	    }
 	    /FilterArgs#
 	    <<

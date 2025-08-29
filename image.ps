@@ -7,6 +7,10 @@
 
 /image.Type.RGB (image.Type.RGB)  def
 /image.Type.Gray (image.Type.Gray) def
+/image.Filter.Type.InPlace (image.Filter.Type.InPlace) def
+/image.Filter.Type.NewImage (image.Filter.Type.NewImage) def 
+
+/image.Counter 0 def
 
 /image.New{
     /_h exch def
@@ -15,8 +19,10 @@
 
     _imageType image.Type.Gray eq{
         /imageSize _w _h mul def
+        /step 1 def
     }{
         /imageSize _w _h mul 3 mul def
+        /step 3 def
     }ifelse
 
     /newImage imageSize string def
@@ -25,11 +31,26 @@
         /DictType /Image
         /W _w
         /H _h
+
         /ImageType _imageType
         /Image newImage
-
+        /Length imageSize
+        /Step step
+        /ID image.Counter
     >>
+    /image.Counter image.Counter 1 add store
 }bind def
+
+/image.Clone{
+    % Copies all args, but not image; allocates only
+    /_img# exch def
+
+    _img# /ImageType get
+    _img# /W get
+    _img# /H get
+    image.New
+}bind def
+
 
 /image.Validate{ % image<<>>
     /_im# exch def
@@ -78,12 +99,99 @@
 }bind def
 
 /im# image.Type.RGB 10 20 image.New def
-
-
+%/im# image.Type.Gray 10 20 image.New def
 im# ===
 
 im# image.Validate
-im# [100 100 255 ] image.alter.SetAllPixels
+im# [100 3 254] image.alter.SetAllPixels
 im# ===
 
 
+/image.Filter.Harness.ByPixel{
+    5 dict begin
+    (/image.Filter.Harness.ByPixel) =
+    % Takes an image#, filter, FilterArgs#, newImage#
+    % Walks through the pixels and sends the pixel n, image#, FilterArgs# to filter which returns new value of pixel at x,y Gray: 32; RGB: [32 45 243]
+    %
+    % Returns
+    /_filter# exch def
+    /_im# exch def
+    /img _im# /Image get def
+
+
+    _filter# /FilterType get image.Filter.Type.NewImage eq{
+        /imNew# _im# image.Clone def
+    }{
+        /imNew# _im# def
+    }ifelse
+
+    (MMMMMMMMMMMMM) =
+    imNew# _im# eq =
+
+    /imgNew imNew# /Image get def
+
+    /newPixelValue null def
+    
+    0 _im#   /Step get   _im# /Length get  1 sub{
+        /n exch def
+
+        /newPixelValue _im# n     _filter# /Filter get exec     store
+
+        _imageType image.Type.Gray eq{
+            imgNew n  newPixelValue    put
+        }{
+            imgNew n       newPixelValue    0 get   put
+            imgNew n 1 add newPixelValue    1 get   put
+            imgNew n 2 add newPixelValue    2 get   put
+        }ifelse
+    }for
+
+    imNew#
+    end
+}bind def
+
+
+/image.Filters.NullFilter.InPlace#
+<<
+    /FilterType image.Filter.Type.InPlace
+
+    /FilterArgs# <<>>
+    /Filter { % returns same value
+        4 dict begin
+        /_n exch def
+        /_im# exch def
+        _imageType image.Type.RGB eq{
+            [
+                _im# /Image get _n get
+                _im# /Image get _n 1 add get
+                _im# /Image get _n 2 add get
+            ]
+        }{
+            _im# /Image get _n get
+        }ifelse
+        
+        end
+    }
+>>def
+
+
+/image.Filters.NullFilter.NewImage#{
+    /tmp# <<>> def
+    image.Filters.NullFilter.InPlace# tmp# copy
+    tmp# /FilterType  get image.Filter.Type.NewImage put
+    tmp#
+}def
+
+(**************************************************************************) =
+image.Filters.NullFilter.InPlace# /FilterArgs# get /Name (foo) put
+
+im# image.Filters.NullFilter.InPlace# image.Filter.Harness.ByPixel
+im# image.Filters.NullFilter.InPlace# image.Filter.Harness.ByPixel ===
+
+()=()=()=()=
+image.Filters.NullFilter.InPlace# ===
+
+    
+
+%/im2# im# image.Clone ===
+image.Filters.NullFilter.NewImage# ===
