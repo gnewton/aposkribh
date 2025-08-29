@@ -43,3 +43,6 @@ gaussian:
 
 filler:
 	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER   -o filler.pdf filler.ps
+
+image:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER   -o image.pdf image.ps

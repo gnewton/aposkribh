@@ -1,0 +1,89 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Title:
+%%Creator:Glen Newtopn
+%%BoundingBox:0 0 400 400
+%%%%%%%%%%%%%% 
+
+
+/image.Type.RGB (image.Type.RGB)  def
+/image.Type.Gray (image.Type.Gray) def
+
+/image.New{
+    /_h exch def
+    /_w exch def
+    /_imageType exch def
+
+    _imageType image.Type.Gray eq{
+        /imageSize _w _h mul def
+    }{
+        /imageSize _w _h mul 3 mul def
+    }ifelse
+
+    /newImage imageSize string def
+
+    <<
+        /DictType /Image
+        /W _w
+        /H _h
+        /ImageType _imageType
+        /Image newImage
+
+    >>
+}bind def
+
+/image.Validate{ % image<<>>
+    /_im# exch def
+    _im# [/W /H /ImageType /Image /DictType] dict.keysExist
+}bind def
+
+/dict.keysExist{
+    /_keys exch def
+    /_d# exch def
+    _keys{
+        /k exch def
+        _d# k known not{
+            (---ERROR: Unknown key:) =
+            k =
+            (/mustExist: Key does not exist in dict) /undefined signalerror
+        }if
+    }forall
+}bind def
+
+/image.alter.SetAllPixels{  % Gray: [.4]; RGB: [.4 .3 1]
+    /_pixelValue exch def
+    /_im# exch def
+    
+    _im# /ImageType get image.Type.RGB eq{
+        /step 3 def
+        /len _im# /W get  _im# /H get mul   3 mul def
+    }{
+        /step 1 def
+        /len _im# /W get  _im# /H get mul def
+    }ifelse
+
+    /im _im# /Image get def
+
+
+    0  step len 1 sub{
+        /i exch def
+        _im# /ImageType get image.Type.RGB eq{
+            im   i         _pixelValue 2 get    put
+            im   i 1 add   _pixelValue 1 get    put
+            im   i 2 add   _pixelValue 0 get    put
+        }{
+            im   i         _pixelValue 0 get    put
+        }ifelse
+    }for
+    
+}bind def
+
+/im# image.Type.RGB 10 20 image.New def
+
+
+im# ===
+
+im# image.Validate
+im# [100 100 255 ] image.alter.SetAllPixels
+im# ===
+
+
