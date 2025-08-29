@@ -12,22 +12,40 @@
     }if
 }bind def
 
+/dot{
+    1 dict begin
+    /size exch def
+    gsave
+    translate
+    newpath
+    0 0 size 0 360 arc closepath fill
+    grestore
+    end
+}bind def
 
 /PathFiller{
     5 dict begin
     (/PathFiller START) =
-    /pathProc exch def
     /fillerArgs# exch def
 
     gsave
-    pathProc
-    
+   
     clip
 
-    fillerArgs# /FillerProcArgs known{
-        fillerArgs# /Rotate get rotate
+    fillerArgs# /TranslateToCentreOfMass known{
+	fillerArgs# /TranslateToCentreOfMass get{
+
+	}if
+
     }if
-    
+
+    fillerArgs# ===
+    fillerArgs# /FillerProcArgs known{
+	fillerArgs# /FillerProcArgs get /Rotate known{
+            fillerArgs# /Rotate get rotate
+	}if
+    }if
+
     fillerArgs# /AlphaStroke known{
         fillerArgs# /AlphaStroke get   .setstrokeconstantalpha
     }if
@@ -84,7 +102,10 @@
 
 }def
 
+
+testShape
 <<
+    /TranslateToCentreOfMass false
     /Rotate 15
     /AlphaStroke .4
     /FillerProc {
@@ -96,16 +117,15 @@
         /LineWidth 3
         /Color {0 0 1}
     >>
->>
-{
-    testShape
-}
-PathFiller
+>>PathFiller
 
-    testShape
+testShape
 stroke
+showpage
 
+testShape
 <<
+    /TranslateToCentreOfMass false
     /Rotate 0
     /AlphaStroke .4
     
@@ -119,25 +139,49 @@ stroke
         /Color {0 1 0}
     >>
 >>
-{
-    testShape
-}
 PathFiller
 
 showpage
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
+/polygonArea{ % path
+    /area 0.0 def
+    
+    /prevx null def
+    /prevy null def
+    {% moveto
+	/y exch def
+	/x exch def
+	/prevx x store
+	/prevy y store
+    }
+    {% lineto
+	/y exch def
+	/x exch def
+	/area area   prevx y mul  x prevy mul sub  add store
+	/prevx x store
+	/prevy y store
+    }
+    {% curveto
+	6{=}repeat
+    }
+    {% closepath
+	
+    }
+     pathforall
+     (SSSS) =
+     area 2 div =
+}bind def
 
 /PathRender{
     (/PathRender START) =
     5 dict begin
-    /pathProc exch def
     /renderArgs# exch def
 
     /n 1 renderArgs# /Repeat iget def
     /beforeLoop { (BeforeLoop) =} renderArgs# /BeforeLoop iget def
-    /afterLoop  { } renderArgs# /AfterLoop iget def
+    /afterLoop  {(AfterLoop) = } renderArgs# /AfterLoop iget def
 
     /beforeIter { } renderArgs# /BeforeIter iget def
     /afterIter  { } renderArgs# /AfterIter iget def
@@ -148,7 +192,7 @@ showpage
         gsave
         beforeIter
         
-        pathProc
+        %pathProc
         
         renderArgs# /movetoProc get
         renderArgs# /linetoProc get
@@ -159,6 +203,7 @@ showpage
         grestore
 
     }repeat
+
     afterLoop
     end
 
@@ -167,23 +212,9 @@ showpage
 
 showpage
 
-(8888888888888) =
-<<
-    /movetoProc  {moveto}
-    /linetoProc  {lineto}
-    /curvetoProc {curveto}
-    /closeProc   {closepath}
-    %
->>
-%{
-(testShape)
-%}
-PathRender
-(8888888888888) =
-showpage
 
 
-/TT
+/pathrenderer.Jiggle
 <<
     /BeforeLoop{
         /movetoRandom renderArgs# /MovetoRandom  get def
@@ -205,7 +236,7 @@ showpage
         rand 100 mod 100.0 div
         rand 100 mod 100.0 div
         rand 100 mod 100.0 div
-          setrgbcolor
+        setrgbcolor
     }
     /movetoProc
     {
@@ -248,10 +279,9 @@ showpage
     }
 >> def
 
-TT
-{
-    testShape
-}
+
+testShape
+pathrenderer.Jiggle
 PathRender
 
 showpage
@@ -270,26 +300,81 @@ showpage
 
 }bind def
 
-
-TT
-{
-    randomShapes
-}PathRender
+randomShapes
+pathrenderer.Jiggle
+PathRender
 
 showpage
 
 <<
     /FillerProc {
-        TT
-        {
-            randomShapes
-        }PathRender
+	randomShapes
+	pathrenderer.Jiggle
+	PathRender
     }
     /FillerArg1 (MMM)
 >>
-{
-    testShape
-}
+testShape
+
+
+
 PathFiller
 
+showpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%NEWEST
+
+/FooFillerProc{
+
+    pathbbox
+    /y1 exch cvi def
+    /x1 exch cvi def
+    /y0 exch cvi def
+    /x0 exch cvi def
+
+
+
+
+    fillerArgs# /FillerProcArgs get /LineWidth get setlinewidth
+    fillerArgs# /FillerProcArgs get /Color get exec setrgbcolor
+
+    gsave
+    x0 fillerArgs# /FillerProcArgs get /StepSize get  x1{
+        /x exch def
+         newpath
+         x y0 moveto
+         x y1 lineto
+         stroke
+    }for
+    grestore
+
+    gsave
+    polygonArea
+    grestore
+    
+    gsave
+    1 0 0 setrgbcolor
+    x0 y0 20 dot
+    x1 y1 20 dot
+    x0 x1 x0 sub 2 div add    y0 y1 y0 sub 2 div add   10 dot
+    grestore
+
+}def
+
+
+testShape
+<<
+    /TranslateToCentreOfMass false
+    /Rotate 15
+    /AlphaStroke .4
+    /FillerProc {
+        FooFillerProc
+    }
+    /FillerProcArgs
+    <<
+        /StepSize 7
+        /LineWidth 3
+        /Color {0 0 1}
+    >>
+>>PathFiller
 showpage
