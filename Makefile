@@ -46,3 +46,6 @@ filler:
 
 image:
 	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER   -o image.pdf image.ps
+
+d:
+	gs  -dALLOWPSTRANSPARENCY  -dBATCH -dNOPAUSE  -dSAFER -sDEVICE=pdfwrite  -dNOSAFER   -o d.pdf d.ps

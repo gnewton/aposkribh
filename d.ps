@@ -1,0 +1,63 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Title:
+%%Creator:Glen Newton
+%%%%%%%%%%%%%% 
+<< /AllowTransparency true >> % enable transparency
+
+/R{
+    /f# exch def
+    %f# [/Name /HandleArgs /Proc] keysMustExist
+    % dict.KeysMustExist
+    () =
+    (---R---) =
+    f# /Name get =
+    f# /HandleArgs get exec
+    (A) =
+    f# /Proc get exec
+    (B) =
+
+}bind def
+
+/base{
+    <<
+	/Name (/Name not defined)
+	/HandleArgs {(% /HandleArgs not defined) =}
+	% Or should HandleArgs be just <<Args>>
+	/Args []
+	% [
+	%     [
+	% 	[] []
+	%     ]
+	% ]
+	     
+	/Proc {(% /Proc not defined) =
+	       
+	      }
+	/Description {(% /Description not defined) =}
+	/Documentation {(% /Documentation not defined) =}
+    >>
+}def
+
+/ProcTemplate{
+    dup /_name exch def
+    1 dict begin
+    /tmp base def
+    tmp /Name _name put
+    tmp
+    end
+}def
+
+/makeImage base def
+
+makeImage ===
+
+makeImage /Proc {(Hello I am makeImage) =} put
+makeImage ===
+
+makeImage R
+
+/makeImage ProcTemplate def
+
+makeImage R
+
+
