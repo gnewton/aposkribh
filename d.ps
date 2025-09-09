@@ -2,27 +2,186 @@
 %%Title:
 %%Creator:Glen Newton
 %%%%%%%%%%%%%% 
-<< /AllowTransparency true >> % enable transparency
+<< /AllowTransparency true >> pop% enable transparency
 
-/R{
-    /f# exch def
-    %f# [/Name /HandleArgs /Proc] keysMustExist
-    % dict.KeysMustExist
-    () =
-    (---R---) =
-    f# /Name get =
-    f# /HandleArgs get exec
-    (A) =
-    f# /Proc get exec
-    (B) =
+10 dict begin
+
+
+/aposkribh.base{
+    <<
+        /aposkribh.Library true
+        /aposkribh.Name (aposkribh.base)
+
+        /append{}
+    >>
+}bind def
+
+/aposkribh.Load{
 
 }bind def
 
+
+/aposkribh.Unload{
+
+}bind def
+
+
+
+
+/dict.KeysMustExist{
+    3 dict begin
+    0 index type /stringtype ne{
+        (dict.KeysMustExist: Third arg not /stringtype) /typecheck signalerror
+    }if
+    1 index type /arraytype ne{
+        (dict.KeysMustExist: Second arg not /arraytype) /typecheck signalerror
+    }if
+    2 index type /dicttype ne{
+        (dict.KeysMustExist: First arg not /dicttype) /typecheck signalerror
+    }if
+    %
+    
+    /_caller exch def
+    /_keys exch def
+    /_d# exch def
+    %
+    
+    _keys{
+        /k exch def
+        _d# k known not{
+            (ERROR: ) _caller concatstrings =
+            (ERROR: /dict.KeysMustExist) =
+            (ERROR: Dict: ) =
+            _d# ===
+            (Missing key: /) k dup length string  cvs concatstrings /undefined signalerror
+        }if
+    }forall
+    end
+}bind def
+
+
+% Test dict.KeysMustExist: positive
+<<
+    /foo (a)
+    /bar 34
+>>
+[ /foo /bar]
+(test 1)
+dict.KeysMustExist
+
+
+
+% Test dict.KeysMustExist: negative
+% <<
+%     /foo (a)
+%     /bar 34
+% >>
+% [ /foo /barFFF]
+% (test 2)
+% {
+%     dict.KeysMustExist
+% }stopped not{
+%     (ERROR: dict.KeysMustExist should stop and signal error: does not!) /undefined signalerror
+% }if
+
+
+
+
+/proc.Debug true def
+
+/proc.Log{
+    proc.Debug{
+        =
+    }{
+        pop
+    }ifelse
+}bind def
+
+
+/util.StackMatchesArrayTypes{
+
+    1 dict begin
+
+    /_array exch def
+
+    /result true def
+
+    count _array length ne{
+        /result false store
+    }{
+        0 1 _array length 1 sub{
+            /i exch def
+                
+            i index type _array i get ne{
+                /result false store
+                exit
+            }if
+        }for
+    }ifelse
+
+    result
+    end
+}bind def
+
+
+    
+/proc.CheckArgs{
+    0 index type /arraytype ne{
+        (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
+        pop
+    }if
+    /ok false def
+    {
+     
+        /argResultPairs exch def
+        argResultPairs ===
+        /args argResultPairs 0 get def
+        args util.StackMatchesArrayTypes {
+            /ok true def
+            exit
+        }if
+    }forall
+    ok =
+}bind def
+
+/proc.R{
+    () proc.Log
+    (/proc.R START) proc.Log
+
+    5 dict begin
+    /_f# exch def
+    _f# [/Name /Args /Proc] (/R) dict.KeysMustExist
+
+    (/proc.R: Checking args) proc.Log
+
+    _f# /Args get proc.CheckArgs
+
+    %_f# /HandleArgs get  _f# /Name get  proc.CheckArgs
+    (/proc.R: Starting proc: [) _f# /Name get dup length string cvs concatstrings (]) concatstrings proc.Log
+    _f# /Proc get exec
+
+    end
+
+}bind def
+
+
 /base{
     <<
-	/Name (/Name not defined)
-	/HandleArgs {(% /HandleArgs not defined) =}
-	% Or should HandleArgs be just <<Args>>
+        /@setArgs {
+            0 index type /arraytype ne{
+                (@setArgs: Args not /arraytype) /typedef signalerrro
+            }if
+            /_args exch def
+            /Args _args store
+        }
+
+        /@setProc {
+            0 index /Proc exch store
+            pop
+        }
+        
+	/Name (%%%%%%%%%% /Name not defined)
+
 	/Args []
 	% [
 	%     [
@@ -30,34 +189,333 @@
 	%     ]
 	% ]
 	     
-	/Proc {(% /Proc not defined) =
-	       
-	      }
+	/Proc {
+            (%%%%%%%%%% /Proc not defined) =
+	}
+
 	/Description {(% /Description not defined) =}
+
 	/Documentation {(% /Documentation not defined) =}
     >>
+    
 }def
 
-/ProcTemplate{
-    dup /_name exch def
-    1 dict begin
-    /tmp base def
-    tmp /Name _name put
-    tmp
+/proc.Registry#
+<<
+>>def
+
+
+
+/proc.Register{
+    /_procDict exch def
+    /_name exch def
+
+    proc.Registry# _name known{
+        (M) =
+        (Proc name already exists in proc.Registry#: ) _name dup length string cvs concatstrings /dictfull signalerror
+        quit
+    }if
+    proc.Registry# _name _procDict put
+}bind def
+
+
+/proc.New{
+    2 dict begin
+    /_name exch def
+
+    /newProc 10 dict def
+    base newProc copy pop
+    newProc /Name _name put
+    _name newProc proc.Register
+    newProc
     end
 }def
 
-/makeImage base def
 
-makeImage ===
 
-makeImage /Proc {(Hello I am makeImage) =} put
-makeImage ===
 
-makeImage R
+/makeImage# /makeImage proc.New def
 
-/makeImage ProcTemplate def
+/makeImage2# /makeImage2 proc.New def
 
-makeImage R
 
+
+% /makeImage2 /makeImage2 proc.New def
+
+ %makeImage ===
+
+makeImage# /Proc {(Hello I am makeImage) =} put
+ %makeImage ===
+
+ 
+ makeImage# proc.R
+
+
+%makeImage2 proc.R
+% (XXXXXXXXXXXXX) =
+% /makeImage proc.New def
+
+% (8888888888) =
+% makeImage ===
+% makeImage type =
+
+
+
+% makeImage proc.R
+
+
+ (---000000000000-------) =
+
+ /add2# /add2# proc.New def
+
+ add2# begin
+ [
+     [
+         [/integertype /integertype] [/integertype]
+         [/floattype /integertype] [/floattype]
+         [/integertype /floattype] [/floattype]
+         [/floatype /floattype] [/floattype]
+     ]
+ ]
+ @setArgs
+ {add} @setProc
+
+
+
+ add2# ===
+
+ (NNNNNNNNNNNNNNNNNNN) =
+ stack
+ 
+2 3  add2# proc.R =
+end
+
+%proc.Registry# ===
+1.1 2 null [] [/arraytype /nulltype /integertype /realtype]   util.StackMatchesArrayTypes =
+
+
+
+(#####################################) =
+
+
+/accessStack{
+    %%(-Type) =
+    %dup type =
+    dup type pop
+    %(-xcheck) =
+    
+    dup xcheck{
+        /executable true store
+    }if
+
+    dup xcheck pop
+    %(-executeolnly) =
+    %dup executeonly =
+    dup executeonly pop
+    %(-operatortype) =
+    %dup /operatortype =
+    dup /operatortype pop
+    %(-rcheck) =
+    %dup rcheck =
+    dup rcheck pop
+    %(-length) =
+
+}bind def
+
+/dict.makeValueProperties{
+    5 dict begin
+    /e () def
+
+
+    % LENGTH
+    count =
+    {
+        dup length /L exch def
+        /e e ( Length=) concatstrings
+        L 12 string cvs concatstrings
+        store
+    }stopped{
+        (123-) =
+        count =
+    }if
+
+    % STRING
+    dup type /stringtype eq{
+        dup /V exch def
+        {
+            /e e ( Value=") concatstrings
+            V concatstrings
+            (") concatstrings
+            store
+        }stopped{
+        }if
+    }if
+    
+
+    % BOOL
+    dup type /booleantype eq{
+        dup{
+            /e e ( Value=true) concatstrings store
+        }{
+            /e e ( Value=false) concatstrings store
+        }ifelse
+    }if
+
+    % INTEGER 
+    dup type /integertype eq{
+        {
+            dup /V exch def
+            /e e ( Value=) concatstrings
+            V 12 string cvs concatstrings
+
+            store
+        }stopped{
+        }if
+    }if
+
+    % NAMETYPE
+    dup type /nametype eq{
+        {
+            dup /V exch def
+            /e e ( Value=") concatstrings
+            V dup length string cvs concatstrings
+            (") concatstrings
+            store
+        }stopped{
+        }if
+    }if
+
+    % REAL
+    dup type /realtype eq{
+        {
+            dup /V exch def
+            /e e ( Value=) concatstrings
+            V 16 string cvs concatstrings store
+        }stopped{
+        }if
+    }if
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Executable
+    {
+        dup xcheck {
+            /e e ( X=true) concatstrings store
+        }if
+    }stopped{}if
+    
+    % Readable
+    {
+        dup rcheck not{
+            /e e ( R=false) concatstrings store
+        }if
+    }stopped
+    {}if
+
+    % Writable
+    {
+        dup wcheck not{
+            /e e ( W=false) concatstrings store
+        }if
+    }stopped
+    {}if
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    pop
+    e
+    end
+}bind def
+
+/dict.PrintKeys{
+    10 dict begin
+    () =
+    (--- DICT BEGIN----------------------------) =
+    /L 160 def
+    /line () def
+    
+    {
+        exch
+
+        dup /nameStr exch dup length string cvs def
+        pop % KEY
+
+        dup type dup length string cvs /valueTypeString exch def
+
+
+
+        nameStr length line length add 1 add L gt{
+            line =
+            /line () nameStr concatstrings def
+
+        }{
+            /line line (/) concatstrings
+            nameStr concatstrings
+            def
+        }ifelse
+
+        dup dict.makeValueProperties /valueProperties exch def
+
+        /line line
+        ( [) concatstrings
+        valueTypeString concatstrings
+        valueProperties concatstrings
+        (]   ) concatstrings
+        def
+
+        pop % VALUE
+
+    }forall
+    (--- DICT END----------------------------) =
+    end
+}bind def
+
+
+/dict.PrintAll{
+    () =
+
+    (--- DICT BEGIN----------------------------) =
+    {
+        exch
+        (-------------------------------------------------------------------------------------------------------------------------------------------------------) =
+        % KEY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        (--- KEY) =
+        dup ===
+        %(-Key type raw:) ===
+        %dup type =
+        pop
+        
+        % VALUE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        () =
+        (--- VALUE) =
+        dup ==
+        %(-Value type raw:) ===
+        %dup type =
+        pop
+
+        () =
+
+    }forall
+    (--- DICT END----------------------------) =
+}bind def
+
+
+
+
+(M) =
+countdictstack =
+countdictstack  array dictstack{
+    %dict.PrintAll
+}forall
+
+/FFFFFFFFF 32.4 def
+
+(N) =
+countdictstack  array dictstack{
+    dict.PrintKeys
+}forall
+
+
+
+
+end
 

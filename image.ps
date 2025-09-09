@@ -8,7 +8,7 @@
 /image.Type.RGB (image.Type.RGB)  def
 /image.Type.Gray (image.Type.Gray) def
 /image.Filter.Type.InPlace (image.Filter.Type.InPlace) def
-/image.Filter.Type.NewImage (image.Filter.Type.NewImage) def 
+/image.Filter.Type.Replace (image.Filter.Type.Replace) def 
 
 /image.Counter 0 def
 
@@ -116,10 +116,10 @@ im# ===
     % Returns
     /_filter# exch def
     /_im# exch def
+
     /img _im# /Image get def
 
-
-    _filter# /FilterType get image.Filter.Type.NewImage eq{
+    _filter# /FilterType get image.Filter.Type.Replace eq{
         /imNew# _im# image.Clone def
     }{
         /imNew# _im# def
@@ -175,7 +175,7 @@ im# ===
 >>def
 
 
-/image.Filters.NullFilter.NewImage#{
+/image.Filters.NullFilter.Replace#{
     /tmp# <<>> def
     image.Filters.NullFilter.InPlace# tmp# copy
     tmp# /FilterType  get image.Filter.Type.NewImage put
