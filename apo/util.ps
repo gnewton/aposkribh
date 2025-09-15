@@ -1,0 +1,236 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+
+
+aposkribh# begin
+
+/util.ERROR{
+    count 2 lt{
+        (APOSKRIBH ERROR: util.ERROR: Needs at least 2 args (1 - error=/nametype;  2 - error message=/stringtype)) /stackunderflow signalerror
+    }if
+    0 index type /nametype ne{
+        (APOSKRIBH ERROR: util.ERROR: First arg wrong; should be error=/nametype) /typedef signalerror
+    }if
+    1 index type /stringtype ne{
+        (APOSKRIBH ERROR: util.ERROR: Second arg wrong; should be error message=/stringtype) /typedef signalerror
+    }if
+
+    /error exch def
+    /errorMsg exch def
+
+    (APOSKRIBH ERROR: ) errorMsg concatstrings  error signalerror
+    
+}def
+
+
+/util.stack.VerifyDelta{
+    count 2 lt{
+
+    }
+}bind def%
+
+/util.Stack{ % 
+    () =
+    ( -----STACK START-----) =
+    stack
+    ( -----STACK END-----) =
+    () =
+
+}def
+
+/util.args.Required % 
+{
+    count 3 lt{
+        (mmm) =
+        (util.args.required: Needs at least 3 args (procArgs procName_/stringtype procArgTypes)) /stackunderflow signalerror
+    }if
+
+    0 index type /arraytype ne{
+        (util.args.required: First arg not /arraytype) /typedef signalerror
+    }if
+    1 index type /stringtype ne{
+        (util.args.required: Second not /stringtype) /typedef signalerror
+    }if
+
+    /_typeArray exch def
+    /_caller exch def
+    
+} def
+
+
+
+/util.array.Append{ % item array
+    (util.array.append) [/array /anyType] util.args.Required
+    %
+    8 dict begin
+
+    /a exch def
+    /i exch def
+
+    /ia [i] def
+    
+    /z a length 1 add array def
+    
+    z 0 a putinterval
+    z a length ia putinterval
+    
+    z
+    end
+}bind def
+
+
+/util.StackMatchesArrayTypes{
+
+    1 dict begin
+
+    /_array exch def
+
+    /result true def
+
+    count _array length ne{
+        /result false store
+    }{
+        0 1 _array length 1 sub{
+            /i exch def
+                
+            i index type _array i get ne{
+                /result false store
+                exit
+            }if
+        }for
+    }ifelse
+
+    result
+    end
+}bind def
+
+
+
+%%%%%%%%%%%%%%% util.dict
+
+/util.dict.KeysMustExist{
+    3 dict begin
+    0 index type /stringtype ne{
+        (dict.KeysMustExist: Third arg not /stringtype) /typecheck signalerror
+    }if
+    1 index type /arraytype ne{
+        (dict.KeysMustExist: Second arg not /arraytype) /typecheck signalerror
+    }if
+    2 index type /dicttype ne{
+        (dict.KeysMustExist: First arg not /dicttype) /typecheck signalerror
+    }if
+    %
+    
+    /_caller exch def
+    /_keys exch def
+    /_d# exch def
+    %
+    
+    _keys{
+        /k exch def
+        _d# k known not{
+            (ERROR: ) _caller concatstrings =
+            (ERROR: /dict.KeysMustExist) =
+            (ERROR: Dict: ) =
+            _d# ===
+            (Missing key: /) k dup length string  cvs concatstrings /undefined signalerror
+        }if
+    }forall
+    end
+}bind def
+
+
+/util.switch{
+    count 3 lt{
+        (ERROR: /switch: need 3 args: 1 - value being tested (any type); 2 - case dictionary (key=any type; value=executable procedure); 3 -default fall through executable procedure) /typedef signalerror
+    }if
+    
+    0 index type /arraytype ne{
+        (ERROR: /switch: default must be an executable array)  /typedef signalerror
+    }{
+        0 index xcheck not{
+            (ERROR: switch: default is array but not an executable array)  /typedef signalerror
+            stop
+        }if
+    }ifelse
+
+    1 index type /dicttype ne{
+        (Error: switch: case statements must be a dictionary) =
+        stop
+    }if
+    % value being checked can be anything
+        
+    /default exch def
+    /dic exch def
+    /v exch def
+
+    % body
+    dic v known not{
+        default
+    }{
+        dic v get exec
+    }ifelse
+    
+}bind def
+
+
+/x2str{
+    
+}def
+
+
+/util.random.ArraySizeNOfThese{
+    5 dict begin
+    
+    /_a exch def
+    /_n exch def
+    %
+    /newArray _n array def
+    /l _a length def
+
+    /i null def
+    0 1 _n 1 sub{
+        /i exch store
+        newArray i _a rand  _n mod get put
+    }for
+
+    end
+}def
+
+/util.random.ArraySizeNOfTheseButExcludeThese{
+    5 dict begin
+    
+    /_excludeThese# exch def  % dict of excluded items
+    /_a exch def    % array of items
+    /_n exch def    % sizxe of new array of random items
+    %
+    /newArray _n array def
+    /l _a length def
+
+    /i null def
+    /value null def
+    0 1 _n 1 sub{
+        /i exch store
+        _excludeThese# length 0 gt{
+            {
+                /value _a rand  l mod get store
+                _excludeThese# value known not{
+                    exit
+                }if
+            }loop
+        }{ 
+            /value _a rand  _n mod get store
+        }ifelse
+        newArray i value put
+    }for
+
+    end
+}def
+
+
+% END
+end % aposkribh# 

@@ -1,0 +1,29 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+/aposkribh# 50 dict def
+
+aposkribh# begin
+
+/constants.ShowFileLoading false def
+
+/aposkribh.LoadFile{
+    constants.ShowFileLoading{
+        dup (aposkribh loading: ) exch concatstrings =
+    }if
+    
+    run
+}def
+
+
+(constants.ps) aposkribh.LoadFile
+(proc.ps)      aposkribh.LoadFile
+(log.ps)       aposkribh.LoadFile
+(util.ps)      aposkribh.LoadFile
+
+
+
+end

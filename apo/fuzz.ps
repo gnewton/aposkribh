@@ -1,0 +1,39 @@
+
+
+/fuzz.ArgTypes [
+    /arraytype
+    /booleantype
+    /dicttype
+    /filetype
+    /fonttype
+    /gstatetype
+    /integertype
+    /marktype
+    /nametype
+    /nulltype
+    /operatortype
+    /packedarraytype
+    /realtype
+    /savetype
+    /stringtype
+] def
+
+
+/fuzz.MakeBadArgs{
+    2 dict begin
+    /_goodArgs exch def % array of good args
+
+    /goodArgsDict# <<>> def
+
+    _goodArgs{
+        goodArgsDict# exch true put
+    }forall
+
+    _goodArgs length
+    fuzz.ArgTypes
+    goodArgsDict#
+    util.random.ArraySizeNOfTheseButExcludeThese
+
+    end
+    
+}bind def

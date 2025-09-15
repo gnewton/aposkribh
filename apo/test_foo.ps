@@ -1,0 +1,133 @@
+
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+(aposkribh.ps) run
+(START FOO) =
+
+aposkribh# begin
+(test.ps) run
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%(mmmm) (testProc) [/stringtype] util.args.Required
+
+
+(fuzz.ps) run
+
+
+50{
+    [/stringtype /realtype]      fuzz.MakeBadArgs
+    
+    [/stringtype /realtype]      fuzz.MakeBadArgs
+}repeat
+
+
+
+
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] util.random.ArraySizeNOfThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] util.random.ArraySizeNOfThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] util.random.ArraySizeNOfThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] util.random.ArraySizeNOfThese
+
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</stringtype true>> util.random.ArraySizeNOfTheseButExcludeThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</stringtype true>> util.random.ArraySizeNOfTheseButExcludeThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</stringtype true>> util.random.ArraySizeNOfTheseButExcludeThese
+2 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</stringtype true>> util.random.ArraySizeNOfTheseButExcludeThese
+10 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</stringtype true>> util.random.ArraySizeNOfTheseButExcludeThese
+
+
+1 1 100 {
+    /i exch def
+    3 [/stringtype /arraytype /dicttype /nulltype /realtype /integertype] <</dicttype true /nulltype true>> util.random.ArraySizeNOfTheseButExcludeThese
+}for
+
+clear
+
+
+
+%% add#
+/add2# /add# proc.New def
+ add2# /Args
+ [
+     [
+         [/integertype /integertype] [/integertype]
+         [/floattype /integertype] [/floattype]
+         [/integertype /floattype] [/floattype]
+         [/floatype /floattype] [/floattype]
+     ]
+ ] put
+
+ add2# /Proc  {add} put
+
+clear
+%4 45 add2# proc.R =
+
+(-------------------------------) log.debug.Print
+
+
+(FIRST) log.debug.Print
+(add)
+( (M) 5 )
+/typecheck
+test.simple.ShouldFail
+
+
+(*********************************) log.debug.Print
+
+
+(add)
+()
+/stackunderflow
+test.simple.ShouldFail
+
+
+(add)
+[
+    ( (MM) 5 )
+]
+/typecheck
+test.simple.ShouldFailN
+
+
+
+(add)
+[
+    (3)
+    ()
+]
+/stackunderflow
+test.simple.ShouldFailN
+
+
+
+
+
+(proc.Registry#) =
+proc.Registry# ===
+% END
+
+
+() =
+() =
+
+(/foo)
+<<
+    (a) { (A) = }
+    (B) { (B) = }
+    32  { (32) = }
+    /foo  { (/foo) = }
+>>
+{ (default) = }
+util.switch
+
+end % aposkribh# 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(END FOO) =
+
+
+
+
+

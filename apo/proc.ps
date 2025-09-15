@@ -1,0 +1,126 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+
+
+/proc.Registry#
+<<
+>>def
+
+/proc.Template{
+    <<
+	/Args [] % Default implies no args
+	% [
+	%     [
+	% 	[argtype0 argtype1] [returnTtpe0 returntype2]
+	%     ]
+       	%     [
+	% 	[argtype0 argtype1] [returnTupe0]
+	%     ]
+	% ]
+
+        /ArgsFailMessageGeneral ()
+         /ArgsFailMessages
+         [
+             %(Arg0 message)
+             %(Arg1 message
+         ]
+         
+	/Proc {
+            (%%%%%%%%%% /Proc not defined) /undefined signalerror
+            
+	}
+
+	/Description {
+            (% /Description not defined) /undefined signalerror
+        }
+
+	/Documentation{
+            (% /Documentation not defined)/undefined signalerror
+        }
+    >>
+}bind def
+
+/proc.Register{
+    count =
+    count 2 lt{
+        (ERROR: /proc.Register: Needs 2 args) /stackunderflow signalerror
+    }if
+    (M) =    
+    0 index type /dicttype ne{
+        (ERROR: /proc.Register: First arg not /dicttype) /typecheck signalerror
+    }if
+
+    1 index type /nametype ne{
+        (ERROR: /proc.Register: Second arg not /nametype) /typecheck signalerror
+    }if
+    %
+    /_procDict# exch def
+    /_name exch def
+    %
+    
+    proc.Registry# _name known{
+        (M) =
+        (Proc name already exists in proc.Registry#: ) _name dup length string cvs concatstrings /dictfull signalerror
+        quit
+    }if
+    proc.Registry# _name _procDict# put
+}bind def
+
+/proc.New{
+    2 dict begin
+    /_name exch def
+
+    /newProc 10 dict def
+    proc.Template newProc copy pop
+    newProc /Name _name put
+    _name newProc proc.Register
+    newProc
+    end
+}def
+
+/proc.R{
+    () log.Print
+    (/proc.R START) log.Print
+
+    5 dict begin
+    /_f# exch def
+    _f# [/Name /Args /Proc] (/R) util.dict.KeysMustExist
+
+    (/proc.R: Checking args) log.Print
+
+    _f# /Args get proc.CheckArgs not{
+        (proc.R: One of the args missing or incorrect type) /typecheck signalerror
+    }if
+
+
+
+    %(/proc.R: Starting proc: [) _f# /Name get dup length string cvs concatstrings (]) concatstrings log.Print
+    _f# /Proc get exec
+
+    end
+
+}bind def
+
+
+/proc.CheckArgs{
+    0 index type /arraytype ne{
+        (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
+        pop
+    }if
+    /ok false def
+    {
+     
+        /argResultPairs exch def
+        /args argResultPairs 0 get def
+        args util.StackMatchesArrayTypes {
+            /ok true def
+            exit
+        }if
+    }forall
+    ok 
+}bind def
+

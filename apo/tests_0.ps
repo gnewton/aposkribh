@@ -1,0 +1,49 @@
+
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+
+
+(aposkribh.ps) run
+aposkribh# begin
+(test.ps)      aposkribh.LoadFile
+(tests_0 START ------------------------------------------) log.test.Print
+
+
+
+(proc.Register)
+(43)
+/stackunderflow
+test.simple.ShouldFail
+
+(proc.Register)
+[
+    ()
+    (2)
+    ((M))
+    (<<>>)
+]
+/stackunderflow
+test.simple.ShouldFailN
+
+(proc.Register)
+[
+    (2 3)
+]
+/typecheck
+test.simple.ShouldFailN
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(tests_0 END ------------------------------------------) log.test.Print
+()  log.test.Print
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

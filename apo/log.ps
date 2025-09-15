@@ -1,0 +1,36 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+
+
+/log.Print{
+    constants.Print.Flag
+    {
+        (PRINT: ) exch concatstrings =
+    }{
+        pop
+    }ifelse
+}bind def
+
+/log.debug.Print{
+    constants.debug.print.Flag
+    {
+        (DEBUG: ) exch concatstrings =
+    }{
+        pop
+    }ifelse
+}bind def
+
+/log.test.Print{
+    constants.test.print.Flag 
+    {
+        (TEST: ) exch concatstrings =
+    }{
+        pop
+    }ifelse
+}bind def
+
+
