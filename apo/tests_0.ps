@@ -13,7 +13,26 @@ aposkribh# begin
 (tests_0 START ------------------------------------------) log.test.Print
 
 
+% ##########################################
+(util.Switch)
+(
+null
+<<
+    (MMM) {(<<>>) = }
+    (a) { (A) = }
 
+    (B) { (B) = }
+    32  { (32) = }
+    /foo  { (/foo) = }
+>>
+{ (default) = }
+)
+/typecheck
+test.simple.ShouldFail
+
+
+
+% ##########################################
 (proc.Register)
 (43)
 /stackunderflow
@@ -29,6 +48,8 @@ test.simple.ShouldFail
 /stackunderflow
 test.simple.ShouldFailN
 
+
+% ##########################################
 (proc.Register)
 [
     (2 3)

@@ -72,6 +72,7 @@
 
 /proc.New{
     2 dict begin
+    dup
     /_name exch def
 
     /newProc 10 dict def
@@ -111,6 +112,8 @@
         (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
         pop
     }if
+    %
+    
     /ok false def
     {
      
@@ -122,5 +125,87 @@
         }if
     }forall
     ok 
+}bind def
+
+/proc.CheckArgs2{
+    0 index type /arraytype ne{
+        (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
+    }if
+    %
+    /_argsResultsList exch def
+    
+    count /stackCount exch def
+    /argLengthMatch false def
+
+    /argsResults null def
+    /args null def
+
+    _argsResultsList{
+        /argsResults exch store
+        /args argsResults 0 get store
+        args length 0 eq{
+            (HELLOW) =
+            /argLengthMatch true store
+            exit
+        }if
+        args ===
+        (A) =
+        util.Stack
+        (J) =
+        stackCount =
+        args length =
+        stackCount args length  ge =
+        stackCount args length  ge{
+            /argLengthMatch true store
+            (JJJJJJJJJJJJJJ) =
+            exit
+        }if
+        (B) =
+    }forall
+
+    (C) =
+    argLengthMatch =
+    
+    argLengthMatch not{
+        (proc.CheckArgs2: needs more args) /stackunderflow util.ERROR
+    }if
+
+    %%%%%% One arg length matches
+    
+    /argsTypeMatch false def
+    _args{
+        /argResults exch def
+        /args argResults 0 get def
+
+        args length 0 eq{
+            /argsTypeMatch true store
+            exit
+        }if
+        args util.StackMatchesArrayTypes {
+            /argsTypeMatch true store
+            exit
+        }if
+    }forall
+
+    argsTypeMatch not{
+        (proc.CheckArgs2: arg(s) wrong type) /typecheck util.ERROR
+    }if
+
+    %%%%%% One args types matches
+
+}bind def
+
+/proc.RedefineWrapper{
+    /_proc exch def
+    /_args exch def
+
+    _args ===
+    constants.proc.RedefineWrapper.Flag not{
+        _proc
+    }{
+        _args ===
+        _args proc.CheckArgs2
+        _proc 5 sub
+    }ifelse
 }bind def
 

@@ -49,7 +49,7 @@ clear
 
 
 %% add#
-/add2# /add# proc.New def
+/add2# proc.New def
  add2# /Args
  [
      [
@@ -113,6 +113,7 @@ proc.Registry# ===
 () =
 () =
 
+%%%%%%%%%
 (/foo)
 <<
     (a) { (A) = }
@@ -121,13 +122,50 @@ proc.Registry# ===
     /foo  { (/foo) = }
 >>
 { (default) = }
-util.switch
+util.Switch
 
-end % aposkribh# 
+
+
+%%%%%%%%%
+(m)
+<<
+    (MMM) {(<<>>) = }
+    (a) { (A) = }
+
+    (B) { (B) = }
+    32  { (32) = }
+    /foo  { (/foo) = }
+>>
+{ (default) = }
+util.Switch
+
+
+/add2{
+    add
+}def
+
+(****************************************) =
+
+(proc.RedefineWrapper) =
+
+/add2{
+ [
+     [ [/integertype /integertype] [/integertype] ]
+     [ [/realtype /integertype]   [/realtype]   ]
+     [ [/integertype /realtype]   [/realtype]   ]
+     [ [/realype /realtype]      [/realtype]   ]
+ ] 
+ % {sub}
+  {add2}
+ 
+ proc.RedefineWrapper
+}def
+
+clear
+(ZZZZZZZZZZZZZZZZZZZZZZZ) =
+1.2 2 add =
+
+ end % aposkribh# 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (END FOO) =
-
-
-
-
 

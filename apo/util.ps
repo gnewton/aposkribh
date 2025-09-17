@@ -6,17 +6,17 @@
 
 
 
-aposkribh# begin
+
 
 /util.ERROR{
     count 2 lt{
-        (APOSKRIBH ERROR: util.ERROR: Needs at least 2 args (1 - error=/nametype;  2 - error message=/stringtype)) /stackunderflow signalerror
+        (APOSKRIBH ERROR: util.ERROR: Needs at least 2 args (1 - error=/nametype;  2 - error message=/stringtype)) /stackunderflow util.ERROR
     }if
     0 index type /nametype ne{
-        (APOSKRIBH ERROR: util.ERROR: First arg wrong; should be error=/nametype) /typedef signalerror
+        (APOSKRIBH ERROR: util.ERROR: First arg wrong; should be error=/nametype) /typedef  util.ERROR
     }if
     1 index type /stringtype ne{
-        (APOSKRIBH ERROR: util.ERROR: Second arg wrong; should be error message=/stringtype) /typedef signalerror
+        (APOSKRIBH ERROR: util.ERROR: Second arg wrong; should be error message=/stringtype) /typedef   util.ERROR 
     }if
 
     /error exch def
@@ -144,7 +144,7 @@ aposkribh# begin
 }bind def
 
 
-/util.switch{
+/util.Switch{
     count 3 lt{
         (ERROR: /switch: need 3 args: 1 - value being tested (any type); 2 - case dictionary (key=any type; value=executable procedure); 3 -default fall through executable procedure) /typedef signalerror
     }if
@@ -167,6 +167,11 @@ aposkribh# begin
     /default exch def
     /dic exch def
     /v exch def
+
+    v null eq{
+        (/util.Switch: tested value cannot be 'null') /typecheck util.ERROR
+        quit
+    }if
 
     % body
     dic v known not{
@@ -232,5 +237,20 @@ aposkribh# begin
 }def
 
 
-% END
-end % aposkribh# 
+/util.isType{
+    0 index util.isBuiltPSType{
+        type
+    }{
+        util.extendedType
+    }if
+
+}binf def
+
+/util.isBuiltPSType{
+    %true
+    (/util.isBuiltPSType) /undefined    util.Error
+}bind def
+
+/util.extendedType{
+    (/util.extendedType) /undefined    util.Error
+}def
