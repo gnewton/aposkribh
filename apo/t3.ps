@@ -1,0 +1,200 @@
+usertime =
+/invoke.Production{
+    _internal exch get exec
+}bind def
+
+
+/Debug.Depth 0 def
+
+/spaces#<<
+	>>def
+
+/makeSpaces{
+    /s ( ) def
+    {
+	/s s (-) concatstrings def
+    }repeat
+    s
+}bind def
+
+/spaces{
+    dup spaces# exch known{
+	spaces# exch get
+    }{
+	/n exch def
+	/spcs n makeSpaces def
+	spaces# n spcs put
+	spcs
+    }ifelse
+}def
+
+
+/usertime.str{
+    usertime 16 string cvs
+}bind def
+
+ 
+/invoke.DebugAll{
+    /Debug.Depth Debug.Depth 2 add store
+    2 dict begin
+    /k exch def
+    
+    /kstr (/) k dup length string cvs concatstrings def
+    Debug.Depth spaces
+    kstr
+    ( Start: )
+    usertime.str 
+    concatstrings
+    concatstrings
+    concatstrings =
+
+    _internal k get exec
+
+    Debug.Depth spaces
+    kstr
+    ( End  : )
+    usertime.str 
+    concatstrings
+    concatstrings
+    concatstrings =
+    end
+    /Debug.Depth Debug.Depth 2 sub store
+}bind def
+
+/base
+<<
+    /_internal << >>
+
+    /RandomDict# <<
+		     /Foo 43
+		 >>
+
+>>def
+
+base begin
+/Add{
+    add
+    %mul
+    10 Sub2
+}def
+
+/Value 10 def
+
+/Sub2{
+    sub
+    1000000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+}def
+end
+
+
+/meta
+<<
+>>def
+
+/DelegateDict{
+    /d# exch def
+
+    d#{
+	() =
+	/v 1 array def
+	v 0 2 index put
+	pop
+
+	/k exch def
+	k =
+	k /_internal ne{
+	    v 0 get type /arraytype eq{
+		v 0 get xcheck{
+		    (+++++++++++++++++  _) =
+		    % Move actual proc to _internal
+		    base /_internal get k v 0 get put
+
+		    %k dup length string cvs
+
+		    % Replace original with call to invoke with key k
+		    % Build string:
+		    /E
+  		    (/)  k dup length string cvs  concatstrings
+		    ( invoke)  concatstrings
+		    def
+		    
+		    % Replace
+		    base k E cvx put
+		}if
+	    }if
+	}if
+    }forall
+
+    d# begin
+    /invoke {
+	%invoke.Production
+	invoke.DebugAll
+    }bind def
+    
+    % /invoke2 {
+    % 	2 dict begin
+    % 	/k exch def
+
+    % 	/kstr k dup length string cvs def
+    % 	(Start: ) kstr concatstrings =
+    % 	_internal k get exec
+    % 	(End: ) kstr concatstrings =
+    % 	end
+    % } def
+    end
+
+}bind def
+
+clear
+base DelegateDict
+
+base begin
+% /invoke {
+%     _internal exch get exec
+% } def
+
+base ===
+_internal ===
+
+
+(--------------) =
+base ===
+(--------------) =
+2 3 Add =
+
+
+1000000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+
+2 3 Sub2 =
+(****) =
+stack
+
+end
+
+
+
+
+quit
+
+/Name /name def
+
+Name {
+    (name) =
+}def
+
+name
+
+
+
