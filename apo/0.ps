@@ -1,0 +1,26 @@
+
+/apo.invoke.checkargsandresults.Strict true def
+
+/apo.invoke.Production{ % 0 - /Proc nametype
+    apo.Procs# exch get exec
+}bind def
+
+
+/apo.invoke.ProductionWithChecks{
+    {
+        apo.invoke.Production
+    } apo.invoke.CheckArgsAndResults
+}bind def
+
+
+/apo.invoke.Test{
+    % Needs /apo.Test# defined
+    %
+    (/apo.invoke.Test) /undefined signalerror
+}bind def
+
+/apo.invoke.TestAll{
+    %
+    (/apo.invoke.TestAll) /undefined signalerror
+}bind def
+

@@ -1,0 +1,187 @@
+
+
+
+/apo.invoke# <<>> def
+
+apo.invoke# begin
+
+/Register<<
+
+         >>def
+
+/apo.invoke.checkargsandresults.Strict true def
+
+/apo.invoke.Production{ % 0 - /Proc nametype
+    apo.Procs# exch get exec
+}bind def
+
+
+/apo.invoke.ProductionWithChecks{
+    {
+        apo.invoke.Production
+    } apo.invoke.CheckArgsAndResults
+}bind def
+
+
+/apo.invoke.Test{
+    % Needs /apo.Test# defined
+    %
+    (/apo.invoke.Test) /undefined signalerror
+}bind def
+
+/apo.invoke.TestAll{
+    %
+    (/apo.invoke.TestAll) /undefined signalerror
+}bind def
+
+
+/DelegateDict{
+    /d# exch def
+    /dict_name exch def
+
+    % Walk through dict d# and move all executables into /d#/apo.Procs#
+    d#{
+	/v 1 array def
+	v 0 2 index put
+	pop
+
+	/k exch def
+
+	k /apo.Procs# ne{
+	    v 0 get type /arraytype eq{
+		v 0 get xcheck{
+		    (+++++++++++++++++  _M) =
+		    % Move actual proc to apo.Procs#
+		    d# /apo.Procs# get k v 0 get put
+
+		    %k dup length string cvs
+
+		    % Replace original with call to apo.Invoke with key k
+		    % Build string:
+		    /E
+  		    (/)  k dup length string cvs  concatstrings
+		    ( apo.Invoke)  concatstrings
+		    def
+		    
+		    % Replace
+		    d# k E cvx put
+		}if
+	    }if
+	}if
+    }forall
+
+    % Put the dict in register so we can invoke by name to get the dict (apo.self)
+    Register dict_name d# put
+    
+    d# begin
+    /apo.Invoke {
+	%apo.invoke.Production
+	%apo.invoke.DebugAll
+        apo.invoke# begin
+        Register apo.Name get begin
+        %apo.invoke.ProductionWithChecks
+        %apo.invoke.Production
+	apo.invoke.DebugAll
+        end
+        end
+    }bind def
+
+    /apo.Name dict_name def
+    end
+
+}bind def
+
+/apo.AddSignature{
+    0 index type /arraytype ne{
+        (/apo.AddSignature: First arg not /arraytype) /typecheck signalerror
+    }if
+    1 index type /nametype ne{
+        (/apo.AddSignature: Second arg not /nametype) /typecheck signalerror
+    }if
+    2 index type /dicttype ne{
+        (/apo.AddSignature: Third arg not /dictntype) /typecheck signalerror
+    }if
+    %
+    4 dict begin
+    /_signatures exch def
+    /_key exch def
+    /_lib# exch def
+    (apo.AddSignature) =
+    _lib# /apo.ProcSignatures# get _key _signatures put
+    end
+ }def
+
+/apo.invoke.DebugAll{
+    /Debug.Depth Debug.Depth 2 add store
+    2 dict begin
+    /k exch def
+
+    mark
+
+    /kstr (/) k dup length string cvs concatstrings def
+    Debug.Depth spaces
+    ( )
+    apo.Name dup length string cvs
+    kstr
+    ( Start:  )
+    usertime.str 
+     concatstringsToMark
+    =
+
+    % apo.Procs# k get exec
+    k apo.invoke.Production
+
+    mark
+    Debug.Depth spaces
+    ( )
+    apo.Name dup length string cvs
+    kstr
+    (   End:  )
+    usertime.str
+     concatstringsToMark
+    =
+     
+    end
+    /Debug.Depth Debug.Depth 2 sub store
+}bind def
+
+/apo.invoke.CheckArgsAndResults{ % 0 - apo.invoke.Production; 1 - /Proc nametype
+    (apo.invoke.CheckArgsAndResults) =
+    1 index apo.ProcSignatures# exch known{ % Is there a signature definition for this Proc?
+        1 index apo.ProcSignatures# exch get  ===
+        % A - cheack args
+        % B - run proc
+        % C - check results
+    }{
+        % No signature
+        1 index /ProcName exch def
+        apo.invoke.checkargsandresults.Strict{ % If strict, error, as is is required
+            mark (/apo.invoke.CheckArgsAndResults: /) ProcName dup length string cvs ( does not have a signature defined) concatstringsToMark /undefined signalerror
+        }if
+    }ifelse
+
+    exec
+}bind def
+
+/apo.Base#{
+    <<
+        /apo.Docs# << >>
+        /apo.Procs# << >>
+        /apo.ProcSignatures# << >>
+        /apo.Tests# <<
+                        /Positive# <<>>
+                        /Negative#<<>>
+                    >>
+        
+    >>
+}def
+
+/apo.NewLib{
+    2 dict begin
+    /tmp# <<>> def
+    apo.Base# tmp# copy
+    end
+}def
+
+
+end

@@ -1,0 +1,52 @@
+/concatstringsToMark{
+    {
+        counttomark
+    }stopped{
+        (/concatstringsToMark: No mark on stack!) /unmatchedmark signalerror
+    }if
+
+    dup 0 eq{
+        (/concatstringsToMark: No strings on stack!) /stackunderflow signalerror
+    }if
+
+    1 sub{
+        concatstrings
+    }repeat
+
+    exch
+    pop % remove mark
+}bind def
+
+
+
+/Debug.Depth 0 def
+
+/spaces#<<
+	>>def
+
+/makeSpaces{
+    /s () def
+    {
+	/s s (-) concatstrings def
+    }repeat
+    s
+}bind def
+
+/spaces{
+    dup spaces# exch known{
+	spaces# exch get
+    }{
+	/n exch def
+	/spcs n makeSpaces def
+	spaces# n spcs put
+	spcs
+    }ifelse
+}def
+
+
+
+/usertime.str{
+    usertime 16 string cvs
+}bind def
+
+

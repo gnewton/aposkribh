@@ -41,15 +41,19 @@
 	/Documentation{
             (% /Documentation not defined)/undefined signalerror
         }
+
+        /SetProcAndArgs{
+            /Proc exch def
+            /Args exch def
+        } 
     >>
 }bind def
 
 /proc.Register{
-    count =
     count 2 lt{
         (ERROR: /proc.Register: Needs 2 args) /stackunderflow signalerror
     }if
-    (M) =    
+
     0 index type /dicttype ne{
         (ERROR: /proc.Register: First arg not /dicttype) /typecheck signalerror
     }if
@@ -63,9 +67,7 @@
     %
     
     proc.Registry# _name known{
-        (M) =
-        (Proc name already exists in proc.Registry#: ) _name dup length string cvs concatstrings /dictfull signalerror
-        quit
+        (Proc name already exists in proc.Registry#: ) _name dup length string cvs concatstrings /dictfull   util.ERROR
     }if
     proc.Registry# _name _procDict# put
 }bind def
@@ -93,41 +95,76 @@
 
     (/proc.R: Checking args) log.Print
 
-    _f# /Args get proc.CheckArgs not{
-        (proc.R: One of the args missing or incorrect type) /typecheck signalerror
-    }if
+    % _f# /Args get proc.CheckArg not{
+    %     (proc.R: One of the args missing or incorrect type) /typecheck signalerror
+    % }if
 
+    _f# /Args get proc.CheckArgs
 
 
     %(/proc.R: Starting proc: [) _f# /Name get dup length string cvs concatstrings (]) concatstrings log.Print
     _f# /Proc get exec
 
+    %_f# /Args get proc.CheckResultsNumberAndType
     end
 
 }bind def
 
-
-/proc.CheckArgs{
+/proc.CheckResultsNumberAndType{
     0 index type /arraytype ne{
         (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
-        pop
     }if
     %
     
-    /ok false def
-    {
-     
-        /argResultPairs exch def
-        /args argResultPairs 0 get def
-        args util.StackMatchesArrayTypes {
-            /ok true def
+    /_argsResultsList exch def
+    
+    count /stackCount exch def
+    /resultsLengthMatch false def
+
+    /argsResults null def
+    /results null def
+
+    _argsResultsList{
+        /argsResults exch store
+        /results argsResults 1 get store
+        results length 0 eq{
+            /resultsLengthMatch true store
+            exit
+        }if
+        stackCount args length  ge{
+            /resultsLengthMatch true store
             exit
         }if
     }forall
-    ok 
-}bind def
 
-/proc.CheckArgs2{
+    resultsLengthMatch not{
+        (proc.CheckResultsNumberAndType: missing results on stack) /stackunderflow util.ERROR
+    }if
+
+    %%%%%% One arg length matches
+    
+    /resultsTypeMatch false def
+    _argsResultsList{
+        /argResults exch def
+        /results argResults 1 get def
+
+        args length 0 eq{
+            /argsTypeMatch true store
+            exit
+        }if
+        args util.StackMatchesArrayTypes {
+            /argsTypeMatch true store
+            exit
+        }if
+    }forall
+
+    argsTypeMatch not{
+        (proc.CheckArgs: arg(s) wrong type) /typecheck util.ERROR
+    }if
+
+}def
+
+/proc.CheckArgs{
     0 index type /arraytype ne{
         (/proc.CheckArgs: Arg0 not /arraytype) /typedef signalerror
     }if
@@ -144,36 +181,23 @@
         /argsResults exch store
         /args argsResults 0 get store
         args length 0 eq{
-            (HELLOW) =
             /argLengthMatch true store
             exit
         }if
-        args ===
-        (A) =
-        util.Stack
-        (J) =
-        stackCount =
-        args length =
-        stackCount args length  ge =
         stackCount args length  ge{
             /argLengthMatch true store
-            (JJJJJJJJJJJJJJ) =
             exit
         }if
-        (B) =
     }forall
 
-    (C) =
-    argLengthMatch =
-    
     argLengthMatch not{
-        (proc.CheckArgs2: needs more args) /stackunderflow util.ERROR
+        (proc.CheckArgs: needs more args) /stackunderflow util.ERROR
     }if
 
     %%%%%% One arg length matches
     
     /argsTypeMatch false def
-    _args{
+    _argsResultsList{
         /argResults exch def
         /args argResults 0 get def
 
@@ -188,7 +212,7 @@
     }forall
 
     argsTypeMatch not{
-        (proc.CheckArgs2: arg(s) wrong type) /typecheck util.ERROR
+        (proc.CheckArgs: arg(s) wrong type) /typecheck util.ERROR
     }if
 
     %%%%%% One args types matches
@@ -204,8 +228,8 @@
         _proc
     }{
         _args ===
-        _args proc.CheckArgs2
-        _proc 5 sub
+        _args proc.CheckArgs
+        _proc 5 sub 
     }ifelse
 }bind def
 

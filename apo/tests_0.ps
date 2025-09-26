@@ -8,7 +8,9 @@
 
 
 (aposkribh.ps) run
+
 aposkribh# begin
+
 (test.ps)      aposkribh.LoadFile
 (tests_0 START ------------------------------------------) log.test.Print
 
@@ -16,7 +18,7 @@ aposkribh# begin
 % ##########################################
 (util.Switch)
 (
-null
+null  % Error: null cannot be used as a key in a dict
 <<
     (MMM) {(<<>>) = }
     (a) { (A) = }
@@ -29,6 +31,29 @@ null
 )
 /typecheck
 test.simple.ShouldFail
+
+
+(util.Switch)
+(
+-  % Error: this is undefined
+<<
+>>
+{ (default) = }
+)
+/undefined
+test.simple.ShouldFail
+
+
+% ##########################################
+(util.Switch)
+[
+    ()
+    (2)
+    (2 3)
+]
+/stackunderflow
+test.simple.ShouldFailN
+
 
 
 
@@ -59,10 +84,35 @@ test.simple.ShouldFailN
 
 
 
+% POSITIVE TESTS ------------------------------------------------------
+
+
+(add)
+(2 3)
+test.simple.ShouldNotFail
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (tests_0 END ------------------------------------------) log.test.Print
 ()  log.test.Print
+
+
+
+/add2# proc.New def
+clear
+[
+    [ [/integertype /integertype] [/integertype] ]
+    [ [/realtype /integertype]   [/realtype]   ]
+    [ [/integertype /realtype]   [/realtype]   ]
+    [ [/realype /realtype]      [/realtype]   ]
+
+] {add} add2# /SetProcAndArgs util.dict.Exec
+
+4 45 add2# proc.R =
+4.3 45 add2# proc.R =
+
+23 45 add2# proc.R =
+
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -4,7 +4,7 @@
 
 
 /test.simple.ShouldNotFail{
-
+    
 }def
 
 1
@@ -55,6 +55,13 @@
         actualError _error ne{
             % Wrong error!
 
+            (ERROR) =
+            ( ----- Args -----) =
+            _args =
+            ( ----- Proc -----) =
+            _proc =
+            ( ----------------) =
+            
             (ERROR: /test.simple.ShouldFail: proc=[) _proc concatstrings
             (] ) concatstrings
             (constants.test.simple.ShouldFail: Args: ") _args concatstrings
@@ -71,7 +78,13 @@
         (OK) log.test.Print
     }{
         % SHould not be here: Has not failed when should have
-        (ERROR: /test.simple.ShouldFail: proc=[) _proc concatstrings
+        (ERROR) =
+        ( ----- Args -----) =
+        _args =
+        ( ----- Proc -----) =
+        _proc =
+        ( ----------------) =
+        (/test.simple.ShouldFail: proc=[) _proc concatstrings
         (] should fail. Has not!) concatstrings
          /typecheck util.ERROR
     }ifelse

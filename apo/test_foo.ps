@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%
 
 (aposkribh.ps) run
-(START FOO) =
+(START test_foo.ps) =
 
 aposkribh# begin
 (test.ps) run
@@ -50,20 +50,40 @@ clear
 
 %% add#
 /add2# proc.New def
- add2# /Args
- [
-     [
-         [/integertype /integertype] [/integertype]
-         [/floattype /integertype] [/floattype]
-         [/integertype /floattype] [/floattype]
-         [/floatype /floattype] [/floattype]
-     ]
- ] put
+ % add2# /Args
+ % [
+ %     [
+ %         [/integertype /integertype] [/integertype]
+ %         [/floattype /integertype] [/floattype]
+ %         [/integertype /floattype] [/floattype]
+ %         [/floatype /floattype] [/floattype]
+ %     ]
+ % ] put
 
- add2# /Proc  {add} put
+ % add2# /Proc  {add} put
+
+% clear
+% 4 45 add2# proc.R =
 
 clear
-%4 45 add2# proc.R =
+
+[
+    [ [/integertype /integertype] [/integertype] ]
+    [ [/realtype /integertype]   [/realtype]   ]
+    [ [/integertype /realtype]   [/realtype]   ]
+    [ [/realype /realtype]      [/realtype]   ]
+
+]
+{add}
+add2# /SetProcAndArgs util.dict.Exec
+
+
+4 45 add2# proc.R =
+4.3 45 add2# proc.R =
+%add2# proc.R =
+% add2# proc.R =
+(EEEEEEEEEEEEE) =
+
 
 (-------------------------------) log.debug.Print
 
@@ -140,32 +160,112 @@ util.Switch
 util.Switch
 
 
-/add2{
-    add
-}def
-
 (****************************************) =
 
 (proc.RedefineWrapper) =
 
-/add2{
- [
-     [ [/integertype /integertype] [/integertype] ]
-     [ [/realtype /integertype]   [/realtype]   ]
-     [ [/integertype /realtype]   [/realtype]   ]
-     [ [/realype /realtype]      [/realtype]   ]
- ] 
- % {sub}
-  {add2}
- 
- proc.RedefineWrapper
-}def
+* ===
+
+* /* eq =
+
 
 clear
-(ZZZZZZZZZZZZZZZZZZZZZZZ) =
-1.2 2 add =
+%util.Switch
+
+
+
+
+ 
+% 10 dict begin
+% /add2{
+%  [
+%      [ [/integertype /integertype] [/integertype] ]
+%      [ [/realtype /integertype]   [/realtype]   ]
+%      [ [/integertype /realtype]   [/realtype]   ]
+%      [ [/realype /realtype]      [/realtype]   ]
+%  ] 
+% %  {sub}
+%  {add2} 
+%   aposkribh# begin
+%   proc.RedefineWrapper
+%   end
+% }bind def
+
+
+% clear
+% (ZZZZZZZZZZZZZZZZZZZZZZZ) =
+% 1.2 2 add2 =
+%end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(END test_foo.ps) =
+
+
+/ArgsResults
+<<
+    0 <<
+          /Args [/stringtype /arraytype]
+          /Results [/arratype]
+      >>
+    1 <<
+          /Args [/arraytype]
+          /Results [/realtype]
+      >>
+
+    /Something { }
+>>def
+
+%ArgsResults /self ArgsResults put
+
+ArgsResults
+{
+    /v exch def
+    /k exch def
+    /v 
+    ===
+}forall
+
+/NewNew{
+    /tmp <<
+             /Tmp (ME!)
+             /IntKey 34
+
+             /Run{
+                 self ==
+                 IntKey =
+                 /IntKey 56 store
+             }def
+         >>def
+
+    /X tmp def
+    X /self tmp put
+    X
+}def
+
+
+
+(M) =
+
+
+
+() =
+
+NewNew util.dict.Print
+
+(9999999999) =
+
+/Z NewNew def
+
+Z begin
+Run
+%Run
+end
+
+
+Z util.dict.Print
+
+
+
 
  end % aposkribh# 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-(END FOO) =
-

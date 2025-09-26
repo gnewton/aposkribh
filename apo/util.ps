@@ -13,10 +13,10 @@
         (APOSKRIBH ERROR: util.ERROR: Needs at least 2 args (1 - error=/nametype;  2 - error message=/stringtype)) /stackunderflow util.ERROR
     }if
     0 index type /nametype ne{
-        (APOSKRIBH ERROR: util.ERROR: First arg wrong; should be error=/nametype) /typedef  util.ERROR
+        (APOSKRIBH ERROR: util.ERROR: First arg wrong; should be error=/nametype) /typecheck  util.ERROR
     }if
     1 index type /stringtype ne{
-        (APOSKRIBH ERROR: util.ERROR: Second arg wrong; should be error message=/stringtype) /typedef   util.ERROR 
+        (APOSKRIBH ERROR: util.ERROR: Second arg wrong; should be error message=/stringtype) /typecheck   util.ERROR 
     }if
 
     /error exch def
@@ -42,18 +42,19 @@
 
 }def
 
+
+
 /util.args.Required % 
 {
     count 3 lt{
-        (mmm) =
         (util.args.required: Needs at least 3 args (procArgs procName_/stringtype procArgTypes)) /stackunderflow signalerror
     }if
 
     0 index type /arraytype ne{
-        (util.args.required: First arg not /arraytype) /typedef signalerror
+        (util.args.required: First arg not /arraytype) /typecheck signalerror
     }if
     1 index type /stringtype ne{
-        (util.args.required: Second not /stringtype) /typedef signalerror
+        (util.args.required: Second not /stringtype) /typecheck signalerror
     }if
 
     /_typeArray exch def
@@ -64,7 +65,7 @@
 
 
 /util.array.Append{ % item array
-    (util.array.append) [/array /anyType] util.args.Required
+    (util.array.append) [/array *] util.args.Required
     %
     8 dict begin
 
@@ -146,21 +147,20 @@
 
 /util.Switch{
     count 3 lt{
-        (ERROR: /switch: need 3 args: 1 - value being tested (any type); 2 - case dictionary (key=any type; value=executable procedure); 3 -default fall through executable procedure) /typedef signalerror
+        (/util.Switch: need 3 args: 1 - value being tested (any type); 2 - case dictionary (key=any type; value=executable procedure); 3 -default fall through executable procedure) /stackunderflow
+        util.ERROR
     }if
     
     0 index type /arraytype ne{
-        (ERROR: /switch: default must be an executable array)  /typedef signalerror
+        (/util.Switch: default must be an executable array)  /typecheck  util.ERROR
     }{
         0 index xcheck not{
-            (ERROR: switch: default is array but not an executable array)  /typedef signalerror
-            stop
+            (/util.Switch: switch: default is array but not an executable array) /typecheck   util.ERROR
         }if
     }ifelse
 
     1 index type /dicttype ne{
-        (Error: switch: case statements must be a dictionary) =
-        stop
+        (/util.Switch: case statements must be a dictionary) /typecheck   util.ERROR
     }if
     % value being checked can be anything
         
@@ -237,20 +237,163 @@
 }def
 
 
-/util.isType{
-    0 index util.isBuiltPSType{
-        type
+/util.isType{ % value type
+    0 index * eq{
+        pop
+        pop
+        true
     }{
-        util.extendedType
+        0 index util.type.IsExtendedDef
+        {
+            util.type.IsExtended
+        }
+        {
+            type
+        }
+        if
     }if
 
-}binf def
-
-/util.isBuiltPSType{
-    %true
-    (/util.isBuiltPSType) /undefined    util.Error
 }bind def
 
-/util.extendedType{
+/util.type.IsExtendedDef{
+
+}def
+
+/util.type.IsExtended{
     (/util.extendedType) /undefined    util.Error
+}def
+
+/util.dict.Exec{
+    /_key exch def
+    /_d# exch def
+    _d# begin
+    _d# _key get exec
+    end
+}def
+
+
+/util.dict.MakeValueProperties{
+    5 dict begin
+    /e () def
+
+
+    % LENGTH
+    {
+        dup length /L exch def
+        /e e ( Length=) concatstrings
+        L 12 string cvs concatstrings
+        store
+    }stopped{
+        % Cannot count this type: number, null. etc
+    }if
+
+    % STRING
+    dup type /stringtype eq{
+        dup /V exch def
+        {
+            /e e ( Value=") concatstrings
+            V concatstrings
+            (") concatstrings
+            store
+        }stopped{
+        }if
+    }if
+
+        dup type /dicttype eq{
+        {
+            /e e ( <<dict>>) concatstrings
+            store
+        }stopped{
+        }if
+    }if
+
+    % BOOL
+    dup type /booleantype eq{
+        dup{
+            /e e ( Value=true) concatstrings store
+        }{
+            /e e ( Value=false) concatstrings store
+        }ifelse
+    }if
+
+    % INTEGER 
+    dup type /integertype eq{
+        {
+            dup /V exch def
+            /e e ( Value=) concatstrings
+            V 12 string cvs concatstrings
+
+            store
+        }stopped{
+        }if
+    }if
+
+    % NAMETYPE
+    dup type /nametype eq{
+        {
+            dup /V exch def
+            /e e ( Value=") concatstrings
+            V dup length string cvs concatstrings
+            (") concatstrings
+            store
+        }stopped{
+        }if
+    }if
+
+    % REAL
+    dup type /realtype eq{
+        {
+            dup /V exch def
+            /e e ( Value=) concatstrings
+            V 16 string cvs concatstrings store
+        }stopped{
+        }if
+    }if
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Executable
+    {
+        dup xcheck {
+            /e e ( X=true) concatstrings store
+        }if
+    }stopped{}if
+    
+    % Readable
+    {
+        dup rcheck not{
+            /e e ( R=false) concatstrings store
+        }if
+    }stopped
+    {}if
+
+    % Writable
+    {
+        dup wcheck not{
+            /e e ( W=false) concatstrings store
+        }if
+    }stopped
+    {}if
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    pop
+    e
+    end
+}bind def
+
+
+/util.dict.Print{
+    (<<) =
+    {
+        /v exch def
+        /k exch def
+        k =
+        v util.dict.MakeValueProperties =
+    }forall
+    (>>) =
+}def
+
+
+/util.stack.FindMatchingSubArrays{ % array [ [[a b c] [d]]    [[d e] [f]]     ]   
+
 }def

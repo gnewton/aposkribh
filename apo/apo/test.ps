@@ -1,0 +1,146 @@
+
+(0.ps) run
+(util.ps) run
+
+usertime =
+
+
+/base# null  def
+
+apo.invoke# begin
+apo.NewLib /base# exch  store
+end
+
+base# begin
+/Add{
+    add
+}def
+
+
+
+/Value 10 def
+
+
+
+/Sub2{
+    sub
+    100000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+}def
+end
+
+
+
+
+clear
+apo.invoke# begin
+/MyLib_0 base# DelegateDict
+
+Register ===
+
+end
+
+
+
+base# begin
+apo.Procs# ===
+
+(JJJJJJJJJJJJJJJJJJJ) =
+base#
+/Add
+[
+    [[/integertype /integertype] [/integertype]]
+    [[/realtype /integertype] [/realtype]]
+    [[/integertype /realtype] [/realtype]]
+]
+apo.invoke# begin
+apo.AddSignature
+end
+
+base#
+/Sub2
+[
+    [[/integertype /integertype] [/integertype]]
+    [[/realtype /integertype] [/realtype]]
+    [[/integertype /realtype] [/realtype]]
+]
+apo.invoke# begin
+apo.AddSignature
+end
+
+(EEEEEEEEEEEEEEEEEEEEEEEE) =
+(--------------) =
+(--------------) =
+2 3 Add =
+
+
+1000000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+
+2 3 Sub2 =
+(****) =
+stack
+
+end
+
+
+
+clear
+mark (1) (2) (3) concatstringsToMark
+==
+(++++) =
+stack
+
+
+
+(END ###################################################) =
+base# begin
+10 11 Add =
+end
+
+
+/base2# null  def
+
+base2# ===
+apo.invoke# begin
+apo.NewLib /base2# exch  store
+end
+
+base2# begin
+/Add{
+    base# begin
+    Add
+    end
+    121 add
+}def
+
+    base# begin
+    10 11 Add
+    end
+
+10 13 Add =
+
+end
+
+apo.invoke# begin
+/MyLib_1 base2# DelegateDict
+Register ===
+
+end
+
+base2# begin
+10 13 Add =
+end
+
+
+
