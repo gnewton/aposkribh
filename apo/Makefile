@@ -1,17 +1,10 @@
-all: aposkribh foo test util
+all: apo.invoke t3
 
-aposkribh:
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY aposkribh.ps
+apo.invoke:
+	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY apo.invoke.ps
 
-foo:
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY test_foo.ps
-test:
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY tests_0.ps
-
-util:
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY util.ps
-r:
-	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY util_r.ps
+t3:
+	gs -sDEVICE=nullpage -dALLOWPSTRANSPARENCY -q -dNOPAUSE -dBATCH -dNOSAFER -dNODISPLAY t3.ps
 
 
 

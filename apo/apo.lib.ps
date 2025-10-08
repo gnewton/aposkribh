@@ -1,0 +1,107 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+
+
+/apo.lib.Base#
+<<
+    /apo.Docs# << >>
+    /apo.Procs# << >>
+    /apo.ProcSignatures# << >>
+    /apo.Tests# <<
+                   /Positive# <<>>
+                   /Negative#<<>>
+               >>
+>>def
+
+
+
+
+/apo.lib.NewLib{
+    2 dict begin
+    /tmp# <<>> def
+
+    apo.lib.Base# tmp# copy
+    tmp#
+    end
+}def
+
+
+
+
+/apo.lib.AddSignature{
+    0 index type /arraytype ne{
+        (/apo.AddSignature: First arg not /arraytype) /typecheck signalerror
+    }if
+    1 index type /nametype ne{
+        (/apo.AddSignature: Second arg not /nametype) /typecheck signalerror
+    }if
+    2 index type /dicttype ne{
+        (/apo.AddSignature: Third arg not /dictntype) /typecheck signalerror
+    }if
+    %
+    4 dict begin
+    /_signatures exch def
+    /_key exch def
+    /_lib# exch def
+    _lib# /apo.ProcSignatures# get _key _signatures put
+    end
+ }def
+
+/apo.lib.DelegateDict{ % 0 - dict
+    % Walk through dict d# and move all executables into /d#/apo.Procs#
+    /d# exch def
+
+    d#{
+	/v 1 array def
+	v 0 2 index put
+	pop
+
+	/k exch def
+	k =
+	k /apo.Procs# ne{
+	    v 0 get type /arraytype eq{
+		v 0 get xcheck{
+		    (+++++++++++++++++  _M) =
+		    % Move actual proc to apo.Procs#
+		    d# /apo.Procs# get k v 0 get put
+
+		    %k dup length string cvs
+
+		    % Replace original with call to apo.Invoke with key k
+		    % Build string:
+		    /E
+  		    (/)  k dup length string cvs  concatstrings
+		    ( apo.Invoke)  concatstrings
+		    def
+		    
+		    % Replace
+		    d# k E cvx put
+		}if
+	    }if
+	}if
+    }forall
+
+    d# begin
+    /apo.Invoke {
+	% apo.invoke.Production
+	%apo.invoke.DebugAll
+         apo.invoke.ProductionWithChecks
+    }bind def
+    
+    % /invoke2 {
+    % 	2 dict begin
+    % 	/k exch def
+
+    % 	/kstr k dup length string cvs def
+    % 	(Start: ) kstr concatstrings =
+    % 	apo.Procs# k get exec
+    % 	(End: ) kstr concatstrings =
+    % 	end
+    % } def
+    end
+
+}bind def

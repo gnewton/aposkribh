@@ -1,0 +1,33 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+/log.debug.DebugDepth 0 def
+
+/log.debug.Debug+{
+    /log.debug.DebugDepth log.debug.DebugDepth 1 add store
+}def
+
+/log.debug.Debug-{
+    /log.debug.DebugDepth log.debug.DebugDepth 1 sub store
+}def
+
+
+/log.Print{
+
+}def
+
+
+/log.debug.Print{
+    2 dict begin
+    /_procName exch def
+    /_msg exch def
+
+    mark  log.debug.DebugDepth 2 mul apo.util.Spaces (DEBUG: ) _procName ( -- ) _msg apo.util.concatstringsToMark =
+
+    end
+}def
+
+

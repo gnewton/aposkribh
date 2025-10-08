@@ -1,0 +1,78 @@
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+/apo.invoke.checkargsandresults.Strict true def
+
+
+/apo.invoke.Production{ % 0 - /Proc; 1 - nametype
+    apo.invoke.Production.debug.Flag{
+        log.debug.Debug+
+        dup dup length string cvs /procName exch def
+        (apo.invoke.Production)  (START proc= /) procName concatstrings log.debug.Print
+    }if
+    
+    % Invokes proc directly
+    apo.Procs# exch get exec
+
+    apo.invoke.Production.debug.Flag{
+        (apo.invoke.Production)  (END   proc= /) procName concatstrings log.debug.Print
+        log.debug.Debug-
+    }if
+}bind def
+
+
+/apo.invoke.ProductionWithChecks{
+    % Invokes proc after checking args and verifying number and type of results on stack
+    {
+        apo.invoke.Production
+    } apo.invoke.CheckArgsAndResults
+
+}bind def
+
+
+
+/apo.invoke.Test{
+    % Needs /apo.Test# defined
+    %
+    (/apo.invoke.Test) /undefined signalerror
+}bind def
+
+/apo.invoke.TestAll{
+    %
+    (/apo.invoke.TestAll) /undefined signalerror
+}bind def
+
+
+/apo.invoke.CheckArgsAndResults{ % 0 - apo.invoke.Production; 1 - /Proc nametype
+    apo.invoke.Production.debug.Flag{
+        log.debug.Debug+
+        (START) (apo.invoke.CheckArgsAndResults) log.debug.Print
+    }if
+    
+    1 index apo.ProcSignatures# exch known{ % Is there a signature definition for this Proc?
+         % A - check args
+        % /possibleArgsResults 1 index apo.ProcSignatures# def
+        % possibleArgsResults ==
+        % B - run proc
+        % C - check results
+    }{
+        % No signature: FIXXX This should just fail!
+        1 index /ProcName exch def
+        apo.invoke.checkargsandresults.Strict{ % If strict, error, as is is required
+            mark (/apo.invoke.CheckArgsAndResults: /) ProcName dup length string cvs ( does not have a signature defined) apo.util.concatstringsToMark /undefined signalerror
+        }if
+
+    }ifelse
+
+    exec
+
+    apo.invoke.Production.debug.Flag{
+        (END  ) (apo.invoke.CheckArgsAndResults) log.debug.Print
+        log.debug.Debug-
+    }if
+}bind def
+
+

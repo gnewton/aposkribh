@@ -1,0 +1,64 @@
+
+%!PS-Adobe-2.0 
+%%
+%%Creator:Glen Newton
+%%Copyright: 2025 Glen Newton
+%%%%%%%%%%%%%%
+
+/apo.util.concatstringsToMark{
+    {
+        counttomark
+    }stopped{
+        (/apo.util.concatstringsToMark: No mark on stack!) /unmatchedmark signalerror
+    }if
+
+    dup 0 eq{
+        (/apo.util.concatstringsToMark: No strings on stack!) /stackunderflow signalerror
+    }if
+
+    1 sub{
+        concatstrings
+    }repeat
+
+    exch
+
+    pop % remove mark
+
+}bind def
+
+
+
+
+/apo.util.MakeSpaces{ % 0 - n
+    count 0 eq{
+        (apo.util.MakeSpaces: Nothing on stack! Needs on arg (int)!) /stackunderflow signalerror
+    }if
+    0 index type /integertype ne{
+        (apo.util.MakeSpaces: First arg not /intertype) /typecheck signalerror
+    }if    
+
+    /s ( ) def
+    {
+	/s s (-) concatstrings def
+    }repeat
+    s
+}bind def
+
+/apo.util.spaces.Memoized#<<
+	>>def
+
+/apo.util.Spaces{
+    dup apo.util.spaces.Memoized# exch known{
+	apo.util.spaces.Memoized# exch get
+    }{
+	/n exch def
+	n apo.util.MakeSpaces /spcs exch def
+	apo.util.spaces.Memoized# n spcs put
+	spcs
+    }ifelse
+}def
+
+
+/apo.util.UsertimeStr{
+    usertime 16 string cvs
+}bind def

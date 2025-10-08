@@ -1,168 +1,34 @@
 
-(0.ps) run
+(apo.constants.ps) run
+(apo.log.ps) run
+(apo.util.ps) run
+(apo.lib.ps) run
+(apo.invoke.ps) run
+
 
 usertime =
 
-
-
-
-/apo.invoke.CheckArgsAndResults{ % 0 - apo.invoke.Production; 1 - /Proc nametype
-    (apo.invoke.CheckArgsAndResults) =
-    1 index apo.ProcSignatures# exch known{ % Is there a signature definition for this Proc?
-        1 index apo.ProcSignatures# exch get  ===
-        % A - cheack args
-        % B - run proc
-        % C - check results
-    }{
-        % No signature
-        1 index /ProcName exch def
-        apo.invoke.checkargsandresults.Strict{ % If strict, error, as is is required
-            mark (/apo.invoke.CheckArgsAndResults: /) ProcName dup length string cvs ( does not have a signature defined) concatstringsToMark /undefined signalerror
-        }if
-    }ifelse
-
-    exec
-}bind def
-
-
-
-/apo.AddSignature{
-    0 index type /arraytype ne{
-        (/apo.AddSignature: First arg not /arraytype) /typecheck signalerror
-    }if
-    1 index type /nametype ne{
-        (/apo.AddSignature: Second arg not /nametype) /typecheck signalerror
-    }if
-    2 index type /dicttype ne{
-        (/apo.AddSignature: Third arg not /dictntype) /typecheck signalerror
-    }if
-    %
-    4 dict begin
-    /_signatures exch def
-    /_key exch def
-    /_lib# exch def
-    (apo.AddSignature) =
-    _lib# /apo.ProcSignatures# get _key _signatures put
-    end
- }def
+%/Debug.Depth 0 def
 
 
 
 
-/concatstringsToMark{
-    {
-        counttomark
-    }stopped{
-        (/concatstringsToMark: No mark on stack!) /unmatchedmark signalerror
-    }if
-
-    dup 0 eq{
-        (/concatstringsToMark: No strings on stack!) /stackunderflow signalerror
-    }if
-
-    1 sub{
-        concatstrings
-    }repeat
-
-    exch
-    pop % remove mark
-}bind def
-
-/Debug.Depth 0 def
-
-/spaces#<<
-	>>def
-
-/makeSpaces{
-    /s ( ) def
-    {
-	/s s (-) concatstrings def
-    }repeat
-    s
-}bind def
-
-/spaces{
-    dup spaces# exch known{
-	spaces# exch get
-    }{
-	/n exch def
-	/spcs n makeSpaces def
-	spaces# n spcs put
-	spcs
-    }ifelse
-}def
-
-
-
-/usertime.str{
-    usertime 16 string cvs
-}bind def
 
  
-/apo.invoke.DebugAll{
-    /Debug.Depth Debug.Depth 2 add store
-    2 dict begin
-    /k exch def
 
-    mark
-    /kstr (/) k dup length string cvs concatstrings def
-    Debug.Depth spaces
-    kstr
-    ( Start: )
-    usertime.str 
-     concatstringsToMark
-    =
-
-    % apo.Procs# k get exec
-    k apo.invoke.Production
-
-    mark
-    Debug.Depth spaces
-    kstr
-    ( End  : )
-    usertime.str
-     concatstringsToMark
-    =
-     
-    end
-    /Debug.Depth Debug.Depth 2 sub store
-}bind def
-
-/apo.Base#
-<<
-    /apo.Docs# << >>
-    /apo.Procs# << >>
-    /apo.ProcSignatures# << >>
-    /apo.Tests# <<
-                   /Positive# <<>>
-                   /Negative#<<>>
-               >>
-
->>def
-
-apo.Base# begin
-
- end
-
-/apo.NewLib{
-    2 dict begin
-    /tmp# <<>> def
-
-    apo.Base# tmp# copy
-    tmp#
-    end
-}def
-
-apo.NewLib ===
+apo.lib.NewLib ===
 (XXX) =
 
-apo.NewLib /base# exch  def
+
+apo.lib.NewLib /testLib# exch  def
 
 
-base# ===
+
+
+testLib# ===
 (AAA) =
 
-base# begin
+testLib# begin
 /Add{
     add
     %mul
@@ -172,7 +38,6 @@ base# begin
 
 
 /Value 10 def
-
 
 
 /Sub2{
@@ -189,92 +54,38 @@ end
 
 
 
-/DelegateDict{
-    /d# exch def
-
-    % Walk through dict d# and move all executables into /d#/apo.Procs#
-    d#{
-	/v 1 array def
-	v 0 2 index put
-	pop
-
-	/k exch def
-	k =
-	k /apo.Procs# ne{
-	    v 0 get type /arraytype eq{
-		v 0 get xcheck{
-		    (+++++++++++++++++  _M) =
-		    % Move actual proc to apo.Procs#
-		    d# /apo.Procs# get k v 0 get put
-
-		    %k dup length string cvs
-
-		    % Replace original with call to apo.Invoke with key k
-		    % Build string:
-		    /E
-  		    (/)  k dup length string cvs  concatstrings
-		    ( apo.Invoke)  concatstrings
-		    def
-		    
-		    % Replace
-		    base# k E cvx put
-		}if
-	    }if
-	}if
-    }forall
-
-    d# begin
-    /apo.Invoke {
-	%apo.invoke.Production
-	%apo.invoke.DebugAll
-        apo.invoke.ProductionWithChecks
-    }bind def
-    
-    % /invoke2 {
-    % 	2 dict begin
-    % 	/k exch def
-
-    % 	/kstr k dup length string cvs def
-    % 	(Start: ) kstr concatstrings =
-    % 	apo.Procs# k get exec
-    % 	(End: ) kstr concatstrings =
-    % 	end
-    % } def
-    end
-
-}bind def
 
 clear
-base# DelegateDict
+testLib# apo.lib.DelegateDict
 
-base# begin
+testLib# begin
 
-base# ===
+testLib# ===
 apo.Procs# ===
 
 (JJJJJJJJJJJJJJJJJJJ) =
-base#
+testLib#
 /Add
 [
     [[/integertype /integertype] [/integertype]]
     [[/realtype /integertype] [/realtype]]
     [[/integertype /realtype] [/realtype]]
 ]
-apo.AddSignature
+apo.lib.AddSignature
 
-base#
+testLib#
 /Sub2
 [
     [[/integertype /integertype] [/integertype]]
     [[/realtype /integertype] [/realtype]]
     [[/integertype /realtype] [/realtype]]
 ]
-apo.AddSignature
+apo.lib.AddSignature
 
 (EEEEEEEEEEEEEEEEEEEEEEEE) =
-base# ===
+testLib# ===
 (--------------) =
-base# ===
+testLib# ===
 (--------------) =
 2 3 Add =
 
@@ -291,40 +102,38 @@ base# ===
 (****) =
 stack
 
+
+
 end
 
 
 
 clear
-mark (1) (2) (3) concatstringsToMark
+mark (1) (2) (3) apo.util.concatstringsToMark
 ==
 (++++) =
 stack
 
 
-quit
+10 apo.util.MakeSpaces =
+10 apo.util.Spaces =
+10 apo.util.Spaces =
 
 
+clear
 
+/a 3 array def
 
-end
-
-(###################################################) =
-
-base#  ===
-
-base# /apo.ProcSignatures# get ===
-(  **) =
+23
+(M)
+44.5
+stack
 () =
-base# /apo.ProcSignatures# get /Add# get ===
+a type =
+a length =
+stack
+a astore
 
 
-        
-(nnnn) =
-base# /apo.ProcSignatures# get /Add# get {
-     ===
-    () =
-}forall
 
-%base# /apo.ProcSignatures# get /Add# get [/integertype /realtype] known ===
 
