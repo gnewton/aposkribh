@@ -51,22 +51,41 @@
         log.debug.Debug+
         (START) (apo.invoke.CheckArgsAndResults) log.debug.Print
     }if
+    % Put the proc into an array
+    /_proc 1 array def
+    _proc 0 0 index put
+    pop
+    /_procName exch def
     
-    1 index apo.ProcSignatures# exch known{ % Is there a signature definition for this Proc?
-         % A - check args
-        % /possibleArgsResults 1 index apo.ProcSignatures# def
+    _procName apo.ProcSignatures# exch known{ % Is there a signature definition for this Proc?
+        ( ***** TODO: check args  ) (apo.invoke.CheckArgsAndResults) log.debug.Print
+        % A - check args
+        (PROC) =
+        _procName =
+        (--PROC) =
+        _procName apo.ProcSignatures# exch get /listOfPossibleArgsAndResults exch  def
+
+        (MMMMMMMMMMMMMMMMMM) =
+        listOfPossibleArgsAndResults apo.invoke.checkArgs{
+            (TRUE) =
+            ===
+        }if
+        (MMMMMMMMMMMMMMMMMM) =
+        
         % possibleArgsResults ==
         % B - run proc
         % C - check results
+        (****** TODO: check results  ) (apo.invoke.CheckArgsAndResults) log.debug.Print
     }{
         % No signature: FIXXX This should just fail!
-        1 index /ProcName exch def
         apo.invoke.checkargsandresults.Strict{ % If strict, error, as is is required
-            mark (/apo.invoke.CheckArgsAndResults: /) ProcName dup length string cvs ( does not have a signature defined) apo.util.concatstringsToMark /undefined signalerror
+            mark (/apo.invoke.CheckArgsAndResults: /) _procName dup length string cvs ( does not have a signature defined) apo.util.concatstringsToMark /undefined signalerror
         }if
 
     }ifelse
 
+    % Execute the actual proc
+    _proc 0 get
     exec
 
     apo.invoke.Production.debug.Flag{
@@ -74,5 +93,25 @@
         log.debug.Debug-
     }if
 }bind def
+
+/apo.invoke.checkArgs{
+    /argResultsList exch def
+
+    /@matchingArgs [] def
+
+    (------------------ apo.invoke.checkArgs) =
+    argResultsList{
+        /argsResults exch def
+        argsResults 0 get
+        apo.util.StackMatchesArrayTypes{
+            /@matchingArgs argsResults 0 get   store
+        }if
+    }forall
+    @matchingArgs length 0 gt{
+        @matchingArgs true
+    }{
+        false
+    }ifelse
+}def
 
 

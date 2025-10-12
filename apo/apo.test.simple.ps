@@ -1,0 +1,127 @@
+
+
+
+
+
+/apo.test.simple.ShouldNotFail{
+    
+}def
+
+
+/apo.test.simple.ShouldFail{
+    () log.test.Print
+    % Args for this
+    count 3 lt{
+        util.Stack
+        (/apo.test.simple.ShouldFail: Needs 3 args) /stackunderflow util.ERROR
+    }if
+
+    % error type
+    0 index type /nametype ne{
+        (ERROR: /apo.test.simple.ShouldFail: First arg not /nametype) /typecheck util.ERROR
+    }if
+
+    % args
+    1 index type /stringtype ne{
+        (ERROR: /apo.test.simple.ShouldFail: Second arg not /stringtype) /typecheck util.ERROR
+    }if
+
+    % proc
+    2 index type /stringtype ne{
+        (ERROR: /apo.test.simple.ShouldFail: Third arg not /stringtype) /typecheck util.ERROR
+    }if
+
+    /_error exch def
+    /_args exch def
+    /_proc exch def
+    clear
+
+    (/apo.test.simple.ShouldFail: Proc: ") _proc concatstrings 
+    (") concatstrings log.test.Print
+
+    (/apo.test.simple.ShouldFail: Args: ") _args concatstrings
+    (") concatstrings log.test.Print
+    
+    (/apo.test.simple.ShouldFail: Expected error: "/)
+    _error dup length string cvs concatstrings 
+    (") concatstrings log.test.Print
+    
+    {
+        _args cvx exec _proc cvx exec
+    }stopped{
+        % Is supposed to be here
+        /actualError $error /errorname get def
+
+        actualError _error ne{
+            % Wrong error!
+
+            (ERROR) =
+            ( ----- Args -----) =
+            _args =
+            ( ----- Proc -----) =
+            _proc =
+            ( ----------------) =
+            
+            (ERROR: /apo.test.simple.ShouldFail: proc=[) _proc concatstrings
+            (] ) concatstrings
+            (constants.apo.test.simple.ShouldFail: Args: ") _args concatstrings
+            (" ) concatstrings 
+            ( --- Should fail with error=[/) concatstrings
+
+            actualError dup length string cvs concatstrings
+            (]. Has failed wiith error=[/) concatstrings
+            _error dup length string cvs concatstrings
+            (].) concatstrings
+            concatstrings
+            /unregistered util.ERROR
+        }if
+        (OK) log.test.Print
+    }{
+        % SHould not be here: Has not failed when should have
+        (ERROR) =
+        ( ----- Args -----) =
+        _args =
+        ( ----- Proc -----) =
+        _proc =
+        ( ----------------) =
+        (/apo.test.simple.ShouldFail: proc=[) _proc concatstrings
+        (] should fail. Has not!) concatstrings
+         /typecheck util.ERROR
+    }ifelse
+    clear
+}def
+
+
+
+    
+
+
+
+/apo.test.simple.ShouldFailN{
+    % Args for this
+    count 3 lt{
+        (/apo.test.simple.ShouldFailN: Needs 3 args) /stackunderflow  util.ERROR
+    }if
+
+    0 index type /nametype ne{
+        (ERROR: /apo.test.simple.ShouldFailN2: First arg not /nametype) /typecheck util.ERROR
+    }if
+
+    1 index type /arraytype ne{
+        (ERROR: /apo.test.simple.ShouldFail: Second arg not /arraytype) /typecheck  util.ERROR
+    }if
+
+    2 index type /stringtype ne{
+        (ERROR: /apo.test.simple.ShouldFail: Third arg not /stringtype) /typecheck  util.ERROR
+    }if
+
+    /_error exch def
+    /_argN exch def
+    /_proc exch def
+
+    _argN{
+        /arg exch def
+        _proc  arg  _error   apo.test.simple.ShouldFail
+    }forall
+
+}def

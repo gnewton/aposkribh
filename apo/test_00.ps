@@ -1,0 +1,105 @@
+
+(apo.constants.ps) run
+(apo.log.ps) run
+(apo.util.ps) run
+(apo.lib.ps) run
+(apo.invoke.ps) run
+
+
+
+usertime =
+
+
+apo.lib.NewLib /testLib# exch  def
+
+
+
+
+testLib# begin
+/Add{
+    add
+    10 Sub2
+}def
+
+
+
+/Value 10 def
+
+
+/Sub2{
+    sub
+    100000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+}def
+end
+
+
+
+
+clear
+testLib# apo.lib.DelegateDict
+
+testLib# begin
+
+testLib#
+/Add
+[
+    %[[/integertype /integertype] [/stringtype]]
+    [[/realtype /integertype] [/realtype]]
+    [[/integertype /realtype] [/realtype]]
+]
+apo.lib.AddSignature
+
+testLib#
+/Sub2
+[
+    [[/integertype /integertype] [/integertype]]
+    [[/realtype /integertype] [/realtype]]
+    [[/integertype /realtype] [/realtype]]
+]
+apo.lib.AddSignature
+
+
+2 3 Add =
+
+
+1000000{
+    /tmp
+    <<
+	/m [233 34 (mm) 34444 ]
+    >> def
+}repeat
+
+
+end
+
+
+
+clear
+mark (1) (2) (3) apo.util.concatstringsToMark
+==
+(++++) =
+stack
+
+
+10 apo.util.MakeSpaces =
+20 apo.util.Spaces =
+10 apo.util.Spaces =
+
+
+clear
+
+/a [1 2 4] def
+a
+a ===
+
+(hello) a  apo.util.array.Append ===
+
+
+
+

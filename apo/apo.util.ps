@@ -5,6 +5,30 @@
 %%Copyright: 2025 Glen Newton
 %%%%%%%%%%%%%%
 
+/apo.util.array.Append{ % item array
+    count 2 lt{
+        (apo.util.array.Append: Needs 2 args: anything; array) /stackunderflow signalerror
+    }if
+    0 index type /arraytype ne{
+        (apo.util.array.Append: First arg must be array) /typecheck signalerror
+    }if
+    %
+    8 dict begin
+
+    /_a exch def
+    /_i exch def
+
+    /ia [_i] def
+    
+    /z _a length 1 add array def
+    
+    z 0 _a putinterval
+    z _a length ia putinterval
+    
+    z
+    end
+}bind def
+
 /apo.util.concatstringsToMark{
     {
         counttomark
@@ -61,4 +85,30 @@
 
 /apo.util.UsertimeStr{
     usertime 16 string cvs
+}bind def
+
+
+/apo.util.StackMatchesArrayTypes{
+
+    1 dict begin
+
+    /_array exch def
+
+    /matches? true def
+
+    count _array length ne{
+        /matches? false store
+    }{
+        0 1 _array length 1 sub{
+            /i exch def
+                
+            i index type _array i get ne{
+                /matches? false store
+                exit
+            }if
+        }for
+    }ifelse
+
+    matches?
+    end
 }bind def
